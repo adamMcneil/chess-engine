@@ -38,7 +38,7 @@ public class Board {
 
                 {new Empty(Color.g, new Position(3, 0)), new Empty(Color.g, new Position(3, 1)), new Empty(Color.g, new Position(3, 2)), new Empty(Color.g, new Position(3, 3)), new Empty(Color.g, new Position(3, 4)), new Empty(Color.g, new Position(3, 5)), new Empty(Color.g, new Position(3, 6)), new Empty(Color.g, new Position(3, 7))},
                 {new Empty(Color.g, new Position(4, 0)), new Empty(Color.g, new Position(4, 1)), new Knight(Color.w, new Position(4, 2)), new Empty(Color.g, new Position(4, 3)), new Empty(Color.g, new Position(4, 4)), new Empty(Color.g, new Position(4, 5)), new Empty(Color.g, new Position(4, 6)), new Empty(Color.g, new Position(4, 7))},
-                {new Knight(Color.w, new Position(5, 0)), new Empty(Color.g, new Position(5, 1)), new Empty(Color.g, new Position(5, 2)), new Empty(Color.g, new Position(5, 3)), new Empty(Color.g, new Position(5, 4)), new Empty(Color.g, new Position(5, 5)), new Empty(Color.g, new Position(5, 6)), new Empty(Color.g, new Position(5, 7))},
+                {new Empty(Color.g, new Position(5, 0)), new Empty(Color.g, new Position(5, 1)), new Empty(Color.g, new Position(5, 2)), new Empty(Color.g, new Position(5, 3)), new Empty(Color.g, new Position(5, 4)), new Empty(Color.g, new Position(5, 5)), new Empty(Color.g, new Position(5, 6)), new Empty(Color.g, new Position(5, 7))},
 
                 {new Rook(Color.b, new Position(7, 0)), new Knight(Color.b, new Position(7, 1)), new Bishop(Color.b, new Position(7, 2)), new King(Color.b, new Position(7, 3)), new Queen(Color.b, new Position(7, 4)), new Bishop(Color.b, new Position(7, 5)), new Knight(Color.b, new Position(7, 6)), new Rook(Color.b, new Position(7, 7))}
         };

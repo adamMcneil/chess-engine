@@ -27,7 +27,7 @@ public class Bishop extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() + 1, position.getY() + 1);
+            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() + 1);
         }
         checkPosition = new Position(position.getX() - 1, position.getY() + 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -35,7 +35,7 @@ public class Bishop extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() - 1, position.getY() + 1);
+            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() + 1);
         }
         checkPosition = new Position(position.getX() + 1, position.getY() - 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -43,7 +43,7 @@ public class Bishop extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() + 1, position.getY() - 1);
+            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() - 1);
         }
         checkPosition = new Position(position.getX() - 1, position.getY() - 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -51,7 +51,7 @@ public class Bishop extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() - 1, position.getY() - 1);
+            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() - 1);
         }
         return moves;
     }

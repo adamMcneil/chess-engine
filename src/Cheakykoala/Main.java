@@ -5,7 +5,7 @@ public class Main {
         Board board = new Board();
         board.printBoard();
 
-        for (Move m : board.get(0, 5).getMoves(board)) {
+        for (Move m : board.get(0, 0).getMoves(board)) {
             System.out.println(m.end);
         }
     }
