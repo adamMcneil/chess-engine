@@ -20,6 +20,72 @@ public class Queen extends Piece {
     }
 
     public ArrayList<Move> getMoves(Board board) {
-        return null;
+        ArrayList<Move> moves = new ArrayList<>();
+        Position checkPosition = new Position(position.getX() + 1, position.getY() + 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() + 1, position.getY() + 1);
+        }
+        checkPosition = new Position(position.getX() - 1, position.getY() + 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() - 1, position.getY() + 1);
+        }
+        checkPosition = new Position(position.getX() + 1, position.getY() - 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() + 1, position.getY() - 1);
+        }
+        checkPosition = new Position(position.getX() - 1, position.getY() - 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() - 1, position.getY() - 1);
+        }
+        checkPosition = new Position(position.getX() + 1, position.getY());
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() + 1, position.getY());
+        }
+        checkPosition = new Position(position.getX() - 1, position.getY());
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX() - 1, position.getY());
+        }
+        checkPosition = new Position(position.getX(), position.getY() + 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX(), position.getY() + 1);
+        }
+        checkPosition = new Position(position.getX(), position.getY() - 1);
+        while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
+            Move move = new Move(position, checkPosition);
+            moves.add(move);
+            if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                break; //I am not sure if this break works
+            checkPosition = new Position(position.getX(), position.getY() - 1);
+        }
+        return moves;
+
     }
 }
