@@ -4,6 +4,9 @@ public class Main {
     public static void main(String[] args) {
         Board board = new Board();
         board.printBoard();
+
+        for (Move m : board.get(5, 0).getMoves(board)) {
+            System.out.println(m.end);
+        }
     }
-    //function checkPawnMove(char[8][8] board, int[2] location) outputs an array of all locations a pawn can move
 }

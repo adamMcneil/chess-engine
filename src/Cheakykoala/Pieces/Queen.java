@@ -5,13 +5,13 @@ import Cheakykoala.Color;
 import Cheakykoala.Move;
 import Cheakykoala.Position;
 
+import java.util.ArrayList;
+
 public class Queen extends Piece {
-    Position position;
-    char piece;
-    Color color;
 
     public Queen(Color c, Position position) {
         this.position = position;
+        this.color = c;
         if (c == Color.w) {
             piece = (char) 0x2655;
         } else {
@@ -19,7 +19,7 @@ public class Queen extends Piece {
         }
     }
 
-    public Move[] getMoves(Board board) {
-        return new Move[0];
+    public ArrayList<Move> getMoves(Board board) {
+        return null;
     }
 }

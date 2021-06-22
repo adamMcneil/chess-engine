@@ -5,16 +5,22 @@ import Cheakykoala.Position;
 import Cheakykoala.Board;
 import Cheakykoala.Move;
 
+import java.util.ArrayList;
+
 public abstract class Piece {
 
     Position position;
     char piece;
     Color color;
 
-    public abstract Move[] getMoves(Board board);
+    public abstract ArrayList<Move> getMoves(Board board);
 
     public char getPiece() {
         return piece;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
 //    //white pieces

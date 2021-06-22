@@ -5,12 +5,13 @@ import Cheakykoala.Color;
 import Cheakykoala.Move;
 import Cheakykoala.Position;
 
+import java.util.ArrayList;
+
 public class Knight extends Piece {
-    char piece;
-    Position position;
 
     public Knight(Color c, Position position) {
         this.position = position;
+        this.color = c;
         if (c == Color.w) {
             piece = (char) 0x2658;
         } else {
@@ -18,15 +19,32 @@ public class Knight extends Piece {
         }
     }
 
-    public Move[] getMove() {
-        Move move[] = new Move[2];
+    public ArrayList<Move> getMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int j;
         for (int i = -2; i < 3; i++) {
+            if (Math.abs(i) == 2)
+                j = 1;
+            else
+                j = 2;
+            if (i != 0) {
+                Position end = new Position(position.getX() + i, position.getY() + j);
+                if (end.getX() < 8 && end.getX() > -1 && end.getY() < 8 && end.getY() > -1) {
+                    if (board.get(end.getX(),end.getY()).color != color){
+                        Move move = new Move(position, end);
+                        moves.add(move);
+                    }
+                }
 
+                end = new Position(position.getX() + i, position.getY() - j);
+                if (end.getX() < 8 && end.getX() > -1 && end.getY() < 8 && end.getY() > -1) {
+                    if (board.get(end.getX(),end.getY()).color != color){
+                        Move move = new Move(position, end);
+                        moves.add(move);
+                    }
+                }
+            }
         }
-        return move;
-    }
-
-    public Move[] getMoves(Board board) {
-        return new Move[0];
+        return moves;
     }
 }
