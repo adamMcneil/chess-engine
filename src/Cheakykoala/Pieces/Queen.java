@@ -13,9 +13,9 @@ public class Queen extends Piece {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
-            piece = (char) 0x2655;
-        } else {
             piece = (char) 0x265B;
+        } else {
+            piece = (char) 0x2655;
         }
     }
 
@@ -27,7 +27,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() + 1, position.getY() + 1);
+            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() + 1);
         }
         checkPosition = new Position(position.getX() - 1, position.getY() + 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -35,7 +35,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() - 1, position.getY() + 1);
+            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() + 1);
         }
         checkPosition = new Position(position.getX() + 1, position.getY() - 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -43,7 +43,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() + 1, position.getY() - 1);
+            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() - 1);
         }
         checkPosition = new Position(position.getX() - 1, position.getY() - 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -51,7 +51,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() - 1, position.getY() - 1);
+            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() - 1);
         }
         checkPosition = new Position(position.getX() + 1, position.getY());
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -59,7 +59,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() + 1, position.getY());
+            checkPosition = new Position(checkPosition.getX() + 1, position.getY());
         }
         checkPosition = new Position(position.getX() - 1, position.getY());
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -67,7 +67,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX() - 1, position.getY());
+            checkPosition = new Position(checkPosition.getX() - 1, position.getY());
         }
         checkPosition = new Position(position.getX(), position.getY() + 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -75,7 +75,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX(), position.getY() + 1);
+            checkPosition = new Position(position.getX(), checkPosition.getY() + 1);
         }
         checkPosition = new Position(position.getX(), position.getY() - 1);
         while (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
@@ -83,7 +83,7 @@ public class Queen extends Piece {
             moves.add(move);
             if (board.getPieceAt(checkPosition).getColor() != Color.g)
                 break; //I am not sure if this break works
-            checkPosition = new Position(position.getX(), position.getY() - 1);
+            checkPosition = new Position(position.getX(), checkPosition.getY() - 1);
         }
         return moves;
 

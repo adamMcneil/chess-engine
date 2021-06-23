@@ -7,4 +7,10 @@ public class Move {
         this.beginning = beginning;
         this.end = end;
     }
+    public Position getBeginning(){
+        return beginning;
+    }
+    public Position getEnd(){
+        return end;
+    }
 }

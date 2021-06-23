@@ -13,9 +13,9 @@ public class Rook extends Piece {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
-            piece = (char) 0x2656;
-        } else {
             piece = (char) 0x265C;
+        } else {
+            piece = (char) 0x2656;
         }
     }
 

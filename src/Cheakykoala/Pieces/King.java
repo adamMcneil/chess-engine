@@ -13,9 +13,9 @@ public class King extends Piece {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
-            piece = (char) 0x2654;
-        } else {
             piece = (char) 0x265A;
+        } else {
+            piece = (char) 0x2654;
         }
     }
 

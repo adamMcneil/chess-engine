@@ -11,11 +11,12 @@ public class Knight extends Piece {
 
     public Knight(Color c, Position position) {
         this.position = position;
-        this.color = c;
+        this.color = Color.w;
         if (c == Color.w) {
-            piece = (char) 0x2658;
-        } else {
             piece = (char) 0x265E;
+        }
+        if (c == Color.b) {
+            piece = (char) 0x2658;
         }
     }
 

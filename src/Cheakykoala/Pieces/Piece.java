@@ -23,6 +23,16 @@ public abstract class Piece {
         return color;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+    public void move(Board board, Move move) {
+        board.addPiece(move.getEnd(), this);
+        this.position = move.getEnd();
+        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+    }
+
 //    //white pieces
 //    static char wk = (char) 0x2654;
 //    static char wq = (char) 0x2655;

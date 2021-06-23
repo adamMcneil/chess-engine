@@ -9,9 +9,10 @@ import java.util.ArrayList;
 
 public class Empty extends Piece {
 
-    public Empty(Color c, Position position) {
+    public Empty(Position position) {
         this.position = position;
-        piece = ' ';
+        this.color = color.g;
+        this.piece = ' ';
     }
 
     public ArrayList<Move> getMoves(Board board) {
