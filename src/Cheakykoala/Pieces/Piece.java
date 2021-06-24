@@ -31,10 +31,17 @@ public abstract class Piece {
         return position;
     }
 
+
+
     public void move(Board board, Move move) {
         board.addPiece(move.getEnd(), this);
         this.position = move.getEnd();
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+    }
+    public void undoMove(Board board, Move move, Piece taken) {
+        board.addPiece(move.getBeginning(), this);
+        this.position = move.getBeginning();
+        board.addPiece(move.getEnd(), taken);
     }
 
 //    //white pieces

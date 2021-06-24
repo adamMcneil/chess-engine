@@ -9,7 +9,7 @@ public class Board {
         makeBoard();
     }
 
-    public Piece[][] getBoard(){
+    public Piece[][] getBoard() {
         return board;
     }
 
@@ -30,10 +30,10 @@ public class Board {
         return board[y][x];
     }
 
-    public boolean isBoardCheck(Color color){
+    public boolean isColorInCheck(Color color) {
         for (Piece[] pieces : board) {
             for (Piece p : pieces) {
-                if (p.getColor() == color) {
+                if (p.getColor().getOppositeColor() == color) {
                     for (Move m : p.getMoves(this)) {
                         if (board[m.getEnd().getX()][m.getEnd().getY()].isKing())
                             return true;
@@ -45,8 +45,8 @@ public class Board {
         return false;
     }
 
-    public void addPiece(Position position, Piece piece){
-        board[position.getY()][position.getX()]= piece;
+    public void addPiece(Position position, Piece piece) {
+        board[position.getY()][position.getX()] = piece;
     }
 
     private void makeBoard() {
@@ -60,5 +60,74 @@ public class Board {
                 {new Pawn(Color.w, new Position(0, 6)), new Pawn(Color.w, new Position(1, 6)), new Pawn(Color.w, new Position(2, 6)), new Pawn(Color.w, new Position(3, 6)), new Pawn(Color.w, new Position(4, 6)), new Pawn(Color.w, new Position(5, 6)), new Pawn(Color.w, new Position(6, 6)), new Pawn(Color.w, new Position(7, 6))},
                 {new Rook(Color.w, new Position(0, 7)), new Knight(Color.w, new Position(1, 7)), new Bishop(Color.w, new Position(2, 7)), new Queen(Color.w, new Position(3, 7)), new King(Color.w, new Position(4, 7)), new Bishop(Color.w, new Position(5, 7)), new Knight(Color.w, new Position(6, 7)), new Rook(Color.w, new Position(7, 7))},
         };
+    }
+
+    public void importBoard(String fenBoard) {
+        int x = 0;
+        int y = 0;
+        String[] splitFen = fenBoard.split(" ");
+        fenBoard = splitFen[0];
+        System.out.println(fenBoard);
+        for (int i = 0; i < fenBoard.length(); i++) {
+            if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
+                board[y][x] = getPiece(fenBoard.charAt(i), x, y);
+                x++;
+            } else if (Character.isDigit(fenBoard.charAt(i))) {
+                System.out.println("Number: " + fenBoard.charAt(i));
+                for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
+                    System.out.println("   " + j);
+                    System.out.println(j + " " + fenBoard.charAt(i));
+                    board[y][x] = new Empty(new Position(x, y));
+                    x++;
+                }
+            } else {
+                x = 0;
+                y++;
+            }
+        }
+    }
+
+    public Piece getPiece(char letter, int x, int y) {
+        Piece piece;
+        switch (letter) {
+            case 'r':
+                piece = new Rook(Color.b, new Position(x, y));
+                return piece;
+            case 'R':
+                piece = new Rook(Color.w, new Position(x, y));
+                return piece;
+            case 'n':
+                piece = new Knight(Color.b, new Position(x, y));
+                return piece;
+            case 'N':
+                piece = new Knight(Color.w, new Position(x, y));
+                return piece;
+            case 'b':
+                piece = new Bishop(Color.b, new Position(x, y));
+                return piece;
+            case 'B':
+                piece = new Bishop(Color.w, new Position(x, y));
+                return piece;
+            case 'q':
+                piece = new Queen(Color.b, new Position(x, y));
+                return piece;
+            case 'Q':
+                piece = new Queen(Color.w, new Position(x, y));
+                return piece;
+            case 'k':
+                piece = new King(Color.b, new Position(x, y));
+                return piece;
+            case 'K':
+                piece = new King(Color.w, new Position(x, y));
+                return piece;
+            case 'p':
+                piece = new Pawn(Color.b, new Position(x, y));
+                return piece;
+            case 'P':
+                piece = new Pawn(Color.w, new Position(x, y));
+                return piece;
+        }
+        piece = new Empty(new Position(x, y));
+        return piece;
     }
 }

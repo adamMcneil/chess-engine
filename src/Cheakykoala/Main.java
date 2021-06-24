@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-//        board.printBoard();
+        board.importBoard("r6R/1r4R1/2r2R2/3rR3/3Rr3/2R2r2/1R4r1/R6r w - - 0 1");
+        board.printBoard();
 //        System.out.println(board.get(2, 3).getPiece());
 //        int i = 0;
 //        for (Move m : board.get(0, 1).getMoves(board)) {
@@ -21,7 +22,7 @@ public class Main {
 //        board.getPieceAt(beginning).move(board, move);
 //        board.printBoard();
 //        System.out.println(board.getPieceAt(end).getPosition());
-        playGame(board);
+//        playGame(board);
     }
 
     public static void playGame(Board board) {
