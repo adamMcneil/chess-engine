@@ -7,13 +7,13 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-        board.printBoard();
-        System.out.println(board.get(2, 3).getPiece());
-        int i = 0;
-        for (Move m : board.get(0, 1).getMoves(board)) {
-            i++;
-            System.out.println(m.end);
-        }
+//        board.printBoard();
+//        System.out.println(board.get(2, 3).getPiece());
+//        int i = 0;
+//        for (Move m : board.get(0, 1).getMoves(board)) {
+//            i++;
+//            System.out.println(m.end);
+//        }
 //        System.out.println(i);
 //        Position beginning = new Position(1, 1);
 //        Position end = new Position(1, 2);
@@ -36,6 +36,9 @@ public class Main {
                 }
             }
         }
+        for (int x = 0; x < whiteMoves.size()-1; x++){
+            whiteMoves.get(x).printMove();
+        }
         int x = (int) (Math.random() * whiteMoves.size());
         System.out.println("white moves: " + whiteMoves.size());
         board.getPieceAt(whiteMoves.get(x).getBeginning()).move(board, whiteMoves.get(x));
@@ -50,6 +53,10 @@ public class Main {
                 }
             }
         }
+        for ( x = 0; x < blackMoves.size()-1; x++){
+            blackMoves.get(x).printMove();
+        }
+        System.out.println("black moves: " + blackMoves.size());
         int y = (int) (Math.random() * blackMoves.size());
         board.getPieceAt(blackMoves.get(y).getBeginning()).move(board, blackMoves.get(y));
         board.printBoard();

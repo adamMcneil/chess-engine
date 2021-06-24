@@ -11,7 +11,7 @@ public class Knight extends Piece {
 
     public Knight(Color c, Position position) {
         this.position = position;
-        this.color = Color.w;
+        this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265E;
         }
@@ -30,19 +30,15 @@ public class Knight extends Piece {
                 j = 2;
             if (i != 0) {
                 Position end = new Position(position.getX() + i, position.getY() + j);
-                if (end.getX() < 8 && end.getX() > -1 && end.getY() < 8 && end.getY() > -1) {
-                    if (board.get(end.getX(),end.getY()).color != color){
+                if (end.isOnBoard() && board.getPieceAt(end).getColor() != color) {
                         Move move = new Move(position, end);
                         moves.add(move);
-                    }
                 }
 
                 end = new Position(position.getX() + i, position.getY() - j);
-                if (end.getX() < 8 && end.getX() > -1 && end.getY() < 8 && end.getY() > -1) {
-                    if (board.get(end.getX(),end.getY()).color != color){
-                        Move move = new Move(position, end);
-                        moves.add(move);
-                    }
+                if (end.isOnBoard() && board.getPieceAt(end).getColor() != color) {
+                    Move move = new Move(position, end);
+                    moves.add(move);
                 }
             }
         }

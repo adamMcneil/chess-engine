@@ -15,6 +15,10 @@ public abstract class Piece {
 
     public abstract ArrayList<Move> getMoves(Board board);
 
+    public boolean isKing(){
+        return false;
+    }
+
     public char getPiece() {
         return piece;
     }

@@ -19,6 +19,14 @@ public class King extends Piece {
         }
     }
 
+    @Override
+    public boolean isKing() {
+        return true;
+    }
+
+    public char returnPiece(){
+        return piece;
+    }
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         Position checkPosition = new Position(position.getX() + 1, position.getY() + 1);

@@ -30,6 +30,21 @@ public class Board {
         return board[y][x];
     }
 
+    public boolean isBoardCheck(Color color){
+        for (Piece[] pieces : board) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    for (Move m : p.getMoves(this)) {
+                        if (board[m.getEnd().getX()][m.getEnd().getY()].isKing())
+                            return true;
+
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public void addPiece(Position position, Piece piece){
         board[position.getY()][position.getX()]= piece;
     }
