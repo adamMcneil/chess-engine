@@ -15,6 +15,11 @@ public class Empty extends Piece {
         this.piece = ' ';
     }
 
+    @Override
+    public boolean isEmpty() {
+        return true;
+    }
+
     public ArrayList<Move> getMoves(Board board) {
         return null;
     }

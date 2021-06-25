@@ -1,5 +1,6 @@
 package Cheakykoala;
 
+import Cheakykoala.Pieces.Empty;
 import Cheakykoala.Pieces.Piece;
 
 import java.util.ArrayList;
@@ -7,8 +8,9 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-        board.importBoard("r6R/1r4R1/2r2R2/3rR3/3Rr3/2R2r2/1R4r1/R6r w - - 0 1");
-        board.printBoard();
+
+//        board.importBoard("r6R/1r4R1/2r2R2/3rR3/3Rr3/2R2r2/1R4r1/R6r w - - 0 1");
+//        board.printBoard();
 //        System.out.println(board.get(2, 3).getPiece());
 //        int i = 0;
 //        for (Move m : board.get(0, 1).getMoves(board)) {
@@ -20,9 +22,11 @@ public class Main {
 //        Position end = new Position(1, 2);
 //        Move move = new Move(beginning, end);
 //        board.getPieceAt(beginning).move(board, move);
+//        Piece e = new Empty(null);
+//        board.getPieceAt(end).undoMove(board, move, e);
 //        board.printBoard();
 //        System.out.println(board.getPieceAt(end).getPosition());
-//        playGame(board);
+       playGame(board);
     }
 
     public static void playGame(Board board) {

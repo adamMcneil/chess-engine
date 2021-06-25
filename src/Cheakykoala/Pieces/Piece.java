@@ -19,6 +19,10 @@ public abstract class Piece {
         return false;
     }
 
+    public boolean isEmpty(){
+        return false;
+    }
+
     public char getPiece() {
         return piece;
     }
@@ -34,14 +38,18 @@ public abstract class Piece {
 
 
     public void move(Board board, Move move) {
-        board.addPiece(move.getEnd(), this);
-        this.position = move.getEnd();
-        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+            board.addPiece(move.getEnd(), this);
+            this.position = move.getEnd();
+            board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+            board.printBoard();
     }
     public void undoMove(Board board, Move move, Piece taken) {
         board.addPiece(move.getBeginning(), this);
+        board.printBoard();
         this.position = move.getBeginning();
+
         board.addPiece(move.getEnd(), taken);
+        board.printBoard();
     }
 
 //    //white pieces

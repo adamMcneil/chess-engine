@@ -8,6 +8,9 @@ public enum Color {
     public Color getOppositeColor(){
         if (Color.w == w)
             return Color.b;
-        return Color.w;
+        if (Color.b == b) {
+            return Color.w;
+        }
+        return Color.g;
     }
 }

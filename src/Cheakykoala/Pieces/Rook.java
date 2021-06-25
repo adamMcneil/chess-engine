@@ -62,4 +62,9 @@ public class Rook extends Piece {
         }
         return moves;
     }
+
+    public ArrayList<Move> getMovesBetter(Board board) {
+        int [][] baseMoves = new int[4][2];
+        int [][]
+    }
 }

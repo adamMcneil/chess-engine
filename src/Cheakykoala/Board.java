@@ -37,7 +37,6 @@ public class Board {
                     for (Move m : p.getMoves(this)) {
                         if (board[m.getEnd().getX()][m.getEnd().getY()].isKing())
                             return true;
-
                     }
                 }
             }
