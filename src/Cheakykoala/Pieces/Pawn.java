@@ -36,9 +36,10 @@ public class Pawn extends Piece {
 
         checkPosition = new Position(position.getX(), position.getY() + direction);
         Move move = new Move(position, checkPosition);
-        if (move.isMoveLegal(board, color)) {
+        if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g) {
             moves.add(move);
         }
+
         Position right = new Position(position.getX() + 1, position.getY() + direction);
         Position left = new Position(position.getX() - 1, position.getY() + direction);
         Move moveLeft = new Move(position, left);
@@ -49,10 +50,12 @@ public class Pawn extends Piece {
         if (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) {
             moves.add(moveRight);
         }
+
         if (!hasMoved()) {
             checkPosition = new Position(position.getX(), position.getY() + direction * 2);
             move = new Move(position, checkPosition);
-            if (move.isMoveLegal(board, color))
+            Position oneAbove = new Position(position.getX(), checkPosition.getY() - direction);
+            if (move.isMoveLegal(board, color)&& board.getPieceAt(oneAbove).getColor() == Color.g && board.getPieceAt(checkPosition).getColor() == Color.g )
                 moves.add(move);
         }
         return moves;
