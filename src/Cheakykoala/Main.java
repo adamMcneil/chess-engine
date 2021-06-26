@@ -8,6 +8,11 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
+        Position position = new Position(0,5);
+        ArrayList<Move> moves = board.getPieceAt(position).getMoves(board);
+        for (int x = 0; x < moves.size(); x++) {
+            moves.get(x).printMove();
+        }
 
 //        board.importBoard("r6R/1r4R1/2r2R2/3rR3/3Rr3/2R2r2/1R4r1/R6r w - - 0 1");
 //        board.printBoard();
@@ -26,7 +31,7 @@ public class Main {
 //        board.getPieceAt(end).undoMove(board, move, e);
 //        board.printBoard();
 //        System.out.println(board.getPieceAt(end).getPosition());
-       playGame(board);
+   //    playGame(board);
     }
 
     public static void playGame(Board board) {
@@ -66,5 +71,59 @@ public class Main {
         board.getPieceAt(blackMoves.get(y).getBeginning()).move(board, blackMoves.get(y));
         board.printBoard();
 
+    }
+
+    public int evalBoard(Board board){
+        int eval = 0;
+        for (Piece[] pieces : board.getBoard()){
+            for (Piece piece : pieces){
+               if (piece.getColor() == Color.w){
+                   eval++;
+               } else {
+                   eval--;
+               }
+            }
+        }
+        return eval;
+    }
+
+    public double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer){
+        double eval;
+        double minEval;
+        double maxEval;
+        if (depth == 0){
+            return (evalBoard(board));
+        }
+        if (isMaxPlayer){
+            maxEval = -999;
+            for (Piece[] pieces : board.getBoard()){
+                for (Piece piece : pieces){
+                    for (Move move : piece.getMoves(board)){
+                        eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
+                        maxEval = Math.max(alpha, eval);
+                        alpha = Math.max(alpha, eval);
+                        if (beta <= alpha){
+                            break;
+                        }
+                    }
+                }
+            }
+            return maxEval;
+        } else {
+            minEval = 999;
+            for (Piece[] pieces : board.getBoard()){
+                for (Piece piece : pieces){
+                    for (Move move : piece.getMoves(board)){
+                        eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, true);
+                        minEval = Math.min(minEval, eval);
+                        beta = Math.max(beta, eval);
+                        if (beta <= alpha){
+                            break;
+                        }
+                    }
+                }
+            }
+            return minEval;
+        }
     }
 }

@@ -13,6 +13,14 @@ public abstract class Piece {
     char piece;
     Color color;
 
+    Piece(Piece piece){
+
+    }
+
+    public Piece() {
+
+    }
+
     public abstract ArrayList<Move> getMoves(Board board);
 
     public boolean isKing(){
@@ -35,7 +43,13 @@ public abstract class Piece {
         return position;
     }
 
+    public void newPiece(Color color, Position position){
+        this.color = color;
+    }
 
+    public char getChar(){
+        return this.piece;
+    }
 
     public void move(Board board, Move move) {
             board.addPiece(move.getEnd(), this);

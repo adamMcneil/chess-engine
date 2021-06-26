@@ -14,7 +14,7 @@ public class Move {
 
 
     public void printMove() {
-        System.out.println(beginning.toString() + "        " + end.toString());
+        System.out.println(beginning + "        " + end.toString());
     }
 
     public boolean isMoveCheck(Board board) {

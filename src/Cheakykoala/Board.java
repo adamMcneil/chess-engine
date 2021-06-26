@@ -4,6 +4,7 @@ import Cheakykoala.Pieces.*;
 
 public class Board {
     Piece[][] board = new Piece[8][8];
+    Piece[][] child = new Piece[8][8];
 
     public Board() {
         makeBoard();
@@ -55,7 +56,7 @@ public class Board {
                 {new Empty(new Position(0, 2)), new Empty(new Position(1, 2)), new Empty(new Position(2, 2)), new Empty(new Position(3, 2)), new Empty(new Position(4, 2)), new Empty(new Position(5, 2)), new Empty(new Position(6, 2)), new Empty(new Position(7, 2))},
                 {new Empty(new Position(0, 3)), new Empty(new Position(1, 3)), new Empty(new Position(2, 3)), new Empty(new Position(3, 3)), new Empty(new Position(4, 3)), new Empty(new Position(5, 3)), new Empty(new Position(6, 3)), new Empty(new Position(7, 3))},
                 {new Empty(new Position(0, 4)), new Empty(new Position(1, 4)), new Empty(new Position(2, 4)), new Empty(new Position(3, 4)), new Empty(new Position(4, 4)), new Empty(new Position(5, 4)), new Empty(new Position(6, 4)), new Empty(new Position(7, 4))},
-                {new Empty(new Position(0, 5)), new Empty(new Position(1, 5)), new Empty(new Position(2, 5)), new Empty(new Position(3, 5)), new Empty(new Position(4, 5)), new Empty(new Position(5, 5)), new Empty(new Position(6, 5)), new Empty(new Position(7, 5))},
+                {new Rook(Color.w, new Position(0, 5)), new Empty(new Position(1, 5)), new Empty(new Position(2, 5)), new Empty(new Position(3, 5)), new Empty(new Position(4, 5)), new Empty(new Position(5, 5)), new Empty(new Position(6, 5)), new Empty(new Position(7, 5))},
                 {new Pawn(Color.w, new Position(0, 6)), new Pawn(Color.w, new Position(1, 6)), new Pawn(Color.w, new Position(2, 6)), new Pawn(Color.w, new Position(3, 6)), new Pawn(Color.w, new Position(4, 6)), new Pawn(Color.w, new Position(5, 6)), new Pawn(Color.w, new Position(6, 6)), new Pawn(Color.w, new Position(7, 6))},
                 {new Rook(Color.w, new Position(0, 7)), new Knight(Color.w, new Position(1, 7)), new Bishop(Color.w, new Position(2, 7)), new Queen(Color.w, new Position(3, 7)), new King(Color.w, new Position(4, 7)), new Bishop(Color.w, new Position(5, 7)), new Knight(Color.w, new Position(6, 7)), new Rook(Color.w, new Position(7, 7))},
         };
@@ -128,5 +129,24 @@ public class Board {
         }
         piece = new Empty(new Position(x, y));
         return piece;
+    }
+
+    public Board getChild(Board board, Move move) {
+        Board child = new Board();
+        child.importBoard("8/8/8/8/8/8/8/8 w - - 0 1");
+        int x = 0, y = 0;
+        Piece newPiece;
+        Position position = new Position(x, y);
+        for (Piece[] pieces : board.getBoard()){
+            for (Piece piece : pieces){
+                child.getBoard()[x][y] = getPiece(piece.getChar(), x, y);
+                x++;
+                position = new Position(x, y);
+            }
+            y++;
+            position = new Position(x, y);
+        }
+        child.getPieceAt(move.getBeginning()).move(child, move);
+        return child;
     }
 }
