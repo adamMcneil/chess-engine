@@ -14,32 +14,53 @@ public class Knight extends Piece {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265E;
+            letter = 'N';
         }
         if (c == Color.b) {
             piece = (char) 0x2658;
+            letter = 'n';
         }
     }
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        int j;
-        for (int i = -2; i < 3; i++) {
-            if (Math.abs(i) == 2)
-                j = 1;
-            else
-                j = 2;
-            if (i != 0) {
-                Position end = new Position(position.getX() + i, position.getY() + j);
-                if (end.isOnBoard() && board.getPieceAt(end).getColor() != color) {
-                        Move move = new Move(position, end);
-                        moves.add(move);
-                }
+        int[][] baseMoves = {
+                {2, 1},
+                {2, -1},
+                {1, 2},
+                {1, -2},
+                {-1, 2},
+                {-1, -2},
+                {-2, 1},
+                {-2, -1},
+        };
+        for (int[] arr : baseMoves) {
+            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
+            Move move = new Move(position, checkPosition);
+            if (move.isMoveLegal(board, color)) {
+                moves.add(move);
+            }
+        }
+        return moves;
+    }
 
-                end = new Position(position.getX() + i, position.getY() - j);
-                if (end.isOnBoard() && board.getPieceAt(end).getColor() != color) {
-                    Move move = new Move(position, end);
-                    moves.add(move);
-                }
+    public ArrayList<Move> getMovesNotCheck(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int[][] baseMoves = {
+                {2, 1},
+                {2, -1},
+                {1, 2},
+                {1, -2},
+                {-1, 2},
+                {-1, -2},
+                {-2, 1},
+                {-2, -1},
+        };
+        for (int[] arr : baseMoves) {
+            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
+            Move move = new Move(position, checkPosition);
+            if (move.isMoveLegalNotCheck(board, color)) {
+                moves.add(move);
             }
         }
         return moves;

@@ -34,9 +34,9 @@ public class Board {
     public boolean isColorInCheck(Color color) {
         for (Piece[] pieces : board) {
             for (Piece p : pieces) {
-                if (p.getColor().getOppositeColor() == color) {
-                    for (Move m : p.getMoves(this)) {
-                        if (board[m.getEnd().getX()][m.getEnd().getY()].isKing())
+                if (p.getOppositeColor() == color) {
+                    for (Move m : p.getMovesNotCheck(this)) {
+                        if (this.getPieceAt(m.getEnd()).isKing())
                             return true;
                     }
                 }
@@ -56,7 +56,7 @@ public class Board {
                 {new Empty(new Position(0, 2)), new Empty(new Position(1, 2)), new Empty(new Position(2, 2)), new Empty(new Position(3, 2)), new Empty(new Position(4, 2)), new Empty(new Position(5, 2)), new Empty(new Position(6, 2)), new Empty(new Position(7, 2))},
                 {new Empty(new Position(0, 3)), new Empty(new Position(1, 3)), new Empty(new Position(2, 3)), new Empty(new Position(3, 3)), new Empty(new Position(4, 3)), new Empty(new Position(5, 3)), new Empty(new Position(6, 3)), new Empty(new Position(7, 3))},
                 {new Empty(new Position(0, 4)), new Empty(new Position(1, 4)), new Empty(new Position(2, 4)), new Empty(new Position(3, 4)), new Empty(new Position(4, 4)), new Empty(new Position(5, 4)), new Empty(new Position(6, 4)), new Empty(new Position(7, 4))},
-                {new Rook(Color.w, new Position(0, 5)), new Empty(new Position(1, 5)), new Empty(new Position(2, 5)), new Empty(new Position(3, 5)), new Empty(new Position(4, 5)), new Empty(new Position(5, 5)), new Empty(new Position(6, 5)), new Empty(new Position(7, 5))},
+                {new Empty(new Position(0, 5)), new Empty(new Position(1, 5)), new Empty(new Position(2, 5)), new Empty(new Position(3, 5)), new Empty(new Position(4, 5)), new Empty(new Position(5, 5)), new Empty(new Position(6, 5)), new Empty(new Position(7, 5))},
                 {new Pawn(Color.w, new Position(0, 6)), new Pawn(Color.w, new Position(1, 6)), new Pawn(Color.w, new Position(2, 6)), new Pawn(Color.w, new Position(3, 6)), new Pawn(Color.w, new Position(4, 6)), new Pawn(Color.w, new Position(5, 6)), new Pawn(Color.w, new Position(6, 6)), new Pawn(Color.w, new Position(7, 6))},
                 {new Rook(Color.w, new Position(0, 7)), new Knight(Color.w, new Position(1, 7)), new Bishop(Color.w, new Position(2, 7)), new Queen(Color.w, new Position(3, 7)), new King(Color.w, new Position(4, 7)), new Bishop(Color.w, new Position(5, 7)), new Knight(Color.w, new Position(6, 7)), new Rook(Color.w, new Position(7, 7))},
         };
@@ -67,16 +67,16 @@ public class Board {
         int y = 0;
         String[] splitFen = fenBoard.split(" ");
         fenBoard = splitFen[0];
-        System.out.println(fenBoard);
+//        System.out.println(fenBoard);
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
                 board[y][x] = getPiece(fenBoard.charAt(i), x, y);
                 x++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
-                System.out.println("Number: " + fenBoard.charAt(i));
+//                System.out.println("Number: " + fenBoard.charAt(i));
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
-                    System.out.println("   " + j);
-                    System.out.println(j + " " + fenBoard.charAt(i));
+//                    System.out.println("   " + j);
+//                    System.out.println(j + " " + fenBoard.charAt(i));
                     board[y][x] = new Empty(new Position(x, y));
                     x++;
                 }
@@ -137,12 +137,13 @@ public class Board {
         int x = 0, y = 0;
         Piece newPiece;
         Position position = new Position(x, y);
-        for (Piece[] pieces : board.getBoard()){
-            for (Piece piece : pieces){
+        for (Piece[] pieces : board.getBoard()) {
+            for (Piece piece : pieces) {
                 child.getBoard()[x][y] = getPiece(piece.getChar(), x, y);
                 x++;
                 position = new Position(x, y);
             }
+            x = 0;
             y++;
             position = new Position(x, y);
         }

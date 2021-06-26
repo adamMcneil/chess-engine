@@ -22,6 +22,6 @@ public class Position {
     }
 
     public String toString() {
-        return "x: " + getX() + ", y: " + getY();
+        return "(" + getX() + ", " + getY() + ")";
     }
 }

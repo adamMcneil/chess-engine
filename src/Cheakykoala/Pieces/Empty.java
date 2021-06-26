@@ -13,6 +13,7 @@ public class Empty extends Piece {
         this.position = position;
         this.color = color.g;
         this.piece = ' ';
+        this.letter = ' ';
     }
 
     @Override
@@ -21,6 +22,9 @@ public class Empty extends Piece {
     }
 
     public ArrayList<Move> getMoves(Board board) {
+        return new ArrayList();
+    }
+    public ArrayList<Move> getMovesNotCheck(Board board) {
         return null;
     }
 }

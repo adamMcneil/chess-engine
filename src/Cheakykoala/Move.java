@@ -12,9 +12,8 @@ public class Move {
     }
 
 
-
-    public void printMove() {
-        System.out.println(beginning + "        " + end.toString());
+    public String toString() {
+        return beginning + " --> " + end.toString();
     }
 
     public boolean isMoveCheck(Board board) {
@@ -24,17 +23,34 @@ public class Move {
     }
 
     public boolean isMoveLegal(Board board, Color color) {
-        if (end.isOnBoard()) {
-            Piece moved = board.getPieceAt(beginning);
-            Piece taken = board.getPieceAt(end);
-            moved.move(board, this);
-            if (!board.isColorInCheck(color) && taken.getColor() != color) {
-               moved.undoMove(board, this, taken);
-                return true;
-            }
-           moved.undoMove(board, this, taken);
+//        System.out.println(this);
+        if (!end.isOnBoard()) {
+            return false;
         }
-        return false;
+        Piece moved = board.getPieceAt(beginning);
+        Piece taken = board.getPieceAt(end);
+        if (moved.isSameColor(taken)) {
+            return false;
+        }
+        moved.move(board, this);
+        if (board.isColorInCheck(color)) {
+            moved.undoMove(board, this, taken);
+            return false;
+        }
+        moved.undoMove(board, this, taken);
+        return true;
+    }
+
+    public boolean isMoveLegalNotCheck(Board board, Color color) {
+        if (!end.isOnBoard()) {
+            return false;
+        }
+        Piece moved = board.getPieceAt(beginning);
+        Piece taken = board.getPieceAt(end);
+        if (moved.isSameColor(taken)) {
+            return false;
+        }
+        return true;
     }
 
     public Position getBeginning() {

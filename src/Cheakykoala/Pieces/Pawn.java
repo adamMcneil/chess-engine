@@ -9,67 +9,84 @@ import java.util.ArrayList;
 
 public class Pawn extends Piece {
 
-
-    Position ogPosition;
-
     public Pawn(Color c, Position position) {
-        ogPosition = position;
         this.position = position;
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265F;
+            letter = 'W';
         } else {
             piece = (char) 0x2659;
+            letter = 'p';
         }
     }
 
     public boolean hasMoved() {
-        if (position != ogPosition) {
-            return true;
-        }
-        return false;
+        return !((position.getY() == 1 && color == Color.b) || (position.getY() == 6 && color == Color.w));
     }
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         Position checkPosition;
-        if (color == Color.b) {
-            checkPosition = new Position(position.getX(), position.getY() + 1);
-        } else {
-            checkPosition = new Position(position.getX(), position.getY() - 1);
-        }
-        if (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
-            Move move = new Move(position, checkPosition);
+        int direction;
+        if (color == Color.w)
+            direction = -1;
+        else
+            direction = 1;
+
+        checkPosition = new Position(position.getX(), position.getY() + direction);
+        Move move = new Move(position, checkPosition);
+        if (move.isMoveLegal(board, color)) {
             moves.add(move);
         }
-        if (color == Color.b) {
-            checkPosition = new Position(position.getX() + 1, position.getY() + 1);
-        } else {
-            checkPosition = new Position(position.getX() + 1, position.getY()-1);
+        Position right = new Position(position.getX() + 1, position.getY() + direction);
+        Position left = new Position(position.getX() - 1, position.getY() + direction);
+        Move moveLeft = new Move(position, left);
+        Move moveRight = new Move(position, right);
+        if (moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) {
+            moves.add(moveLeft);
         }
-        if (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color && board.getPieceAt(checkPosition).getColor() != color.g) {
-            Move move = new Move(position, checkPosition);
-            moves.add(move);
-        }
-        if (color == Color.b) {
-            checkPosition = new Position(position.getX() - 1, position.getY() + 1);
-        } else {
-            checkPosition = new Position(position.getX() - 1, position.getY()-1);
-        }
-        if (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color && board.getPieceAt(checkPosition).getColor() != color.g) {
-            Move move = new Move(position, checkPosition);
-            moves.add(move);
+        if (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) {
+            moves.add(moveRight);
         }
         if (!hasMoved()) {
-            if (color == Color.b) {
-                checkPosition = new Position(position.getX(), position.getY() + 2);
-            } else {
-                checkPosition = new Position(position.getX(), position.getY() - 2);
-            }
-            if (checkPosition.isOnBoard() && board.getPieceAt(checkPosition).getColor() != color) {
-                Move move = new Move(position, checkPosition);
+            checkPosition = new Position(position.getX(), position.getY() + direction * 2);
+            move = new Move(position, checkPosition);
+            if (move.isMoveLegal(board, color))
                 moves.add(move);
-            }
+        }
+        return moves;
+    }
+
+    public ArrayList<Move> getMovesNotCheck(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        Position checkPosition;
+        int direction;
+        if (color == Color.w)
+            direction = -1;
+        else
+            direction = 1;
+
+        checkPosition = new Position(position.getX(), position.getY() + direction);
+        Move move = new Move(position, checkPosition);
+        if (move.isMoveLegalNotCheck(board, color)) {
+            moves.add(move);
+        }
+        Position right = new Position(position.getX() + 1, position.getY() + direction);
+        Position left = new Position(position.getX() - 1, position.getY() + direction);
+        Move moveLeft = new Move(position, left);
+        Move moveRight = new Move(position, right);
+        if (moveLeft.isMoveLegalNotCheck(board, color) && this.isOppositeColor(board.getPieceAt(left))) {
+            moves.add(moveLeft);
+        }
+        if (moveRight.isMoveLegalNotCheck(board, color) && this.isOppositeColor(board.getPieceAt(right))) {
+            moves.add(moveRight);
+        }
+        if (!hasMoved()) {
+            checkPosition = new Position(position.getX(), position.getY() + direction * 2);
+            move = new Move(position, checkPosition);
+            if (move.isMoveLegalNotCheck(board, color))
+                moves.add(move);
         }
         return moves;
     }
