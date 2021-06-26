@@ -19,81 +19,30 @@ public class Queen extends Piece {
         }
     }
 
-    public ArrayList<Move> getMoves(Board board) {
-        ArrayList<Move> moves = new ArrayList<>();
-        Position checkPosition = new Position(position.getX() + 1, position.getY() + 1);
-        Move move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() + 1);
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX() - 1, position.getY() + 1);
-        move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() + 1);
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX() + 1, position.getY() - 1);
-        move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() - 1);
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX() - 1, position.getY() - 1);
-        move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() - 1);
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX() + 1, position.getY());
-        move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() + 1, position.getY());
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX() - 1, position.getY());
-        move = new Move(position, checkPosition);
-        while (move.isMoveLegal(board, color)) {
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(checkPosition.getX() - 1, position.getY());
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX(), position.getY() + 1);
-        while (move.isMoveLegal(board, color)) {
-            move = new Move(position, checkPosition);
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(position.getX(), checkPosition.getY() + 1);
-            move = new Move(position, checkPosition);
-        }
-        checkPosition = new Position(position.getX(), position.getY() - 1);
-        while (move.isMoveLegal(board, color)) {
-            move = new Move(position, checkPosition);
-            moves.add(move);
-            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                break; //I am not sure if this break works
-            checkPosition = new Position(position.getX(), checkPosition.getY() - 1);
-            move = new Move(position, checkPosition);
-        }
-        return moves;
-
+    public ArrayList<Move> getMoves(Board board){
+    ArrayList<Move> moves = new ArrayList<>();
+    int[][] baseMoves = {
+            {1, 1},
+            {1, 0},
+            {1, -1},
+            {0, -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0, 1},
+    };
+        for (int[] arr : baseMoves) {
+            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
+            Move move = new Move(position, checkPosition);
+            while (move.isMoveLegal(board, color)) {
+                move = new Move(position, checkPosition);
+                moves.add(move);
+                if (board.getPieceAt(checkPosition).getColor() != Color.g)
+                    break;
+                checkPosition = new Position(checkPosition.getX() + arr[0], checkPosition.getY() + arr[1]);
+                move = new Move(position, checkPosition);
+            }
     }
+        return moves;
+}
 }

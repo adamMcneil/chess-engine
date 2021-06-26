@@ -19,50 +19,6 @@ public class Bishop extends Piece {
         }
     }
 
-//    public ArrayList<Move> getMoves(Board board) {
-//        ArrayList<Move> moves = new ArrayList<>();
-//        Position checkPosition = new Position(position.getX() + 1, position.getY() + 1);
-//        Move move = new Move(position, checkPosition);
-//        while (move.isMoveLegal(board, color)) {
-//            moves.add(move);
-//            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-//                break;
-//            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() + 1);
-//            move = new Move(position, checkPosition);
-//        }
-//
-//        checkPosition = new Position(position.getX() - 1, position.getY() + 1);
-//        move = new Move(position, checkPosition);
-//        while (move.isMoveLegal(board, color)) {
-//            moves.add(move);
-//            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-//                break;
-//            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() + 1);
-//            move = new Move(position, checkPosition);
-//        }
-//
-//        checkPosition = new Position(position.getX() + 1, position.getY() - 1);
-//        move = new Move(position, checkPosition);
-//        while (move.isMoveLegal(board, color)) {
-//            moves.add(move);
-//            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-//                break;
-//            checkPosition = new Position(checkPosition.getX() + 1, checkPosition.getY() - 1);
-//            move = new Move(position, checkPosition);
-//        }
-//
-//        checkPosition = new Position(position.getX() - 1, position.getY() - 1);
-//        move = new Move(position, checkPosition);
-//        while (move.isMoveLegal(board, color)) {
-//            moves.add(move);
-//            if (board.getPieceAt(checkPosition).getColor() != Color.g)
-//                break;
-//            checkPosition = new Position(checkPosition.getX() - 1, checkPosition.getY() - 1);
-//            move = new Move(position, checkPosition);
-//        }
-//        return moves;
-//    }
-
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[][] baseMoves = {
