@@ -1,6 +1,6 @@
 package Cheakykoala;
 
-import Cheakykoala.Pieces.Piece;
+import Cheakykoala.Pieces.*;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
         board.printBoard();
-        comparePlay(board, 300);
+        comparePlay(board, 20);
 //        Position position = new Position(3, 6);
 //        ArrayList<Move> moves = board.getPieceAt(position).getMoves(board);
 //        for (Move move : moves) {
@@ -20,11 +20,9 @@ public class Main {
         for (int i = 0; i < depth; i++) {
             board.printBoard();
             System.out.println();
-            Thread.sleep(1000);
             playMinimax(board);
             board.printBoard();
             System.out.println();
-            Thread.sleep(1000);
             playRandom(board, Color.b);
         }
     }
@@ -60,8 +58,6 @@ public class Main {
         System.out.println("white moves: " + whiteMoves.size());
         board.getPieceAt(whiteMoves.get(x).getBeginning()).move(board, whiteMoves.get(x));
         board.printBoard();
-        Thread.sleep(1000);
-
         for (Piece[] pieces : board.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == Color.b) {
@@ -83,6 +79,7 @@ public class Main {
 
     public static void playMinimax(Board board) {
         double bestMoveValue = Double.NEGATIVE_INFINITY;
+        ArrayList<Move> bestMoves = new ArrayList<>();
         Move bestMove = new Move(new Position(0, 0), new Position(0, 0));
         Board child;
         for (Piece[] pieces : board.getBoard()) {
@@ -91,14 +88,19 @@ public class Main {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
                         double mx = minimax(child, 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
-                        if (bestMoveValue < mx) {
+                        if (bestMoveValue == mx){
+                            bestMoves.add(m);
+                        }
+                        if (mx > bestMoveValue) {
                             bestMoveValue = mx;
-                            bestMove = m;
+                            bestMoves.clear();
+                            bestMoves.add(m);
                         }
                     }
                 }
             }
         }
+        bestMove = bestMoves.get((int)(Math.random() * bestMoves.size()));
         board.getPieceAt(bestMove.getBeginning()).move(board, bestMove);
     }
 
@@ -107,13 +109,32 @@ public class Main {
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
                 if (piece.getColor() == Color.w) {
-                    eval++;
+                    eval = eval + getPieceEval(piece);
                 } else {
-                    eval--;
+                    eval = eval - getPieceEval(piece);
                 }
             }
         }
         return eval;
+    }
+
+    public static int getPieceEval(Piece piece) {
+        char letter = piece.getChar();
+        switch (letter) {
+            case 'R':
+                return 5;
+            case 'N':
+                return 3;
+            case 'B':
+                return 3;
+            case 'Q':
+                return 9;
+            case 'K':
+                return 999;
+            case 'P':
+                return 1;
+        }
+            return 1;
     }
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
