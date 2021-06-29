@@ -3,17 +3,29 @@ package Cheakykoala;
 import Cheakykoala.Pieces.*;
 
 public class Board {
-    private static Position inPassingSquare = new Position(7,7);
+
+    private static Position inPassingSquare = new Position(8,8);
     private static boolean canEnpassant;
     Piece[][] board = new Piece[8][8];
+    int whiteCastleMoveState = 0;
+    int blackCastleMoveState = 0;
 
     public Board() {
         makeBoard();
     }
 
+    public int getWhiteCastleMoveState(){
+        return whiteCastleMoveState;
+    }
+
+    public int getBlackCastleMoveState(){
+        return blackCastleMoveState;
+    }
+
     public static int getInPassingSquareX() {
         return inPassingSquare.getX();
     }
+
     public static int getInPassingSquareY() {
         return inPassingSquare.getY();
     }

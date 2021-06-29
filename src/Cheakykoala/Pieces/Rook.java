@@ -67,5 +67,15 @@ public class Rook extends Piece {
         }
         return moves;
     }
+
+    @Override
+    protected boolean getHasMoved() {
+        return false;
+    }
+
+    @Override
+    protected void setHasMoved() {
+
+    }
 }
 

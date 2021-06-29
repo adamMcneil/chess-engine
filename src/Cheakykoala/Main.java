@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.importBoard("7k/8/8/8/p7/8/1P6/7K w - - 0 1");
+        board.importBoard("rnbqkbnr/pppppppp/8/8/8/1NBQ4/PPPPPPPP/R3KBNR w KQkq - 0 1");
         board.printBoard();
-        board.getPieceAt(new Position (1,6)).move(board, new Move(new Position (1,6), new Position (1,4)));
-        System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) + " "  + Board.getCanEnpassant());
-        for (Move move : board.getPieceAt(new Position (0,4)).getMoves(board)){
+//        board.getPieceAt(new Position (1,6)).move(board, new Move(new Position (1,6), new Position (1,4)));
+//        System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) + " "  + Board.getCanEnpassant());
+        for (Move move : board.getPieceAt(new Position (7,4)).getMoves(board)){
             System.out.println(move);
         }
         board.printBoard();

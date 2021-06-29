@@ -21,6 +21,16 @@ public class Empty extends Piece {
         return true;
     }
 
+    @Override
+    protected boolean getHasMoved() {
+        return false;
+    }
+
+    @Override
+    protected void setHasMoved() {
+
+    }
+
     public ArrayList<Move> getMoves(Board board) {
         return new ArrayList();
     }

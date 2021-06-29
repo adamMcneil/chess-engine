@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
+    boolean hasMoved = false;
+
     public King(Color c, Position position) {
         this.position = position;
         this.color = c;
@@ -21,24 +23,32 @@ public class King extends Piece {
         }
     }
 
-    public boolean isinCheck(Board board){
-        for (Piece[] pieces : board.getBoard()){
-            for (Piece piece : pieces){
-                for ( Move move : piece.getMoves(board)){
-                    if (isOtherColor(piece)){
-                        if (move.getEnd() == this.position){
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
+//    public boolean isinCheck(Board board){
+//        for (Piece[] pieces : board.getBoard()){
+//            for (Piece piece : pieces){
+//                for ( Move move : piece.getMoves(board)){
+//                    if (isOtherColor(piece)){
+//                        if (move.getEnd() == this.position){
+//                            return true;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean isKing() {
         return true;
+    }
+    @Override
+    public void setHasMoved() {
+       hasMoved = true;
+    }
+    @Override
+    public boolean getHasMoved(){
+        return hasMoved;
     }
 
     public char returnPiece(){
@@ -64,7 +74,38 @@ public class King extends Piece {
                 moves.add(move);
             }
         }
+        moves.addAll(castleMoves(board));
+        for (Move move : moves){
+            System.out.println(move);
+        }
         return moves;
+    }
+
+    public ArrayList<Move> castleMoves(Board board){
+        ArrayList<Move> castleMoves = new ArrayList<>();
+        int moveState;
+        if (board.getPieceAt(this.position).getColor() == Color.w){
+            moveState = board.getWhiteCastleMoveState();
+        } else {
+            moveState = board.getBlackCastleMoveState();
+        }
+        if (this.color == Color.w){
+            if ((moveState == 0 || moveState == 1) && (board.getPieceAt(new Position(3, 7)).getColor() == Color.g && board.getPieceAt(new Position(2, 7)).getColor() == Color.g && board.getPieceAt(new Position(1, 7)).getColor() == Color.g)){
+                castleMoves.add (new Move(this.position, new Position (2, 7)));
+            }
+            if (moveState == 2 && (board.getPieceAt(new Position(5, 7)).getColor() == Color.g && board.getPieceAt(new Position(6, 7)).getColor() == Color.g)){
+                castleMoves.add (new Move(this.position, new Position (6, 7)));
+            }
+        }
+        else {
+            if (moveState == 0 || moveState == 1 && (board.getPieceAt(new Position(3, 0)).getColor() == Color.g && board.getPieceAt(new Position(2, 0)).getColor() == Color.g && board.getPieceAt(new Position(1, 0)).getColor() == Color.g)){
+                castleMoves.add (new Move(this.position, new Position (2, 0)));
+            }
+            if (moveState == 2 && (board.getPieceAt(new Position(5, 0)).getColor() == Color.g && board.getPieceAt(new Position(6, 0)).getColor() == Color.g)){
+                castleMoves.add (new Move(this.position, new Position (6, 0)));
+            }
+        }
+        return castleMoves;
     }
 
     public ArrayList<Move> getMovesNotCheck(Board board) {

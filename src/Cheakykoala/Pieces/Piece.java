@@ -106,8 +106,16 @@ public abstract class Piece {
             board.setCanEnpassant(true);
             return;
         }
+        if (board.getPieceAt(this.position).isKing()){
+            if (!board.getPieceAt(this.position).getHasMoved())
+                this.setHasMoved();
+        }
         board.setCanEnpassant(false);
     }
+
+    protected abstract boolean getHasMoved();
+
+    protected abstract void setHasMoved();
 
     public void moveOffical(Board board, Move move) {
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
