@@ -7,8 +7,22 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
+        System.out.println (evalBoard(board));
+        board.importBoard("2k5/8/8/8/3p4/8/2P5/2K5 w - - 0 1");
+//        Position beginning = new Position (2,6);
+//        Position end = new Position (3,4);
+//        Move move = new Move(new Position (2,6), new Position (3,4));
+        board.getPieceAt(new Position (2,6)).move(board, new Move(new Position (2,6), new Position (2,4)));
+        System.out.println( board.getInPassingSquare());
+        System.out.println(  board.getCanEnpassant());
+//        board.getPieceAt(new Position (2,7)).move(board, new Move(new Position (2,7), new Position (3,7)));
+//        System.out.println( board.getInPassingSquare());
+//        System.out.println(  board.getCanEnpassant());
+        for (Move move : board.getPieceAt(new Position (3,4)).getMoves(board)){
+            System.out.println(move);
+        }
         board.printBoard();
-        comparePlay(board, 20);
+//        comparePlay(board, 5);
 //        Position position = new Position(3, 6);
 //        ArrayList<Move> moves = board.getPieceAt(position).getMoves(board);
 //        for (Move move : moves) {
@@ -82,12 +96,15 @@ public class Main {
         ArrayList<Move> bestMoves = new ArrayList<>();
         Move bestMove = new Move(new Position(0, 0), new Position(0, 0));
         Board child;
+        ArrayList<Double> evals = new ArrayList<>();
         for (Piece[] pieces : board.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
+                        //child.printBoard();
                         double mx = minimax(child, 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
+                        evals.add(mx);
                         if (bestMoveValue == mx){
                             bestMoves.add(m);
                         }
@@ -104,37 +121,35 @@ public class Main {
         board.getPieceAt(bestMove.getBeginning()).move(board, bestMove);
     }
 
-    public static int evalBoard(Board board) {
+    public static double evalBoard(Board board) {
         int eval = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
                 if (piece.getColor() == Color.w) {
-                    eval = eval + getPieceEval(piece);
+                    eval += getPieceEval(piece);
                 } else {
-                    eval = eval - getPieceEval(piece);
+                    eval -= getPieceEval(piece);
                 }
             }
         }
         return eval;
     }
 
-    public static int getPieceEval(Piece piece) {
-        char letter = piece.getChar();
+    public static double getPieceEval(Piece piece) {
+        char letter = piece.getLetter();
+        letter = Character.toUpperCase(letter);
         switch (letter) {
             case 'R':
                 return 5;
             case 'N':
-                return 3;
             case 'B':
                 return 3;
             case 'Q':
                 return 9;
-            case 'K':
-                return 999;
             case 'P':
                 return 1;
         }
-            return 1;
+            return 0;
     }
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
@@ -149,7 +164,9 @@ public class Main {
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
                     for (Move move : piece.getMoves(board)) {
+                        //System.out.println("here");
                         eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
+                        //System.out.println(depth);
                         maxEval = Math.max(alpha, eval);
                         alpha = Math.max(alpha, eval);
                         if (beta <= alpha) {
@@ -164,7 +181,9 @@ public class Main {
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
                     for (Move move : piece.getMoves(board)) {
+                        //System.out.println("here");
                         eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, true);
+                        //System.out.println(depth);
                         minEval = Math.min(minEval, eval);
                         beta = Math.max(beta, eval);
                         if (beta <= alpha) {

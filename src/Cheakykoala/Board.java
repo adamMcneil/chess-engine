@@ -3,11 +3,20 @@ package Cheakykoala;
 import Cheakykoala.Pieces.*;
 
 public class Board {
+    private static Position inPassingSquare = new Position(7,7);
+    private static boolean canEnpassant;
     Piece[][] board = new Piece[8][8];
-    Piece[][] child = new Piece[8][8];
 
     public Board() {
         makeBoard();
+    }
+
+    public static Position getInPassingSquare() {
+        return inPassingSquare;
+    }
+
+    public static boolean getCanEnpassant() {
+        return canEnpassant;
     }
 
     public Piece[][] getBoard() {
@@ -128,15 +137,21 @@ public class Board {
         return piece;
     }
 
+    public void setInPassingSquare(Position x) {
+        this.inPassingSquare.setX(x.getX());
+        this.inPassingSquare.setY(x.getY());
+    }
+
+
     public Board getChild(Board board, Move move) {
         Board child = new Board();
-        child.importBoard("8/8/8/8/8/8/8/8 w - - 0 1");
         int x = 0, y = 0;
         Piece newPiece;
         Position position = new Position(x, y);
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
-                child.getBoard()[x][y] = getPiece(piece.getChar(), x, y);
+                Piece pieceCopy = getPiece(piece.getLetter(), x, y);
+                child.getBoard()[y][x] = pieceCopy;
                 x++;
                 position = new Position(x, y);
             }
@@ -147,4 +162,9 @@ public class Board {
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }
+
+    public void setCanEnpassant(Boolean logic) {
+        this.canEnpassant = logic;
+    }
+
 }

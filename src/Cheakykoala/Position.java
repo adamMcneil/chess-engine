@@ -15,6 +15,14 @@ public class Position {
         return position[1];
     }
 
+    public void setX(int x){
+        position [0] = x;
+    }
+
+    public void setY(int y){
+        position [1] = y;
+    }
+
     public boolean isOnBoard() {
         if (position[0] < 8 && position[0] > -1 && position[1] < 8 && position[1] > -1)
             return true;

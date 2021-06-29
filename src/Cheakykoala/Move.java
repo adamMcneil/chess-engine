@@ -11,7 +11,6 @@ public class Move {
         this.end = end;
     }
 
-
     public String toString() {
         return beginning + " --> " + end.toString();
     }
@@ -32,12 +31,10 @@ public class Move {
         if (moved.isSameColor(taken)) {
             return false;
         }
-        moved.move(board, this);
-        if (board.isColorInCheck(color)) {
-            moved.undoMove(board, this, taken);
+        Board checkBoard = board.getChild(board, this);
+        if (checkBoard.isColorInCheck(color)) {
             return false;
         }
-        moved.undoMove(board, this, taken);
         return true;
     }
 
