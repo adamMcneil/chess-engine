@@ -9,25 +9,13 @@ public class Main {
         Board board = new Board();
         System.out.println (evalBoard(board));
         board.importBoard("2k5/1p6/8/2P5/8/8/8/1RK5 w - - 0 1");
-//        Position beginning = new Position (2,6);
-//        Position end = new Position (3,4);
-//        Move move = new Move(new Position (2,6), new Position (3,4));
         board.getPieceAt(new Position (1,1)).move(board, new Move(new Position (1,1), new Position (1,3)));
         System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())));
         System.out.println(  board.getCanEnpassant());
-//        board.getPieceAt(new Position (2,7)).move(board, new Move(new Position (2,7), new Position (3,7)));
-//        System.out.println( new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()));
-//        System.out.println(  board.getCanEnpassant());
         for (Move move : board.getPieceAt(new Position (2,3)).getMoves(board)){
             System.out.println(move);
         }
         board.printBoard();
-//        comparePlay(board, 5);
-//        Position position = new Position(3, 6);
-//        ArrayList<Move> moves = board.getPieceAt(position).getMoves(board);
-//        for (Move move : moves) {
-//            System.out.println(move);
-//        }
     }
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {
@@ -81,9 +69,6 @@ public class Main {
                 }
             }
         }
-//        for (x = 0; x < blackMoves.size() - 1; x++) {
-//            System.out.println(blackMoves.get(x));
-//        }
         System.out.println("black moves: " + blackMoves.size());
         int y = (int) (Math.random() * blackMoves.size());
         board.getPieceAt(blackMoves.get(y).getBeginning()).move(board, blackMoves.get(y));
@@ -102,7 +87,6 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        //child.printBoard();
                         double mx = minimax(child, 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
                         evals.add(mx);
                         if (bestMoveValue == mx){

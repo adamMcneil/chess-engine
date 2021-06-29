@@ -76,16 +76,12 @@ public class Board {
         int y = 0;
         String[] splitFen = fenBoard.split(" ");
         fenBoard = splitFen[0];
-//        System.out.println(fenBoard);
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
                 board[y][x] = getPiece(fenBoard.charAt(i), x, y);
                 x++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
-//                System.out.println("Number: " + fenBoard.charAt(i));
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
-//                    System.out.println("   " + j);
-//                    System.out.println(j + " " + fenBoard.charAt(i));
                     board[y][x] = new Empty(new Position(x, y));
                     x++;
                 }
