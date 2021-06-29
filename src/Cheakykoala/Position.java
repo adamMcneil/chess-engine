@@ -22,6 +22,9 @@ public class Position {
     public void setY(int y){
         position [1] = y;
     }
+    public boolean comparePositions(Position x) {
+        return (x.getX() == this.getX() && x.getY() == this.getY());
+    }
 
     public boolean isOnBoard() {
         if (position[0] < 8 && position[0] > -1 && position[1] < 8 && position[1] > -1)

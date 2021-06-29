@@ -8,17 +8,17 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
         System.out.println (evalBoard(board));
-        board.importBoard("2k5/8/8/8/3p4/8/2P5/2K5 w - - 0 1");
+        board.importBoard("2k5/1p6/8/2P5/8/8/8/1RK5 w - - 0 1");
 //        Position beginning = new Position (2,6);
 //        Position end = new Position (3,4);
 //        Move move = new Move(new Position (2,6), new Position (3,4));
-        board.getPieceAt(new Position (2,6)).move(board, new Move(new Position (2,6), new Position (2,4)));
-        System.out.println( board.getInPassingSquare());
+        board.getPieceAt(new Position (1,1)).move(board, new Move(new Position (1,1), new Position (1,3)));
+        System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())));
         System.out.println(  board.getCanEnpassant());
 //        board.getPieceAt(new Position (2,7)).move(board, new Move(new Position (2,7), new Position (3,7)));
-//        System.out.println( board.getInPassingSquare());
+//        System.out.println( new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()));
 //        System.out.println(  board.getCanEnpassant());
-        for (Move move : board.getPieceAt(new Position (3,4)).getMoves(board)){
+        for (Move move : board.getPieceAt(new Position (2,3)).getMoves(board)){
             System.out.println(move);
         }
         board.printBoard();

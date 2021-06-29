@@ -11,8 +11,11 @@ public class Board {
         makeBoard();
     }
 
-    public static Position getInPassingSquare() {
-        return inPassingSquare;
+    public static int getInPassingSquareX() {
+        return inPassingSquare.getY();
+    }
+    public static int getInPassingSquareY() {
+        return inPassingSquare.getX();
     }
 
     public static boolean getCanEnpassant() {
@@ -138,10 +141,9 @@ public class Board {
     }
 
     public void setInPassingSquare(Position x) {
-        this.inPassingSquare.setX(x.getX());
         this.inPassingSquare.setY(x.getY());
+        this.inPassingSquare.setX(x.getX());
     }
-
 
     public Board getChild(Board board, Move move) {
         Board child = new Board();
@@ -159,7 +161,7 @@ public class Board {
             y++;
             position = new Position(x, y);
         }
-        child.getPieceAt(move.getBeginning()).move(child, move);
+        child.getPieceAt(move.getBeginning()).moveOffical(child, move);
         return child;
     }
 
