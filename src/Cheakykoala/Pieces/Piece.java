@@ -95,7 +95,7 @@ public abstract class Piece {
         board.addPiece(move.getEnd(), this);
         this.position = move.getEnd();
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
-        if (this.isPawn() && move.getEnd().getY() == 3 || move.getEnd().getY() == 4) {
+        if (this.isPawn() && (move.getEnd().getY() == 3 || move.getEnd().getY() == 4)) {
             if (move.getEnd().getY() == 3) {
                 Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() - 1);
                 board.setInPassingSquare(placeHolder);
@@ -119,10 +119,8 @@ public abstract class Piece {
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
         if (move.getEnd().getY() == 3) {
             Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() - 1);
-            board.setInPassingSquare(placeHolder);
         } else {
             Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
-            board.setInPassingSquare(placeHolder);
         }
         return;
     }

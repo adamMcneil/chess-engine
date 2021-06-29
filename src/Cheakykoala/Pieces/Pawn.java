@@ -49,10 +49,15 @@ public class Pawn extends Piece {
         Position left = new Position(position.getX() - 1, position.getY() + direction);
         Move moveLeft = new Move(position, left);
         Move moveRight = new Move(position, right);
-        if ((moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) || (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
+//         && this.isOppositeColor(board.getPieceAt(left)
+        boolean testMove = moveLeft.isMoveLegal(board, color) && Board.getCanEnpassant();
+        boolean testCan = Board.getCanEnpassant();
+        boolean comparePositionTest = left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()));
+        Position test = new Position(board.getInPassingSquareY(), board.getInPassingSquareX());
+        if (moveLeft.isMoveLegal(board, color) && Board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))) {
             moves.add(moveLeft);
         }
-        if ((moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
+        if (moveRight.isMoveLegal(board, color) && Board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))) {
             moves.add(moveRight);
         }
 
@@ -85,10 +90,10 @@ public class Pawn extends Piece {
         Position left = new Position(position.getX() - 1, position.getY() + direction);
         Move moveLeft = new Move(position, left);
         Move moveRight = new Move(position, right);
-        if ((moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) ||  (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
+        if ((moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) ||  (moveLeft.isMoveLegal(board, color) && Board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveLeft);
         }
-        if ((moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
+        if ((moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && Board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveRight);
         }
         if (!hasMoved()) {

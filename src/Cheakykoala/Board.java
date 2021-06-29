@@ -12,10 +12,10 @@ public class Board {
     }
 
     public static int getInPassingSquareX() {
-        return inPassingSquare.getY();
+        return inPassingSquare.getX();
     }
     public static int getInPassingSquareY() {
-        return inPassingSquare.getX();
+        return inPassingSquare.getY();
     }
 
     public static boolean getCanEnpassant() {
