@@ -15,12 +15,6 @@ public class Move {
         return beginning + " --> " + end.toString();
     }
 
-    public boolean isMoveCheck(Board board) {
-        if (board.getPieceAt(end).isKing())
-            return true;
-        return false;
-    }
-
     public boolean isMoveLegal(Board board, Color color) {
 //        System.out.println(this);
         if (!end.isOnBoard()) {

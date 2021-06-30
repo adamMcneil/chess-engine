@@ -9,8 +9,6 @@ import java.util.ArrayList;
 
 public class King extends Piece {
 
-    boolean hasMoved = false;
-
     public King(Color c, Position position) {
         this.position = position;
         this.color = c;
@@ -22,21 +20,6 @@ public class King extends Piece {
             letter = 'k';
         }
     }
-
-//    public boolean isinCheck(Board board){
-//        for (Piece[] pieces : board.getBoard()){
-//            for (Piece piece : pieces){
-//                for ( Move move : piece.getMoves(board)){
-//                    if (isOtherColor(piece)){
-//                        if (move.getEnd() == this.position){
-//                            return true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return false;
-//    }
 
     @Override
     public boolean isKing() {
@@ -84,12 +67,12 @@ public class King extends Piece {
     public ArrayList<Move> castleMoves(Board board){
         ArrayList<Move> castleMoves = new ArrayList<>();
         int moveState;
-        if (board.getPieceAt(this.position).getColor() == Color.w){
+        if (color == Color.w){
             moveState = board.getWhiteCastleMoveState();
         } else {
             moveState = board.getBlackCastleMoveState();
         }
-        if (this.color == Color.w){
+        if (color == Color.w){
             if ((moveState == 0 || moveState == 1) && (board.getPieceAt(new Position(3, 7)).getColor() == Color.g && board.getPieceAt(new Position(2, 7)).getColor() == Color.g && board.getPieceAt(new Position(1, 7)).getColor() == Color.g)){
                 castleMoves.add (new Move(this.position, new Position (2, 7)));
             }

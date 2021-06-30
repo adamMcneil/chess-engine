@@ -22,6 +22,11 @@ public class Rook extends Piece {
         }
     }
 
+    @Override
+    public boolean isRook() {
+        return true;
+    }
+
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[][] baseMoves = {

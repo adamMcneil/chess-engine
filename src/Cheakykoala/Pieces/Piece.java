@@ -13,10 +13,7 @@ public abstract class Piece {
     char piece;
     char letter;
     Color color;
-
-    Piece(Piece piece) {
-
-    }
+    boolean hasMoved;
 
     public Piece() {
 
@@ -51,6 +48,8 @@ public abstract class Piece {
 
     public abstract ArrayList<Move> getMovesNotCheck(Board board);
 
+    public boolean hasMoved(){return false;}
+
     public boolean isKing() {
         return false;
     }
@@ -60,6 +59,10 @@ public abstract class Piece {
     }
 
     public boolean isEmpty() {
+        return false;
+    }
+
+    public boolean isRook() {
         return false;
     }
 
@@ -87,6 +90,10 @@ public abstract class Piece {
         this.position = position;
     }
 
+    protected abstract boolean getHasMoved();
+
+    protected abstract void setHasMoved();
+
     public void move(Board board, Move move) {
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
             Position enPassantSquare = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
@@ -107,15 +114,13 @@ public abstract class Piece {
             return;
         }
         if (board.getPieceAt(this.position).isKing()){
-            if (!board.getPieceAt(this.position).getHasMoved())
                 this.setHasMoved();
+        }
+        if (board.getPieceAt(this.position).isRook()){
+            this.setHasMoved();
         }
         board.setCanEnpassant(false);
     }
-
-    protected abstract boolean getHasMoved();
-
-    protected abstract void setHasMoved();
 
     public void moveOffical(Board board, Move move) {
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {

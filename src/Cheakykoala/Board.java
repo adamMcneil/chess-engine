@@ -4,7 +4,7 @@ import Cheakykoala.Pieces.*;
 
 public class Board {
 
-    private static Position inPassingSquare = new Position(8,8);
+    private static Position inPassingSquare = new Position(8, 8);
     private static boolean canEnpassant;
     Piece[][] board = new Piece[8][8];
     int whiteCastleMoveState = 0;
@@ -14,11 +14,54 @@ public class Board {
         makeBoard();
     }
 
-    public int getWhiteCastleMoveState(){
+    public void setWhiteCastleMoveState() {
+        whiteCastleMoveState = 0;
+        if (!board[4][7].isKing()) {
+            whiteCastleMoveState = 3;
+            return;
+        } else if (board[4][7].getHasMoved()) {
+            whiteCastleMoveState = 3;
+            return;
+        }
+
+        if (!board[7][7].isRook()) {
+            whiteCastleMoveState++;
+        } else if (board[7][7].getHasMoved()) {
+            whiteCastleMoveState++;
+        } else {
+            Move moveleft1 = new Move(new Position(4, 7), new Position(5, 7));
+            Move moveleft2 = new Move(new Position(4, 7), new Position(6, 7));
+            if (!(moveleft1.isMoveLegal(this, Color.w) && moveleft2.isMoveLegal(this, Color.w))) {
+                whiteCastleMoveState++;
+            }
+        }
+
+
+        if (!board[0][7].isRook()) {
+            whiteCastleMoveState += 2;
+        } else if (board[0][7].getHasMoved()) {
+            whiteCastleMoveState += 2;
+        } else {
+            Move moveright1 = new Move(new Position(4, 7), new Position(3, 7));
+            Move moveright2 = new Move(new Position(4, 7), new Position(2, 7));
+            if ( !(moveright1.isMoveLegal(this, Color.w) && moveright2.isMoveLegal(this, Color.w) && board[1][7].isEmpty())) {
+                whiteCastleMoveState += 2;
+            }
+        }
+    }
+
+
+
+    public void setBlackCastleMoveState() {
+
+    }
+
+
+    public int getWhiteCastleMoveState() {
         return whiteCastleMoveState;
     }
 
-    public int getBlackCastleMoveState(){
+    public int getBlackCastleMoveState() {
         return blackCastleMoveState;
     }
 
