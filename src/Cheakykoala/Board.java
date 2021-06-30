@@ -136,7 +136,7 @@ public class Board {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j].isKing() && board[i][j].getColor() == color) {
                     Position checkPosition = null;
-                    Position home = new Position(i, j);
+                    Position home = new Position(j, i);
                     int[][] knightMoves = {
                             {2, 1},
                             {2, -1},
