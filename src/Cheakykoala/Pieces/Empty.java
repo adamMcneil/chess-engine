@@ -22,7 +22,7 @@ public class Empty extends Piece {
     }
 
     @Override
-    protected boolean getHasMoved() {
+    public boolean getHasMoved() {
         return false;
     }
 

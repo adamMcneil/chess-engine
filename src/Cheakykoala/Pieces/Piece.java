@@ -46,11 +46,23 @@ public abstract class Piece {
 
     public abstract ArrayList<Move> getMoves(Board board);
 
-    public abstract ArrayList<Move> getMovesNotCheck(Board board);
+
 
     public boolean hasMoved(){return false;}
 
     public boolean isKing() {
+        return false;
+    }
+
+    public boolean isQueen() {
+        return false;
+    }
+
+    public boolean isBishop() {
+        return false;
+    }
+
+    public boolean isKnight() {
         return false;
     }
 
@@ -78,21 +90,17 @@ public abstract class Piece {
         return position;
     }
 
-    public void newPiece(Color color, Position position) {
-        this.color = color;
-    }
-
-    public char getChar() {
-        return this.piece;
-    }
-
     public void setPosition(Position position) {
         this.position = position;
     }
 
-    protected abstract boolean getHasMoved();
+    public  boolean getHasMoved(){
+        return hasMoved;
+    }
 
-    protected abstract void setHasMoved();
+    protected  void setHasMoved(){
+        hasMoved = true;
+    }
 
     public void move(Board board, Move move) {
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {

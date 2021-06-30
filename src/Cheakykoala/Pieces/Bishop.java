@@ -21,6 +21,11 @@ public class Bishop extends Piece {
         }
     }
 
+    @Override
+    public boolean isBishop() {
+        return true;
+    }
+
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[][] baseMoves = {
@@ -55,7 +60,7 @@ public class Bishop extends Piece {
         for (int[] arr : baseMoves) {
             Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
             Move move = new Move(position, checkPosition);
-            while (move.isMoveLegalNotCheck(board, color)) {
+            while (move.isMoveLegal(board, color)) {
                 move = new Move(position, checkPosition);
                 moves.add(move);
                 if (board.getPieceAt(checkPosition).getColor() != Color.g)
@@ -68,7 +73,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    protected boolean getHasMoved() {
+    public boolean getHasMoved() {
         return false;
     }
 

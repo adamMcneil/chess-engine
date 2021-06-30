@@ -16,7 +16,6 @@ public class Move {
     }
 
     public boolean isMoveLegal(Board board, Color color) {
-//        System.out.println(this);
         if (!end.isOnBoard()) {
             return false;
         }
@@ -27,18 +26,6 @@ public class Move {
         }
         Board checkBoard = board.getChild(board, this);
         if (checkBoard.isColorInCheck(color)) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isMoveLegalNotCheck(Board board, Color color) {
-        if (!end.isOnBoard()) {
-            return false;
-        }
-        Piece moved = board.getPieceAt(beginning);
-        Piece taken = board.getPieceAt(end);
-        if (moved.isSameColor(taken)) {
             return false;
         }
         return true;

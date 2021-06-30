@@ -7,23 +7,26 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.importBoard("rnbqkbnr/pppppppp/8/8/8/1NBQ4/PPPPPPPP/R3KBNR w KQkq - 0 1");
+//        board.importBoard("rnbqkbnr/pppppppp/8/8/8/1NBQ4/PPPPPPPP/R3KBNR w KQkq - 0 1");
         board.printBoard();
 //        board.getPieceAt(new Position (1,6)).move(board, new Move(new Position (1,6), new Position (1,4)));
 //        System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) + " "  + Board.getCanEnpassant());
-        for (Move move : board.getPieceAt(new Position (7,4)).getMoves(board)){
-            System.out.println(move);
-        }
-        board.printBoard();
+//        for (Move move : board.getPieceAt(new Position (4,7)).getMoves(board)){
+//            System.out.println(move);
+//        }
+//        board.printBoard();
+        comparePlay(board, 99);
     }
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {
         for (int i = 0; i < depth; i++) {
             board.printBoard();
             System.out.println();
+            Thread.sleep(2000);
             playMinimax(board);
             board.printBoard();
             System.out.println();
+            Thread.sleep(2000);
             playRandom(board, Color.b);
         }
     }
@@ -86,7 +89,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 3, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
+                        double mx = minimax(child, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
                         evals.add(mx);
                         if (bestMoveValue == mx){
                             bestMoves.add(m);

@@ -27,8 +27,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    protected boolean getHasMoved() {
-        return false;
+    public boolean getHasMoved() {
+        return !((position.getY() == 1 && color == Color.b) || (position.getY() == 6 && color == Color.w));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class Pawn extends Piece {
             moves.add(moveRight);
         }
 
-        if (!hasMoved()) {
+        if (!getHasMoved()) {
             checkPosition = new Position(position.getX(), position.getY() + direction * 2);
             move = new Move(position, checkPosition);
             Position oneAbove = new Position(position.getX(), checkPosition.getY() - direction);
@@ -78,39 +78,6 @@ public class Pawn extends Piece {
                 moves.add(move);
         }
 
-        return moves;
-    }
-
-    public ArrayList<Move> getMovesNotCheck(Board board) {
-        ArrayList<Move> moves = new ArrayList<>();
-        Position checkPosition;
-        int direction;
-        if (color == Color.w)
-            direction = -1;
-        else
-            direction = 1;
-
-        checkPosition = new Position(position.getX(), position.getY() + direction);
-        Move move = new Move(position, checkPosition);
-        if (move.isMoveLegalNotCheck(board, color)) {
-            moves.add(move);
-        }
-        Position right = new Position(position.getX() + 1, position.getY() + direction);
-        Position left = new Position(position.getX() - 1, position.getY() + direction);
-        Move moveLeft = new Move(position, left);
-        Move moveRight = new Move(position, right);
-        if ((moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) ||  (moveLeft.isMoveLegal(board, color) && Board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
-            moves.add(moveLeft);
-        }
-        if ((moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && Board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
-            moves.add(moveRight);
-        }
-        if (!hasMoved()) {
-            checkPosition = new Position(position.getX(), position.getY() + direction * 2);
-            move = new Move(position, checkPosition);
-            if (move.isMoveLegalNotCheck(board, color))
-                moves.add(move);
-        }
         return moves;
     }
 }

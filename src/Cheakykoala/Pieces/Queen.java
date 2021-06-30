@@ -21,34 +21,12 @@ public class Queen extends Piece {
         }
     }
 
-    public ArrayList<Move> getMoves(Board board){
-    ArrayList<Move> moves = new ArrayList<>();
-    int[][] baseMoves = {
-            {1, 1},
-            {1, 0},
-            {1, -1},
-            {0, -1},
-            {-1, -1},
-            {-1, 0},
-            {-1, 1},
-            {0, 1},
-    };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            while (move.isMoveLegal(board, color)) {
-                move = new Move(position, checkPosition);
-                moves.add(move);
-                if (board.getPieceAt(checkPosition).getColor() != Color.g)
-                    break;
-                checkPosition = new Position(checkPosition.getX() + arr[0], checkPosition.getY() + arr[1]);
-                move = new Move(position, checkPosition);
-            }
+    @Override
+    public boolean isQueen() {
+        return true;
     }
-        return moves;
-}
 
-    public ArrayList<Move> getMovesNotCheck(Board board){
+    public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[][] baseMoves = {
                 {1, 1},
@@ -63,7 +41,7 @@ public class Queen extends Piece {
         for (int[] arr : baseMoves) {
             Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
             Move move = new Move(position, checkPosition);
-            while (move.isMoveLegalNotCheck(board, color)) {
+            while (move.isMoveLegal(board, color)) {
                 move = new Move(position, checkPosition);
                 moves.add(move);
                 if (board.getPieceAt(checkPosition).getColor() != Color.g)
@@ -76,7 +54,7 @@ public class Queen extends Piece {
     }
 
     @Override
-    protected boolean getHasMoved() {
+    public boolean getHasMoved() {
         return false;
     }
 

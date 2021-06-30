@@ -44,34 +44,17 @@ public class Knight extends Piece {
         return moves;
     }
 
-    public ArrayList<Move> getMovesNotCheck(Board board) {
-        ArrayList<Move> moves = new ArrayList<>();
-        int[][] baseMoves = {
-                {2, 1},
-                {2, -1},
-                {1, 2},
-                {1, -2},
-                {-1, 2},
-                {-1, -2},
-                {-2, 1},
-                {-2, -1},
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            if (move.isMoveLegalNotCheck(board, color)) {
-                moves.add(move);
-            }
-        }
-        return moves;
-    }
-
     @Override
-    protected boolean getHasMoved() {
+    public boolean getHasMoved() {
         return false;
     }
 
     @Override
     protected void setHasMoved() {
+    }
+
+    @Override
+    public boolean isKnight() {
+        return true;
     }
 }
