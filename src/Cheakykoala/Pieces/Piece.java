@@ -47,7 +47,6 @@ public abstract class Piece {
     public abstract ArrayList<Move> getMoves(Board board);
 
 
-
     public boolean hasMoved(){return false;}
 
     public boolean isKing() {
@@ -131,7 +130,7 @@ public abstract class Piece {
     }
 
     public void moveOffical(Board board, Move move) {
-        if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
+         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
             Position enPassantSquare = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
             board.addPiece(enPassantSquare, new Empty(move.getBeginning()));
         }

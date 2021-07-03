@@ -59,7 +59,7 @@ public class King extends Piece {
                 moves.add(move);
             }
         }
-        moves.addAll(castleMoves(board));
+//        moves.addAll(castleMoves(board));
 //        for (Move move : moves) {
 //            System.out.println(move);
 //        }
@@ -74,7 +74,7 @@ public class King extends Piece {
             if ((moveState == 0 || moveState == 1)) {
                 castleMoves.add(new Move(this.position, new Position(2, 7)));
             }
-            if (moveState == 2) {
+            if (moveState == 0 || moveState == 2) {
                 castleMoves.add(new Move(this.position, new Position(6, 7)));
             }
         } else {
@@ -82,7 +82,7 @@ public class King extends Piece {
             if (moveState == 0 || moveState == 1) {
                 castleMoves.add(new Move(this.position, new Position(2, 0)));
             }
-            if (moveState == 2) {
+            if (moveState == 0 || moveState == 2) {
                 castleMoves.add(new Move(this.position, new Position(6, 0)));
             }
         }
