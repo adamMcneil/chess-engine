@@ -28,12 +28,12 @@ public class King extends Piece {
 
     @Override
     public void setHasMoved() {
-        hasMoved = true;
+        this.hasMoved = true;
     }
 
     @Override
     public boolean getHasMoved() {
-        return hasMoved;
+        return this.hasMoved;
     }
 
     public char returnPiece() {
@@ -59,10 +59,8 @@ public class King extends Piece {
                 moves.add(move);
             }
         }
-//        moves.addAll(castleMoves(board));
-//        for (Move move : moves) {
-//            System.out.println(move);
-//        }
+        moves.addAll(castleMoves(board));
+
         return moves;
     }
 
@@ -70,20 +68,46 @@ public class King extends Piece {
         ArrayList<Move> castleMoves = new ArrayList<>();
         int moveState;
         if (color == Color.w) {
-            moveState = board.setWhiteCastleMoveState();
-            if ((moveState == 0 || moveState == 1)) {
-                castleMoves.add(new Move(this.position, new Position(2, 7)));
+            moveState = board.getWhiteCastleMoveState();
+            if ((moveState == 0 || moveState == 2)) {
+                Position right1 = new Position(5, 7);
+                Position right2 = new Position(6, 7);
+                Move move1 = new Move(position, right1);
+                Move move2 = new Move(position, right2);
+                if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)) {
+                    castleMoves.add(new Move(this.position, new Position(6, 7)));
+                }
             }
-            if (moveState == 0 || moveState == 2) {
-                castleMoves.add(new Move(this.position, new Position(6, 7)));
+            if (moveState == 0 || moveState == 1) {
+                Position left1 = new Position(3, 7);
+                Position left2 = new Position(2, 7);
+                Position left3 = new Position(1, 7);
+                Move move1 = new Move(position, left1);
+                Move move2 = new Move(position, left2);
+                if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color) && board.getPieceAt(left3).isEmpty()) {
+                    castleMoves.add(new Move(this.position, new Position(2, 7)));
+                }
             }
         } else {
-            moveState = board.setBlackCastleMoveState();
-            if (moveState == 0 || moveState == 1) {
-                castleMoves.add(new Move(this.position, new Position(2, 0)));
-            }
+            moveState = board.getBlackCastleMoveState();
             if (moveState == 0 || moveState == 2) {
-                castleMoves.add(new Move(this.position, new Position(6, 0)));
+                Position right1 = new Position(5, 0);
+                Position right2 = new Position(6, 0);
+                Move move1 = new Move(position, right1);
+                Move move2 = new Move(position, right2);
+                if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)) {
+                    castleMoves.add(new Move(this.position, new Position(6, 0)));
+                }
+            }
+            if (moveState == 0 || moveState == 1) {
+                Position left1 = new Position(3, 0);
+                Position left2 = new Position(2, 0);
+                Position left3 = new Position(1, 0);
+                Move move1 = new Move(position, left1);
+                Move move2 = new Move(position, left2);
+                if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color) && board.getPieceAt(left3).isEmpty()) {
+                    castleMoves.add(new Move(this.position, new Position(2, 0)));
+                }
             }
         }
         return castleMoves;

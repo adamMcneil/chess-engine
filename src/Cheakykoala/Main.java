@@ -7,50 +7,21 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.importBoard("2k5/8/8/8/2p5/8/2RP4/2K5 w - - 0 1");
-        Position beginning = new Position(3, 6);
-        Position end = new Position(3, 4);
+        board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+        Position beginning = new Position(4,0);
+        Position end = new Position(2,0);
         Move move = new Move(beginning, end);
         board.getPieceAt(beginning).move(board, move);
+//         beginning = new Position(3,0);
+//         end = new Position(4,0);
+//         move = new Move(beginning, end);
+//        board.getPieceAt(beginning).move(board, move);
         board.printBoard();
-
-        beginning = new Position(2, 0);
-        end = new Position(3, 1);
-        move = new Move(beginning, end);
-        board.getPieceAt(beginning).move(board, move);
-        board.printBoard();
-
-        beginning = new Position(3, 6);
-        end = new Position(3, 5);
-        move = new Move(beginning, end);
-        board.getPieceAt(beginning).move(board, move);
-
-        board.printBoard();
-//        comparePlay(board, 300);
-
-        Position position = new Position (2, 4);
-        System.out.println(board.getPieceAt(position) + " " + board.getPieceAt(position).getPosition());
-        for (Move move1 : board.getPieceAt(position).getMoves(board)){
-            System.out.println(move1);
+        for (Move m : board.getPieceAt(new Position(3,7)).getMoves(board)){
+            System.out.println(m);
         }
-//        board.get(0, 1).getMoves(board);
-//        for (Piece[] pieces : board.getBoard()) {
-//            for (Piece piece : pieces) {
-//                if (piece.getColor() == Color.b) {
-//                    for (Move move : piece.getMoves(board)) {
-//                        System.out.println(move);
-//                    }
-//                }
-//            }
-//        }
-
-
-//        board.getPieceAt(new Position (1,6)).move(board, new Move(new Position (1,6), new Position (1,4)));
-//        System.out.println((new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) + " "  + Board.getCanEnpassant());
-//        for (Move move : board.getPieceAt(new Position (4,7)).getMoves(board)){
-//            System.out.println(move);
-//        }
-//        board.printBoard();
+//        System.out.println (board.getWhiteCastleMoveState());
+//        System.out.println (board.getBlackCastleMoveState());
     }
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {

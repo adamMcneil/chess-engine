@@ -7,81 +7,26 @@ public class Board {
     private static Position inPassingSquare = new Position(8, 8);
     private static boolean canEnpassant;
     Piece[][] board = new Piece[8][8];
-    int whiteCastleMoveState = 3;
-    int blackCastleMoveState = 3;
+    int whiteCastleMoveState = 0;
+    int blackCastleMoveState = 0;
 
     public Board() {
         makeBoard();
     }
 
-    public int setWhiteCastleMoveState() {
-        whiteCastleMoveState = 0;
-        if (!get(4, 7).isKing()) {
-            whiteCastleMoveState = 3;
-        } else if (get(4, 7).getHasMoved()) {
-            whiteCastleMoveState = 3;
-        }
-
-        if (!get(7,7).isRook()) {
-            whiteCastleMoveState++;
-        } else if (get(7, 7).getHasMoved()) {
-            whiteCastleMoveState++;
-        } else {
-            Move moveright1 = new Move(new Position(4, 7), new Position(5, 7));
-            Move moveright2 = new Move(new Position(4, 7), new Position(6, 7));
-            if (!(moveright1.isMoveLegal(this, Color.w) && moveright2.isMoveLegal(this, Color.w))) {
-                whiteCastleMoveState++;
-            }
-        }
-
-
-        if (!get(0,7).isRook()) {
-            whiteCastleMoveState += 2;
-        } else if (get(0,7).getHasMoved()) {
-            whiteCastleMoveState += 2;
-        } else {
-            Move moveleft1 = new Move(new Position(4, 7), new Position(3, 7));
-            Move moveleft2 = new Move(new Position(4, 7), new Position(2, 7));
-            if (!(moveleft1.isMoveLegal(this, Color.w) && moveleft2.isMoveLegal(this, Color.w) && get(1, 7).isEmpty())) {
-                whiteCastleMoveState += 2;
-            }
-        }
+    public int getWhiteCastleMoveState(){
         return whiteCastleMoveState;
     }
 
-    public int setBlackCastleMoveState() {
-        blackCastleMoveState = 0;
-        if (!get(4, 0).isKing()) {
-            blackCastleMoveState = 3;
-        } else if (get(4, 0).getHasMoved()) {
-            blackCastleMoveState = 3;
-        }
-
-        if (!get(7, 0).isRook()) {
-            blackCastleMoveState++;
-        } else if (get(7, 0).getHasMoved()) {
-            blackCastleMoveState++;
-        } else {
-            Move moveright1 = new Move(new Position(4, 0), new Position(5, 0));
-            Move moveright2 = new Move(new Position(4, 0), new Position(6, 0));
-            if (!(moveright1.isMoveLegal(this, Color.w) && moveright2.isMoveLegal(this, Color.w))) {
-                blackCastleMoveState++;
-            }
-        }
-
-
-        if (!get(0,0).isRook()) {
-            blackCastleMoveState += 2;
-        } else if (get(0,0).getHasMoved()) {
-            blackCastleMoveState += 2;
-        } else {
-            Move moveleft1 = new Move(new Position(4, 0), new Position(3, 0));
-            Move moveleft2 = new Move(new Position(4, 0), new Position(2, 0));
-            if (!(moveleft1.isMoveLegal(this, Color.w) && moveleft2.isMoveLegal(this, Color.w) && get(1, 0).isEmpty())) {
-                blackCastleMoveState += 2;
-            }
-        }
+    public int getBlackCastleMoveState(){
         return blackCastleMoveState;
+    }
+
+    public void increaseWhiteMoveState(int number){
+        whiteCastleMoveState+= number;
+    }
+    public void increaseBlackMoveState(int number){
+        blackCastleMoveState += number;
     }
 
     public static int getInPassingSquareX() {

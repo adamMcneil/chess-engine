@@ -13,7 +13,7 @@ public abstract class Piece {
     char piece;
     char letter;
     Color color;
-    boolean hasMoved;
+    boolean hasMoved = false;
 
     public Piece() {
 
@@ -45,9 +45,6 @@ public abstract class Piece {
     }
 
     public abstract ArrayList<Move> getMoves(Board board);
-
-
-    public boolean hasMoved(){return false;}
 
     public boolean isKing() {
         return false;
@@ -93,15 +90,84 @@ public abstract class Piece {
         this.position = position;
     }
 
-    public  boolean getHasMoved(){
-        return hasMoved;
+    public boolean getHasMoved() {
+        return this.hasMoved;
     }
 
-    protected  void setHasMoved(){
-        hasMoved = true;
+    protected void setHasMoved() {
+        this.hasMoved = true;
+    }
+
+    public boolean isCastleMove(Move move, Board board) {
+        if (board.getPieceAt(move.getBeginning()).isKing() && Math.abs(move.getEnd().getX() - move.getBeginning().getX()) == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public void castleMove(Move move, Board board) {
+        int x;
+        int x1;
+        int x2;
+        int y = move.getBeginning().getY();
+        if (move.getEnd().getX() < 4) {
+            x = 3;
+            x1 = 2;
+            x2 = 0;
+        } else {
+            x = 5;
+            x1 = 6;
+            x2 = 7;
+        }
+        Position movedTo = new Position(x1, y);
+        board.addPiece(movedTo, this);
+        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+        movedTo = new Position(x, y);
+        board.addPiece(movedTo, board.get(x2, y));
+        Position movedFrom = new Position(x2, y);
+        board.addPiece(movedFrom, new Empty(movedFrom));
     }
 
     public void move(Board board, Move move) {
+        if (isCastleMove(move, board)) {
+            castleMove(move, board);
+            return;
+            //this is not correct
+        }
+        if (this.isKing()) {
+            if (this.color == Color.w) {
+                board.increaseWhiteMoveState(3);
+            } else {
+                board.increaseBlackMoveState(3);
+            }
+        }
+        if (this.isRook()) {
+            if (this.color == Color.w) {
+                if (this.position.getX() == 0 && this.position.getY() == 7 && board.getWhiteCastleMoveState() != 2) {
+                    board.increaseWhiteMoveState(2);
+                } else if (this.position.getX() == 7 && this.position.getY() == 7 && board.getWhiteCastleMoveState() != 1) {
+                    board.increaseWhiteMoveState(1);
+                }
+            }
+            if (this.color == Color.b) {
+                if (this.position.getX() == 0 && this.position.getY() == 0 && board.getBlackCastleMoveState() != 2) {
+                    board.increaseBlackMoveState(2);
+                } else if (this.position.getX() == 7 && this.position.getY() == 0 && board.getBlackCastleMoveState() != 1) {
+                    board.increaseBlackMoveState(1);
+                }
+            }
+        }
+
+        if (move.getEnd().getX() == 0 && move.getEnd().getY() == 7 && board.getWhiteCastleMoveState() != 2) {
+            board.increaseWhiteMoveState(2);
+        } else if (move.getEnd().getX() == 7 && move.getEnd().getY() == 7 && board.getWhiteCastleMoveState() != 1) {
+            board.increaseWhiteMoveState(1);
+        } else if (move.getEnd().getX() == 0 && move.getEnd().getY() == 0 && board.getWhiteCastleMoveState() != 2) {
+            board.increaseWhiteMoveState(2);
+        } else if (move.getEnd().getX() == 7 && move.getEnd().getY() == 0 && board.getWhiteCastleMoveState() != 1) {
+            board.increaseWhiteMoveState(1);
+        }
+
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
             Position enPassantSquare = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
             board.addPiece(enPassantSquare, new Empty(move.getBeginning()));
@@ -120,17 +186,11 @@ public abstract class Piece {
             board.setCanEnpassant(true);
             return;
         }
-        if (board.getPieceAt(this.position).isKing()){
-                this.setHasMoved();
-        }
-        if (board.getPieceAt(this.position).isRook()){
-            this.setHasMoved();
-        }
         board.setCanEnpassant(false);
     }
 
     public void moveOffical(Board board, Move move) {
-         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
+        if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
             Position enPassantSquare = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
             board.addPiece(enPassantSquare, new Empty(move.getBeginning()));
         }
