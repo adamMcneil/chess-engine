@@ -5,24 +5,29 @@ import Cheakykoala.Pieces.*;
 import java.util.ArrayList;
 
 public class Main {
+    public static int index = 0;
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
-        board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        Position beginning = new Position(4,0);
-        Position end = new Position(2,0);
-        Move move = new Move(beginning, end);
-        board.getPieceAt(beginning).move(board, move);
+        playMinimax(board);
+        System.out.println(index);
+//        board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+//        Position beginning = new Position(4,0);
+//        Position end = new Position(2,0);
+//        Move move = new Move(beginning, end);
+//        board.getPieceAt(beginning).move(board, move);
 //         beginning = new Position(3,0);
 //         end = new Position(4,0);
 //         move = new Move(beginning, end);
 //        board.getPieceAt(beginning).move(board, move);
-        board.printBoard();
-        for (Move m : board.getPieceAt(new Position(3,7)).getMoves(board)){
-            System.out.println(m);
-        }
+//        board.printBoard();
+//        for (Move m : board.getPieceAt(new Position(3,7)).getMoves(board)){
+//            System.out.println(m);
+//        }
 //        System.out.println (board.getWhiteCastleMoveState());
 //        System.out.println (board.getBlackCastleMoveState());
     }
+
+
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {
         for (int i = 0; i < depth; i++) {
@@ -81,7 +86,6 @@ public class Main {
         int y = (int) (Math.random() * blackMoves.size());
         board.getPieceAt(blackMoves.get(y).getBeginning()).move(board, blackMoves.get(y));
         board.printBoard();
-
     }
 
     public static void playMinimax(Board board) {
@@ -150,6 +154,11 @@ public class Main {
         double minEval;
         double maxEval;
         if (depth == 0) {
+            for (Piece[] pieces : board.getBoard()) {
+                for (Piece piece : pieces) {
+                    index += piece.getMoves(board).size();
+                }
+            }
             return (evalBoard(board));
         }
         if (isMaxPlayer) {
@@ -158,13 +167,14 @@ public class Main {
                 for (Piece piece : pieces) {
                     for (Move move : piece.getMoves(board)) {
                         //System.out.println("here");
+                        index++;
                         eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
                         //System.out.println(depth);
                         maxEval = Math.max(alpha, eval);
                         alpha = Math.max(alpha, eval);
-                        if (beta <= alpha) {
-                            break;
-                        }
+//                        if (beta <= alpha) {
+//                            break;
+//                        }
                     }
                 }
             }
@@ -179,9 +189,9 @@ public class Main {
                         //System.out.println(depth);
                         minEval = Math.min(minEval, eval);
                         beta = Math.max(beta, eval);
-                        if (beta <= alpha) {
-                            break;
-                        }
+//                        if (beta <= alpha) {
+//                            break;
+//                        }
                     }
                 }
             }
