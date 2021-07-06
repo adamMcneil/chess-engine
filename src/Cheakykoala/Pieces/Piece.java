@@ -132,7 +132,6 @@ public abstract class Piece {
     public void promotionMove(Move move, Board board){
         board.addPiece(move.getEnd(), move.getPiece());
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
-
     }
 
     public void move(Board board, Move move) {

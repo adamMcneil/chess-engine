@@ -55,8 +55,12 @@ public class Pawn extends Piece {
         if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g && checkPosition.getY() == 0 || checkPosition.getY() == 7) {
             Move moveQueen = new PromotionMove(position, checkPosition, new Queen(this.color, move.getEnd()));
             Move moveKnight = new PromotionMove(position, checkPosition, new Knight(this.color, move.getEnd()));
+            Move moveRook = new PromotionMove(position, checkPosition, new Rook(this.color, move.getEnd()));
+            Move moveBishop = new PromotionMove(position, checkPosition, new Bishop(this.color, move.getEnd()));
             moves.add(moveQueen);
             moves.add(moveKnight);
+            moves.add(moveRook);
+            moves.add(moveBishop);
         }
 
         Position right = new Position(position.getX() + 1, position.getY() + direction);
@@ -66,14 +70,22 @@ public class Pawn extends Piece {
         if ((checkPosition.getY() == 0 || checkPosition.getY() == 7) && (moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) || (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             Move moveQueen = new PromotionMove(position, left, new Queen(this.color, moveLeft.getEnd()));
             Move moveKnight = new PromotionMove(position, left, new Knight(this.color, moveLeft.getEnd()));
+            Move moveRook = new PromotionMove(position, left, new Rook(this.color, moveLeft.getEnd()));
+            Move moveBishop = new PromotionMove(position, left, new Bishop(this.color, moveLeft.getEnd()));
             moves.add(moveQueen);
             moves.add(moveKnight);
+            moves.add(moveRook);
+            moves.add(moveBishop);
         }
         if ((checkPosition.getY() == 0 || checkPosition.getY() == 7) && (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             Move moveQueen = new PromotionMove(position, right, new Queen(this.color, moveRight.getEnd()));
             Move moveKnight = new PromotionMove(position, right, new Knight(this.color, moveRight.getEnd()));
+            Move moveRook = new PromotionMove(position, right, new Rook(this.color, moveRight.getEnd()));
+            Move moveBishop = new PromotionMove(position, right, new Bishop(this.color, moveRight.getEnd()));
             moves.add(moveQueen);
             moves.add(moveKnight);
+            moves.add(moveRook);
+            moves.add(moveBishop);
         }
         return moves;
     }

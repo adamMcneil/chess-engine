@@ -185,19 +185,24 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public int getWinState(){
+    public int getWinState(Color color){
+        int moves = 0;
     for (Piece[] pieces : this.getBoard()) {
         for (Piece p : pieces) {
-            if (p.getMoves(this).size() == 0){
-                if (this.isColorInCheck(Color.w) || this.isColorInCheck(Color.b)) {
-                    return 2;
-                } else {
-                    return 1;
+            if (p.getColor() == color){
+                moves += p.getMoves(this).size();
+                if (moves > 0){
+                    return 0;
                 }
-            }
+                }
         }
     }
-        return 0;
+    if (this.isColorInCheck(color) && moves == 0) {
+        return 2;
+    } else if  (moves == 0){
+        return 1;
+    }
+   return 0;
     }
 
     public void importBoard(String fenBoard) {
@@ -273,18 +278,14 @@ public class Board {
     public Board getChild(Board board, Move move) {
         Board child = new Board();
         int x = 0, y = 0;
-        Piece newPiece;
-        Position position = new Position(x, y);
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
                 Piece pieceCopy = getPiece(piece.getLetter(), x, y);
                 child.getBoard()[y][x] = pieceCopy;
                 x++;
-                position = new Position(x, y);
             }
             x = 0;
             y++;
-            position = new Position(x, y);
         }
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
