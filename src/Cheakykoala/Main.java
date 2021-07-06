@@ -6,26 +6,40 @@ import java.util.ArrayList;
 
 public class Main {
     public static int index = 0;
+
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
+//        board.importBoard("r3k2r/p1pp1pb1/bn2Qnp1/2qPN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQkq - 3 2");
         index = 0;
-        Board child = new Board();
-//        playMinimax(board);
-        for (Piece [] pieces: board.getBoard()){
-            for (Piece p: pieces){
-                if (p.getColor() == Color.w){
-                    for (Move move: p.getMoves(board)){
-                        child = board.getChild(board, move);
-                        minimax(child, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-                    }
-                }
-            }
-        }
-//        minimax(board, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
+        board.printBoard();
+//        minimax(board, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+//        Board child = new Board();
+//        Board child1 = new Board();
+//        Board child2 = new Board();
+
+        playMinimax(board);
+//        for (Piece[] pieces : board.getBoard()) {
+//            for (Piece p : pieces) {
+//                if (p.getColor() == Color.w) {
+//                    for (Move move : p.getMoves(board)) {
+//                        child = board.getChild(board, move);
+//                        for (Piece[] pieces1 : child.getBoard()) {
+//                            for (Piece p1 : pieces1) {
+//                                if (p1.getColor() == Color.b) {
+//                                    for (Move move1 : p1.getMoves(board)) {
+//                                        child1 = board.getChild(child, move1);
+//                                        minimax(child1, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         System.out.println(index);
     }
-
 
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {
@@ -98,7 +112,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, true);
+                        double mx = minimax(child, 4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -117,7 +131,7 @@ public class Main {
 
     public static double evalBoard(Board board) {
         index++;
-        board.printBoard();
+//        board.printBoard();
 //        System.out.println(index);
         int eval = 0;
         for (Piece[] pieces : board.getBoard()) {
@@ -163,24 +177,24 @@ public class Main {
             maxEval = -9999;
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
-                    if ( piece.getColor() == Color.w){
-                    for (Move move : piece.getMoves(board)) {
-                        eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
-                        maxEval = Math.max(alpha, eval);
-                        alpha = Math.max(alpha, eval);
-                        if (beta <= alpha) {
-                            break;
+                    if (piece.getColor() == Color.w) {
+                        for (Move move : piece.getMoves(board)) {
+                            eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
+                            maxEval = Math.max(alpha, eval);
+                            alpha = Math.max(alpha, eval);
+                            if (beta <= alpha) {
+                                break;
+                            }
                         }
                     }
                 }
-            }
             }
             return maxEval;
         } else {
             minEval = 9999;
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
-                    if (piece.getColor() == Color.b){
+                    if (piece.getColor() == Color.b) {
                         for (Move move : piece.getMoves(board)) {
                             eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, true);
                             minEval = Math.min(minEval, eval);

@@ -208,7 +208,10 @@ public class Board {
     public void importBoard(String fenBoard) {
         int x = 0;
         int y = 0;
+        int end = fenBoard.length();
         String[] splitFen = fenBoard.split(" ");
+        String boardState = fenBoard.substring(splitFen.length, end);
+//        System.out.println (boardState);
         fenBoard = splitFen[0];
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
@@ -224,6 +227,7 @@ public class Board {
                 y++;
             }
         }
+
     }
 
     public Piece getPiece(char letter, int x, int y) {

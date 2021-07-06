@@ -9,6 +9,7 @@ import Cheakykoala.PromotionMove;
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
+    int count = 0;
 
     public Pawn(Color c, Position position) {
         this.position = position;
@@ -35,10 +36,6 @@ public class Pawn extends Piece {
     @Override
     protected void setHasMoved() {
 
-    }
-
-    public boolean hasMoved() {
-        return !((position.getY() == 1 && color == Color.b) || (position.getY() == 6 && color == Color.w));
     }
 
     public ArrayList<Move> getPromotionMoves(Board board){
@@ -94,6 +91,7 @@ public class Pawn extends Piece {
         ArrayList<Move> moves = new ArrayList<>();
         Position checkPosition;
         int direction;
+
         if (color == Color.w)
             direction = -1;
         else
@@ -111,9 +109,17 @@ public class Pawn extends Piece {
         Move moveRight = new Move(position, right);
         if (checkPosition.getY() != 0 && checkPosition.getY() != 7 && (moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) || (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveLeft);
+            if (moveLeft.getEnd().comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))){
+                count++;
+                System.out.println(count);
+            }
         }
         if (checkPosition.getY() != 0 && checkPosition.getY() != 7 && (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveRight);
+            if (moveRight.getEnd().comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))){
+                count++;
+                System.out.println(count);
+            }
         }
 
         if (!getHasMoved()) {
