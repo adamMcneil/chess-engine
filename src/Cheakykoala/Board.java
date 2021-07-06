@@ -286,7 +286,7 @@ public class Board {
             y++;
             position = new Position(x, y);
         }
-        child.getPieceAt(move.getBeginning()).moveOffical(child, move);
+        child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }
 

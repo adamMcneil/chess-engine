@@ -11,6 +11,14 @@ public class Move {
         this.end = end;
     }
 
+    public Piece getPiece(){
+        return null;
+    }
+
+    public boolean isPromotionMove(Move move){
+        return false;
+    }
+
     public String toString() {
         return beginning + " --> " + end.toString();
     }

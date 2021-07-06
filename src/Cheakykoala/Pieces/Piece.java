@@ -1,9 +1,6 @@
 package Cheakykoala.Pieces;
 
-import Cheakykoala.Color;
-import Cheakykoala.Position;
-import Cheakykoala.Board;
-import Cheakykoala.Move;
+import Cheakykoala.*;
 
 import java.util.ArrayList;
 
@@ -45,6 +42,10 @@ public abstract class Piece {
     }
 
     public abstract ArrayList<Move> getMoves(Board board);
+
+    public ArrayList<Move> getPromotionMoves(Board board){
+        return null;
+    }
 
     public boolean isKing() {
         return false;
@@ -128,11 +129,27 @@ public abstract class Piece {
         board.addPiece(movedFrom, new Empty(movedFrom));
     }
 
+    public void promotionMove(Move move, Board board){
+        board.addPiece(move.getEnd(), move.getPiece());
+        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+
+    }
+
     public void move(Board board, Move move) {
+        if (move.isPromotionMove(move)){
+            promotionMove(move, board);
+            board.setCanEnpassant(false);
+            return;
+        }
         if (isCastleMove(move, board)) {
             castleMove(move, board);
+            if (color == Color.w) {
+                board.increaseWhiteMoveState(3);
+            } else {
+                board.increaseBlackMoveState(3);
+            }
+            board.setCanEnpassant(false);
             return;
-            //this is not correct
         }
         if (this.isKing()) {
             if (this.color == Color.w) {
@@ -189,7 +206,16 @@ public abstract class Piece {
         board.setCanEnpassant(false);
     }
 
-    public void moveOffical(Board board, Move move) {
+    public void moveUnofficial(Board board, Move move) {
+        if (move.isPromotionMove(move)){
+            promotionMove(move, board);
+            return;
+        }
+        if (isCastleMove(move, board)) {
+            castleMove(move, board);
+            return;
+        }
+
         if (this.isPawn() && move.getEnd() == (new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())) && Board.getCanEnpassant()) {
             Position enPassantSquare = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
             board.addPiece(enPassantSquare, new Empty(move.getBeginning()));
@@ -197,14 +223,19 @@ public abstract class Piece {
         board.addPiece(move.getEnd(), this);
         this.position = move.getEnd();
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
-        if (move.getEnd().getY() == 3) {
-            Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() - 1);
-        } else {
-            Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
+        if (this.isPawn() && (move.getEnd().getY() == 3 || move.getEnd().getY() == 4)) {
+            if (move.getEnd().getY() == 3) {
+                Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() - 1);
+                board.setInPassingSquare(placeHolder);
+            } else {
+                Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() + 1);
+                board.setInPassingSquare(placeHolder);
+            }
+            board.setCanEnpassant(true);
+            return;
         }
-        return;
+        board.setCanEnpassant(false);
     }
-
 
     public char getLetter() {
         return this.letter;
