@@ -45,15 +45,6 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean getHasMoved() {
-        return false;
-    }
-
-    @Override
-    protected void setHasMoved() {
-    }
-
-    @Override
     public boolean isKnight() {
         return true;
     }

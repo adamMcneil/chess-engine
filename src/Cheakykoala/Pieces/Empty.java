@@ -21,19 +21,10 @@ public class Empty extends Piece {
         return true;
     }
 
-    @Override
-    public boolean getHasMoved() {
-        return false;
-    }
-
-    @Override
-    protected void setHasMoved() {
-
-    }
-
     public ArrayList<Move> getMoves(Board board) {
         return new ArrayList();
     }
+
     public ArrayList<Move> getMovesNotCheck(Board board) {
         return null;
     }

@@ -4,9 +4,9 @@ import Cheakykoala.Pieces.*;
 
 public class Board {
 
-    private static Position inPassingSquare = new Position(8, 8);
-    private static boolean canEnpassant;
     Piece[][] board = new Piece[8][8];
+    Position inPassingSquare = new Position(8, 8);
+    boolean canEnpassant = false;
     int whiteCastleMoveState = 0;
     int blackCastleMoveState = 0;
     int count = 0;
@@ -18,6 +18,41 @@ public class Board {
     public void increaseCount(){
         count++;
         System.out.println (count);
+    }
+
+    public void setMoveState(Piece piece, Move move){
+        if (piece.isKing()) {
+            if (piece.getColor() == Color.w) {
+                this.increaseWhiteMoveState(3);
+            } else {
+                this.increaseBlackMoveState(3);
+            }
+        }
+        if (piece.isRook()) {
+            if (piece.getColor() == Color.w) {
+                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 7 && this.getWhiteCastleMoveState() != 2) {
+                    this.increaseWhiteMoveState(2);
+                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 7 && this.getWhiteCastleMoveState() != 1) {
+                    this.increaseWhiteMoveState(1);
+                }
+            }
+            if (piece.getColor() == Color.b) {
+                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 0 && this.getBlackCastleMoveState() != 2) {
+                    this.increaseBlackMoveState(2);
+                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 0 && this.getBlackCastleMoveState() != 1) {
+                    this.increaseBlackMoveState(1);
+                }
+            }
+        }
+        if (move.getEnd().getX() == 0 && move.getEnd().getY() == 7 && this.getWhiteCastleMoveState() != 2) {
+            this.increaseWhiteMoveState(2);
+        } else if (move.getEnd().getX() == 7 && move.getEnd().getY() == 7 && this.getWhiteCastleMoveState() != 1) {
+            this.increaseWhiteMoveState(1);
+        } else if (move.getEnd().getX() == 0 && move.getEnd().getY() == 0 && this.getWhiteCastleMoveState() != 2) {
+            this.increaseWhiteMoveState(2);
+        } else if (move.getEnd().getX() == 7 && move.getEnd().getY() == 0 && this.getWhiteCastleMoveState() != 1) {
+            this.increaseWhiteMoveState(1);
+        }
     }
 
     public int getWhiteCastleMoveState(){
@@ -36,15 +71,7 @@ public class Board {
         blackCastleMoveState += number;
     }
 
-    public static int getInPassingSquareX() {
-        return inPassingSquare.getX();
-    }
-
-    public static int getInPassingSquareY() {
-        return inPassingSquare.getY();
-    }
-
-    public static boolean getCanEnpassant() {
+    public boolean getCanEnpassant() {
         return canEnpassant;
     }
 
@@ -286,10 +313,13 @@ public class Board {
         this.inPassingSquare.setX(x.getX());
     }
 
+    public void setCanEnpassant(Boolean logic) {
+        canEnpassant = logic;
+    }
+
     public Position getInPassingSquare(){
         return inPassingSquare;
     }
-
 
     public Board getChild(Board board, Move move) {
         Board child = new Board();
@@ -307,10 +337,6 @@ public class Board {
         }
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
-    }
-
-    public void setCanEnpassant(Boolean logic) {
-        this.canEnpassant = logic;
     }
 
 }

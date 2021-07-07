@@ -52,14 +52,4 @@ public class Queen extends Piece {
         }
         return moves;
     }
-
-    @Override
-    public boolean getHasMoved() {
-        return false;
-    }
-
-    @Override
-    protected void setHasMoved() {
-
-    }
 }

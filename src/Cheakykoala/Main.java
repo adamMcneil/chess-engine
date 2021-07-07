@@ -10,20 +10,17 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
-        Position position = new Position(0, 6);
-        Position end = new Position(0, 4);
-        Position inPassing = new Position(0, 5);
-        Move move = new Move(position, end);
-        board.setCanEnpassant(true);
-        board.setInPassingSquare(inPassing);
-        board.getPieceAt(position).move(board, move);
-//        board.getChild(board, move);
-        board.importBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
+        board.addPiece(new Position(1,3), new Pawn(Color.w, new Position(1,3)));
         board.printBoard();
-        index = 0;
-//        playMinimax(board);
-        minimax(board, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-        System.out.println(index);
+        Position beginning = new Position(0,1);
+        Position end = new Position(0,3);
+        Move move = new Move(beginning, end);
+        board.getPieceAt(beginning).move(board, move);
+        board.printBoard();
+        for (Move m: board.getPieceAt(new Position(1,3)).getMoves(board)){
+            System.out.println (m);
+        }
+
     }
 
 

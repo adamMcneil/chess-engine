@@ -71,14 +71,4 @@ public class Bishop extends Piece {
         }
         return moves;
     }
-
-    @Override
-    public boolean getHasMoved() {
-        return false;
-    }
-
-    @Override
-    protected void setHasMoved() {
-
-    }
 }

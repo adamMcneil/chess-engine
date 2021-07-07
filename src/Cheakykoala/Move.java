@@ -19,6 +19,21 @@ public class Move {
         return false;
     }
 
+    public boolean isCastleMove(Board board) {
+        if (board.getPieceAt(this.getBeginning()).isKing() && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isInPassingMove(Board board){
+        return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty() && this.getBeginning().getX() != this.getEnd().getX());
+    }
+
+    public boolean isUpTwoMove(Board board){
+        return (board.getPieceAt(this.getBeginning()).isPawn() && Math.abs(this.getBeginning().getY() - this.getEnd().getY()) == 2 );
+    }
+
     public String toString() {
         return beginning + " --> " + end.toString();
     }

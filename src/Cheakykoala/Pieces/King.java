@@ -26,44 +26,6 @@ public class King extends Piece {
         return true;
     }
 
-    @Override
-    public void setHasMoved() {
-        this.hasMoved = true;
-    }
-
-    @Override
-    public boolean getHasMoved() {
-        return this.hasMoved;
-    }
-
-    public char returnPiece() {
-        return piece;
-    }
-
-    public ArrayList<Move> getMoves(Board board) {
-        ArrayList<Move> moves = new ArrayList<>();
-        int[][] baseMoves = {
-                {1, 1},
-                {1, 0},
-                {1, -1},
-                {0, -1},
-                {-1, -1},
-                {-1, 0},
-                {-1, 1},
-                {0, 1},
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            if (move.isMoveLegal(board, color)) {
-                moves.add(move);
-            }
-        }
-        moves.addAll(castleMoves(board));
-
-        return moves;
-    }
-
     public ArrayList<Move> castleMoves(Board board) {
         ArrayList<Move> castleMoves = new ArrayList<>();
         int moveState;
@@ -111,5 +73,29 @@ public class King extends Piece {
             }
         }
         return castleMoves;
+    }
+
+    public ArrayList<Move> getMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int[][] baseMoves = {
+                {1, 1},
+                {1, 0},
+                {1, -1},
+                {0, -1},
+                {-1, -1},
+                {-1, 0},
+                {-1, 1},
+                {0, 1},
+        };
+        for (int[] arr : baseMoves) {
+            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
+            Move move = new Move(position, checkPosition);
+            if (move.isMoveLegal(board, color)) {
+                moves.add(move);
+            }
+        }
+        moves.addAll(castleMoves(board));
+
+        return moves;
     }
 }
