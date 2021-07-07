@@ -10,34 +10,19 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
-//        board.importBoard("r3k2r/p1pp1pb1/bn2Qnp1/2qPN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQkq - 3 2");
-        index = 0;
+        Position position = new Position(0, 6);
+        Position end = new Position(0, 4);
+        Position inPassing = new Position(0, 5);
+        Move move = new Move(position, end);
+        board.setCanEnpassant(true);
+        board.setInPassingSquare(inPassing);
+        board.getPieceAt(position).move(board, move);
+//        board.getChild(board, move);
+        board.importBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
         board.printBoard();
-//        minimax(board, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-//        Board child = new Board();
-//        Board child1 = new Board();
-//        Board child2 = new Board();
-
-        playMinimax(board);
-//        for (Piece[] pieces : board.getBoard()) {
-//            for (Piece p : pieces) {
-//                if (p.getColor() == Color.w) {
-//                    for (Move move : p.getMoves(board)) {
-//                        child = board.getChild(board, move);
-//                        for (Piece[] pieces1 : child.getBoard()) {
-//                            for (Piece p1 : pieces1) {
-//                                if (p1.getColor() == Color.b) {
-//                                    for (Move move1 : p1.getMoves(board)) {
-//                                        child1 = board.getChild(child, move1);
-//                                        minimax(child1, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        index = 0;
+//        playMinimax(board);
+        minimax(board, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
         System.out.println(index);
     }
 
@@ -46,11 +31,11 @@ public class Main {
         for (int i = 0; i < depth; i++) {
             board.printBoard();
             System.out.println();
-//            Thread.sleep(4000);
+//            Thread.sleep(3000);
             playMinimax(board);
             board.printBoard();
             System.out.println();
-//            Thread.sleep(4000);
+//            Thread.sleep(3000);
             playRandom(board, Color.b);
         }
     }
@@ -112,7 +97,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+                        double mx = minimax(child, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -167,8 +152,6 @@ public class Main {
         double eval;
         double minEval;
         double maxEval;
-        int white = board.getWinState(Color.w);
-        int black = board.getWinState(Color.b);
 //        System.out.println(board.getWinState(Color.w) + " " + board.getWinState(Color.b));
         if (depth == 0 || board.getWinState(Color.w) != 0 || board.getWinState(Color.b) != 0) {
             return (evalBoard(board));

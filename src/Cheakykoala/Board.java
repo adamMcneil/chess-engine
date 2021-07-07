@@ -9,9 +9,15 @@ public class Board {
     Piece[][] board = new Piece[8][8];
     int whiteCastleMoveState = 0;
     int blackCastleMoveState = 0;
+    int count = 0;
 
     public Board() {
         makeBoard();
+    }
+
+    public void increaseCount(){
+        count++;
+        System.out.println (count);
     }
 
     public int getWhiteCastleMoveState(){
@@ -25,6 +31,7 @@ public class Board {
     public void increaseWhiteMoveState(int number){
         whiteCastleMoveState+= number;
     }
+
     public void increaseBlackMoveState(int number){
         blackCastleMoveState += number;
     }
@@ -279,8 +286,15 @@ public class Board {
         this.inPassingSquare.setX(x.getX());
     }
 
+    public Position getInPassingSquare(){
+        return inPassingSquare;
+    }
+
+
     public Board getChild(Board board, Move move) {
         Board child = new Board();
+        child.inPassingSquare.isEqualTo(board.getInPassingSquare());
+        child.canEnpassant = board.getCanEnpassant();
         int x = 0, y = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {

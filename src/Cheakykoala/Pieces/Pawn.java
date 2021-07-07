@@ -109,16 +109,14 @@ public class Pawn extends Piece {
         Move moveRight = new Move(position, right);
         if (checkPosition.getY() != 0 && checkPosition.getY() != 7 && (moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left))) || (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveLeft);
-            if (moveLeft.getEnd().comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))){
-                count++;
-                System.out.println(count);
+            if (board.getPieceAt(moveLeft.getEnd()).isEmpty()){
+               board.increaseCount();
             }
         }
         if (checkPosition.getY() != 0 && checkPosition.getY() != 7 && (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right))) || (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY())))) {
             moves.add(moveRight);
-            if (moveRight.getEnd().comparePositions(new Position(Board.getInPassingSquareX(), Board.getInPassingSquareY()))){
-                count++;
-                System.out.println(count);
+            if (board.getPieceAt(moveRight.getEnd()).isEmpty()){
+                board.increaseCount();
             }
         }
 

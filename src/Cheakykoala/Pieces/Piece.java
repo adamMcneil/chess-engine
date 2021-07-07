@@ -191,8 +191,8 @@ public abstract class Piece {
         board.addPiece(move.getEnd(), this);
         this.position = move.getEnd();
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
-        if (this.isPawn() && (move.getEnd().getY() == 3 || move.getEnd().getY() == 4)) {
-            if (move.getEnd().getY() == 3) {
+        if (this.isPawn() && (move.getBeginning().getY() == 1 || move.getBeginning().getY() == 6) && (move.getEnd().getY() == 3 || move.getEnd().getY() == 4)) {
+            if (this.getColor() == Color.b) {
                 Position placeHolder = new Position(move.getEnd().getX(), move.getEnd().getY() - 1);
                 board.setInPassingSquare(placeHolder);
             } else {
