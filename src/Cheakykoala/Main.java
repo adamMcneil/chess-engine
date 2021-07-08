@@ -10,17 +10,51 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
-        board.addPiece(new Position(1,3), new Pawn(Color.w, new Position(1,3)));
-        board.printBoard();
-        Position beginning = new Position(0,1);
-        Position end = new Position(0,3);
-        Move move = new Move(beginning, end);
-        board.getPieceAt(beginning).move(board, move);
-        board.printBoard();
-        for (Move m: board.getPieceAt(new Position(1,3)).getMoves(board)){
-            System.out.println (m);
+//        board.addPiece(new Position(1,3), new Pawn(Color.w, new Position(1,3)));
+//        board.printBoard();
+//        Position beginning = new Position(0,1);
+//        Position end = new Position(0,3);
+//        Move move = new Move(beginning, end);
+//        board.getPieceAt(beginning).move(board, move);
+//        board.printBoard();
+//        for (Move m: board.getPieceAt(new Position(1,3)).getMoves(board)){
+//            System.out.println (m);
+//        }
+        playMinimax(board);
+        System.out.println(index);
+    }
+
+    public static Color getOppositeColor(Color color) {
+        if (color == Color.w) {
+            return Color.b;
+        }
+        return Color.w;
+    }
+
+    public static void countNodes(int depth, Color color) {
+        Board board = new Board();
+        int count = 0;
+        for (int x = depth; x >= 0; x++) {
+            for (Move move : getAllMoves(board, color)) {
+                board.getChild(board, move);
+                countNodes(x - 1, getOppositeColor(color));
+            }
         }
 
+    }
+        System.out.println(count);
+}
+
+    public static ArrayList<Move> getAllMoves(Board board, Color color) {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Piece[] pieces : board.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    moves.addAll(p.getMoves(board));
+                }
+            }
+        }
+        return moves;
     }
 
 
@@ -94,7 +128,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+                        double mx = minimax(child, 4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }

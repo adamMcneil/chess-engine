@@ -321,20 +321,28 @@ public class Board {
         return inPassingSquare;
     }
 
-    public Board getChild(Board board, Move move) {
-        Board child = new Board();
-        child.inPassingSquare.isEqualTo(board.getInPassingSquare());
-        child.canEnpassant = board.getCanEnpassant();
+    public  void copyBoard(Board board){
         int x = 0, y = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
                 Piece pieceCopy = getPiece(piece.getLetter(), x, y);
-                child.getBoard()[y][x] = pieceCopy;
+                this.getBoard()[y][x] = pieceCopy;
                 x++;
             }
             x = 0;
             y++;
         }
+    }
+
+    public Board getChild(Board board, Move move) {
+        Board child = new Board();
+        child.setInPassingSquare(board.getInPassingSquare());
+        child.setCanEnpassant(board.getCanEnpassant());
+        child.increaseWhiteMoveState(board.getWhiteCastleMoveState());
+        child.increaseBlackMoveState(board.getBlackCastleMoveState());
+
+        child.copyBoard(board);
+
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }
