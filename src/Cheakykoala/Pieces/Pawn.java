@@ -93,9 +93,11 @@ public class Pawn extends Piece {
         Boolean test2 = board.getCanEnpassant();
         if (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(board.getInPassingSquare())){
             moves.add(moveLeft);
+//            System.out.println ("We just found a inPassingMoveLeft");
         }
         if (moveRight.isMoveLegal(board, color) && board.getCanEnpassant() && right.comparePositions(board.getInPassingSquare())) {
             moves.add(moveRight);
+//            System.out.println ("We just found a inPassingMoveRight");
         }
         return moves;
     }

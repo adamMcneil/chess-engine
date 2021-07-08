@@ -110,6 +110,7 @@ public abstract class Piece {
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
         board.addPiece(taken, new Empty(taken));
         board.setCanEnpassant(false);
+//        System.out.println ("We just did a inPassingMove");
     }
 
     public void upTwoMove(Move move, Board board) {
@@ -138,10 +139,14 @@ public abstract class Piece {
             castleMove(move, board);
         } else if (move.isInPassingMove(board)) {
             inPassingMove(move, board);
+            board.increaseCaptures();
         } else if (move.isUpTwoMove(board)) {
             upTwoMove(move, board);
         } else {
             normalMove(move, board);
+            if (move.isCapture(board)){
+                board.increaseCaptures();
+            }
         }
         board.setMoveState(this, move);
     }

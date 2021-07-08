@@ -2,25 +2,77 @@ package Cheakykoala;
 
 import Cheakykoala.Pieces.*;
 
+import java.util.ArrayList;
+
 public class Board {
 
+    private static int captures = 0;
     Piece[][] board = new Piece[8][8];
     Position inPassingSquare = new Position(8, 8);
     boolean canEnpassant = false;
     int whiteCastleMoveState = 0;
     int blackCastleMoveState = 0;
     int count = 0;
+    Color colorToMove = Color.w;
 
     public Board() {
         makeBoard();
     }
 
-    public void increaseCount(){
-        count++;
-        System.out.println (count);
+    public static void increaseCaptures(){
+        captures++;
     }
 
-    public void setMoveState(Piece piece, Move move){
+    public static int getCaptures(){
+        return captures;
+    }
+
+    public boolean isEndState() {
+        int moves = 0;
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == Color.w) {
+                    moves += p.getMoves(this).size();
+                    if (moves > 0) {
+                        return false;
+                    } else
+                        return true;
+                }
+            }
+        }
+        moves = 0;
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == Color.b) {
+                    moves += p.getMoves(this).size();
+                    if (moves > 0) {
+                        return false;
+                    } else
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<Move> getAllMoves(Color color) {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Piece[] pieces : board) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    moves.addAll(p.getMoves(this));
+                }
+            }
+        }
+        return moves;
+    }
+
+    public void increaseCount() {
+        count++;
+        System.out.println(count);
+    }
+
+    public void setMoveState(Piece piece, Move move) {
         if (piece.isKing()) {
             if (piece.getColor() == Color.w) {
                 this.increaseWhiteMoveState(3);
@@ -55,19 +107,19 @@ public class Board {
         }
     }
 
-    public int getWhiteCastleMoveState(){
+    public int getWhiteCastleMoveState() {
         return whiteCastleMoveState;
     }
 
-    public int getBlackCastleMoveState(){
+    public int getBlackCastleMoveState() {
         return blackCastleMoveState;
     }
 
-    public void increaseWhiteMoveState(int number){
-        whiteCastleMoveState+= number;
+    public void increaseWhiteMoveState(int number) {
+        whiteCastleMoveState += number;
     }
 
-    public void increaseBlackMoveState(int number){
+    public void increaseBlackMoveState(int number) {
         blackCastleMoveState += number;
     }
 
@@ -105,8 +157,8 @@ public class Board {
     public boolean isColorInCheck(Color color) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                Piece checkpiece = this.getPieceAt(new Position(j,i));
-                if (this.getPieceAt(new Position(j,i)).isKing() && this.getPieceAt(new Position(j,i)).getColor() == color) {
+                Piece checkpiece = this.getPieceAt(new Position(j, i));
+                if (this.getPieceAt(new Position(j, i)).isKing() && this.getPieceAt(new Position(j, i)).getColor() == color) {
                     Position checkPosition = null;
                     Position home = new Position(j, i);
                     int[][] knightMoves = {
@@ -190,7 +242,7 @@ public class Board {
 //                        System.out.println ("in check");
                         return true;
                     }
-                    if (rightCheckPosition.isOnBoard() && getPieceAt(rightCheckPosition).isPawn() && getPieceAt(rightCheckPosition).getColor() != color){
+                    if (rightCheckPosition.isOnBoard() && getPieceAt(rightCheckPosition).isPawn() && getPieceAt(rightCheckPosition).getColor() != color) {
 //                        System.out.println ("in check");
                         return true;
                     }
@@ -198,7 +250,7 @@ public class Board {
                     for (int[] kingMove : kingMoves) {
                         checkPosition = new Position(home.getX() + kingMove[0], home.getY() + kingMove[1]);
                         if (checkPosition.isOnBoard()) {
-                            if (getPieceAt(checkPosition).isKing()){
+                            if (getPieceAt(checkPosition).isKing()) {
 //                                System.out.println ("in check");
                                 return true;
                             }
@@ -219,24 +271,87 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public int getWinState(Color color){
+    public int getWinState(Color color) {
         int moves = 0;
-    for (Piece[] pieces : this.getBoard()) {
-        for (Piece p : pieces) {
-            if (p.getColor() == color){
-                moves += p.getMoves(this).size();
-                if (moves > 0){
-                    return 0;
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    moves += p.getMoves(this).size();
+                    if (moves > 0) {
+                        return 0;
+                    }
                 }
-                }
+            }
+        }
+        if (this.isColorInCheck(color) && moves == 0) {
+            return 2;
+        } else if (moves == 0) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public void setCastleStates(String fenCastleData) {
+        boolean whiteKing = false;
+        boolean whiteQueen = false;
+        boolean blackKing = false;
+        boolean blackQueen = false;
+        for (char c : fenCastleData.toCharArray()) {
+            switch (c) {
+                case 'K':
+                    whiteKing = true;
+                    break;
+                case 'Q':
+                    whiteQueen = true;
+                    break;
+                case 'k':
+                    blackKing = true;
+                    break;
+                case 'q':
+                    blackQueen = true;
+                    break;
+            }
+        }
+        if (whiteKing) {
+            if (whiteQueen) {
+                this.whiteCastleMoveState = 0;
+            } else {
+                this.whiteCastleMoveState = 2;
+            }
+        } else if (whiteQueen) {
+            this.whiteCastleMoveState = 1;
+        } else {
+            this.whiteCastleMoveState = 3;
+        }
+        if (blackKing) {
+            if (blackQueen) {
+                this.blackCastleMoveState = 0;
+            } else {
+                this.blackCastleMoveState = 2;
+            }
+        } else if (blackQueen) {
+            this.blackCastleMoveState = 1;
+        } else {
+            this.blackCastleMoveState = 3;
         }
     }
-    if (this.isColorInCheck(color) && moves == 0) {
-        return 2;
-    } else if  (moves == 0){
-        return 1;
+
+    public static Color getColorFromString(String color){
+        if (color == "w")
+            return Color.w;
+        else if (color == "b"){
+            return Color.b;
+        }
+        return Color.g;
     }
-   return 0;
+    public static Position decodeInPassingSquare(String fenData){
+        if (fenData.equals("-")){
+            return new Position(8,8);
+        }
+        char one = fenData.charAt(0);
+        int x = ((int) one) - 97;
+        int y = fenData.charAt(1);
+        return new Position(x,y);
     }
 
     public void importBoard(String fenBoard) {
@@ -244,9 +359,10 @@ public class Board {
         int y = 0;
         int end = fenBoard.length();
         String[] splitFen = fenBoard.split(" ");
-        String boardState = fenBoard.substring(splitFen.length, end);
-//        System.out.println (boardState);
         fenBoard = splitFen[0];
+        this.colorToMove = getColorFromString(splitFen[1]);
+        setCastleStates(splitFen[2]);
+        setInPassingSquare(decodeInPassingSquare(splitFen[3]));
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
                 board[y][x] = getPiece(fenBoard.charAt(i), x, y);
@@ -317,11 +433,11 @@ public class Board {
         canEnpassant = logic;
     }
 
-    public Position getInPassingSquare(){
+    public Position getInPassingSquare() {
         return inPassingSquare;
     }
 
-    public  void copyBoard(Board board){
+    public void copyBoard(Board board) {
         int x = 0, y = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
@@ -340,9 +456,7 @@ public class Board {
         child.setCanEnpassant(board.getCanEnpassant());
         child.increaseWhiteMoveState(board.getWhiteCastleMoveState());
         child.increaseBlackMoveState(board.getBlackCastleMoveState());
-
         child.copyBoard(board);
-
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }

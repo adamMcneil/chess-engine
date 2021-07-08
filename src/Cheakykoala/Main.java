@@ -3,6 +3,7 @@ package Cheakykoala;
 import Cheakykoala.Pieces.*;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     public static int index = 0;
@@ -10,18 +11,45 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
-//        board.addPiece(new Position(1,3), new Pawn(Color.w, new Position(1,3)));
-//        board.printBoard();
-//        Position beginning = new Position(0,1);
-//        Position end = new Position(0,3);
-//        Move move = new Move(beginning, end);
-//        board.getPieceAt(beginning).move(board, move);
-//        board.printBoard();
-//        for (Move m: board.getPieceAt(new Position(1,3)).getMoves(board)){
-//            System.out.println (m);
-//        }
-        playMinimax(board);
+//        board.importBoard("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - ");
+        System.out.println(countNodes(board, 3, Color.w));
+        System.out.println(board.getCaptures());
         System.out.println(index);
+
+        humanVsMinimax(board, 1000);
+    }
+
+    public static void humanVsMinimax(Board board, int numTurns){
+        for (int i = 0; i < numTurns; i++) {
+            board.printBoard();
+            System.out.println();
+            playMinimax(board);
+            board.printBoard();
+            System.out.println();
+            humanPlay(board, Color.b);
+        }
+    }
+
+    public  static void humanPlay(Board board, Color color){
+        Scanner input = new Scanner(System.in);
+        boolean wasLegal = false;
+        while (!wasLegal){
+            System.out.print("Piece you want to move : ");
+            String beginning = input.nextLine();
+            System.out.println();
+            System.out.print("Where you would so like to move your pieceage to sir : ");
+            String end = input.nextLine();
+            System.out.println();
+            Position first = new Position(Character.getNumericValue(beginning.charAt(0)), Character.getNumericValue(beginning.charAt(1)));
+            Position last = new Position(Character.getNumericValue(end.charAt(0)), Character.getNumericValue(end.charAt(1)));
+            if (new Move(first, last).isMoveLegal(board, color)){
+                wasLegal = true;
+                board.getPieceAt(first).move(board, new Move (first, last));
+                System.out.println("mediocre move");
+                return;
+            }
+            System.out.println("GO BACK TO CHECKERS!");
+        }
     }
 
     public static Color getOppositeColor(Color color) {
@@ -31,31 +59,36 @@ public class Main {
         return Color.w;
     }
 
-    public static void countNodes(int depth, Color color) {
-        Board board = new Board();
+    public static int countNodes(Board board, int depth, Color color) {
         int count = 0;
-        for (int x = depth; x >= 0; x++) {
-            for (Move move : getAllMoves(board, color)) {
-                board.getChild(board, move);
-                countNodes(x - 1, getOppositeColor(color));
-            }
+        Board child;
+        if (depth == 0) {
+            return 1;
         }
-
-    }
-        System.out.println(count);
-}
-
-    public static ArrayList<Move> getAllMoves(Board board, Color color) {
-        ArrayList<Move> moves = new ArrayList<>();
-        for (Piece[] pieces : board.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    moves.addAll(p.getMoves(board));
-                }
-            }
+        for (Move move : board.getAllMoves(color)) {
+            child = board.getChild(board, move);
+            count += countNodes(child, depth - 1, getOppositeColor(color));
         }
-        return moves;
+        return count;
     }
+
+//u64 Perft(int depth)
+//{
+//  MOVE move_list[256];
+//  int n_moves, i;
+//  u64 nodes = 0;
+//
+//  if (depth == 0)
+//    return 1ULL;
+//
+//  n_moves = GenerateLegalMoves(move_list);
+//  for (i = 0; i < n_moves; i++) {
+//    MakeMove(move_list[i]);
+//    nodes += Perft(depth - 1);
+//    UndoMove(move_list[i]);
+//  }
+//  return nodes;
+//}
 
 
     public static void comparePlay(Board board, int depth) throws InterruptedException {
@@ -128,7 +161,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 4, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+                        double mx = minimax(child, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -146,7 +179,7 @@ public class Main {
     }
 
     public static double evalBoard(Board board) {
-        index++;
+//        index++;
 //        board.printBoard();
 //        System.out.println(index);
         int eval = 0;

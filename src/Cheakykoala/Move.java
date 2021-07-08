@@ -26,6 +26,10 @@ public class Move {
         return false;
     }
 
+    public boolean isCapture(Board board) {
+        return !board.getPieceAt(this.end).isEmpty();
+    }
+
     public boolean isInPassingMove(Board board){
         return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty() && this.getBeginning().getX() != this.getEnd().getX());
     }
