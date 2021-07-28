@@ -67,11 +67,6 @@ public class Board {
         return moves;
     }
 
-    public void increaseCount() {
-        count++;
-        System.out.println(count);
-    }
-
     public void setMoveState(Piece piece, Move move) {
         if (piece.isKing()) {
             if (piece.getColor() == Color.w) {
@@ -344,13 +339,15 @@ public class Board {
         }
         return Color.g;
     }
+
     public static Position decodeInPassingSquare(String fenData){
         if (fenData.equals("-")){
             return new Position(8,8);
         }
+        this.canEnpassant = true;
         char one = fenData.charAt(0);
         int x = ((int) one) - 97;
-        int y = fenData.charAt(1);
+        int y = 7 - (Character.getNumericValue(fenData.charAt(1)) - 1);
         return new Position(x,y);
     }
 

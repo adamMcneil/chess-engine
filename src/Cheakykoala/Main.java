@@ -11,15 +11,22 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         //I CHANGED MOVE
         Board board = new Board();
-//        board.importBoard("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - ");
-        System.out.println(countNodes(board, 3, Color.w));
-        System.out.println(board.getCaptures());
-        System.out.println(index);
+        board.importBoard("8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3");
+        board.printBoard();
+        System.out.println (board.getInPassingSquare());
+        System.out.println (board.getCanEnpassant());
+        Position position = new Position(2,4);
+//        System.out.println (board.getAllMoves(Color.b));
+        System.out.println (board.getPieceAt(position).getMoves(board));
+        System.out.println (countNodes(board, 1, Color.b));
+//        playMinimax(board);
+//        System.out.println(board.getCaptures());
+//        System.out.println(index);
 
-        humanVsMinimax(board, 1000);
+//        humanVsMinimax(board, 1000);
     }
 
-    public static void humanVsMinimax(Board board, int numTurns){
+    public static void humanVsMinimax(Board board, int numTurns) {
         for (int i = 0; i < numTurns; i++) {
             board.printBoard();
             System.out.println();
@@ -30,10 +37,10 @@ public class Main {
         }
     }
 
-    public  static void humanPlay(Board board, Color color){
+    public static void humanPlay(Board board, Color color) {
         Scanner input = new Scanner(System.in);
         boolean wasLegal = false;
-        while (!wasLegal){
+        while (!wasLegal) {
             System.out.print("Piece you want to move : ");
             String beginning = input.nextLine();
             System.out.println();
@@ -42,9 +49,9 @@ public class Main {
             System.out.println();
             Position first = new Position(Character.getNumericValue(beginning.charAt(0)), Character.getNumericValue(beginning.charAt(1)));
             Position last = new Position(Character.getNumericValue(end.charAt(0)), Character.getNumericValue(end.charAt(1)));
-            if (new Move(first, last).isMoveLegal(board, color)){
+            if (new Move(first, last).isMoveLegal(board, color)) {
                 wasLegal = true;
-                board.getPieceAt(first).move(board, new Move (first, last));
+                board.getPieceAt(first).move(board, new Move(first, last));
                 System.out.println("mediocre move");
                 return;
             }
@@ -161,7 +168,7 @@ public class Main {
                 if (p.getColor() == Color.w) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(board, m);
-                        double mx = minimax(child, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+                        double mx = minimax(child, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -179,7 +186,7 @@ public class Main {
     }
 
     public static double evalBoard(Board board) {
-//        index++;
+        index++;
 //        board.printBoard();
 //        System.out.println(index);
         int eval = 0;
