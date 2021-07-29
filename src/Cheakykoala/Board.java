@@ -340,7 +340,7 @@ public class Board {
         return Color.g;
     }
 
-    public static Position decodeInPassingSquare(String fenData){
+    public Position decodeInPassingSquare(String fenData){
         if (fenData.equals("-")){
             return new Position(8,8);
         }
