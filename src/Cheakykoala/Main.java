@@ -9,20 +9,37 @@ public class Main {
     public static int index = 0;
 
     public static void main(String[] args) throws InterruptedException {
-        //I CHANGED MOVE
+        testNodes2();
+    }
+
+    public static void testNodes(Board board){
+        if (countNodes(board, 1, Color.w) == 20)
+            System.out.println ("depth 1");
+        if (countNodes(board, 2, Color.w) == 400)
+            System.out.println ("depth 2");
+        if (countNodes(board, 3, Color.w) == 8902)
+            System.out.println ("depth 3");
+        if (countNodes(board, 4, Color.w) == 197281)
+            System.out.println ("depth 4");
+        if (countNodes(board, 5, Color.w) == 4865609)
+            System.out.println ("depth 5");
+    }
+
+    public static void testNodes2 (){
         Board board = new Board();
-        board.importBoard("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
+        board.importBoard("r3k2N/p6p/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         board.printBoard();
-//        System.out.println (board.getInPassingSquare());
-//        System.out.println (board.getCanEnpassant());
-        Position position = new Position(2,4);
-//        System.out.println (board.getAllMoves(Color.b));
-//        System.out.println (board.getPieceAt(position).getMoves(board));
-        System.out.println (countNodes(board, 6, Color.b));
-//        playMinimax(board);
-//        System.out.println(board.getCaptures());
-//        System.out.println(index);
-//        humanVsMinimax(board, 1000);
+        Position position = new Position(4,0);
+        System.out.println (board.getPieceAt(position).getMoves(board));
+        System.out.println (board.getPieceAt(position).getMoves(board).size());
+//        if (countNodes(board, 1, Color.w) == 48)
+//            System.out.println ("depth 1");
+//        if (countNodes(board, 2, Color.w) == 2039)
+//            System.out.println ("depth 2");
+//        if (countNodes(board, 3, Color.w) == 97862)
+//            System.out.println ("depth 3");
+//        if (countNodes(board, 4, Color.w) == 4085603)
+//            System.out.println (countNodes(board, 1, Color.b));
     }
 
     public static void humanVsMinimax(Board board, int numTurns) {

@@ -31,7 +31,7 @@ public class King extends Piece {
         int moveState;
         if (color == Color.w) {
             moveState = board.getWhiteCastleMoveState();
-            if ((moveState == 0 || moveState == 2)) {
+            if ((moveState == 0 || moveState == 2) && !board.isColorInCheck(color)) {
                 Position right1 = new Position(5, 7);
                 Position right2 = new Position(6, 7);
                 Move move1 = new Move(position, right1);
@@ -40,7 +40,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(this.position, new Position(6, 7)));
                 }
             }
-            if (moveState == 0 || moveState == 1) {
+            if ((moveState == 0 || moveState == 1) && !board.isColorInCheck(color)) {
                 Position left1 = new Position(3, 7);
                 Position left2 = new Position(2, 7);
                 Position left3 = new Position(1, 7);
@@ -52,7 +52,7 @@ public class King extends Piece {
             }
         } else {
             moveState = board.getBlackCastleMoveState();
-            if (moveState == 0 || moveState == 2) {
+            if ((moveState == 0 || moveState == 2) && !board.isColorInCheck(color)) {
                 Position right1 = new Position(5, 0);
                 Position right2 = new Position(6, 0);
                 Move move1 = new Move(position, right1);
@@ -61,7 +61,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(this.position, new Position(6, 0)));
                 }
             }
-            if (moveState == 0 || moveState == 1) {
+            if ((moveState == 0 || moveState == 1) && !board.isColorInCheck(color)) {
                 Position left1 = new Position(3, 0);
                 Position left2 = new Position(2, 0);
                 Position left3 = new Position(1, 0);

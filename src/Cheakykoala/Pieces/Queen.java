@@ -41,12 +41,14 @@ public class Queen extends Piece {
         for (int[] arr : baseMoves) {
             Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
             Move move = new Move(position, checkPosition);
-            while(move.getEnd().isOnBoard()){
-            if (move.isMoveLegal(board, color)) {
-                move = new Move(position, checkPosition);
-                moves.add(move);
-            }
-                if (board.getPieceAt(checkPosition).getColor() != Color.g)
+            while (move.getEnd().isOnBoard()) {
+                if (this.isSameColor(board.getPieceAt(move.getEnd())))
+                    break;
+                if (move.isMoveLegal(board, color)) {
+                    move = new Move(position, checkPosition);
+                    moves.add(move);
+                }
+                if (this.isOppositeColor(board.getPieceAt(move.getEnd())))
                     break;
                 checkPosition = new Position(checkPosition.getX() + arr[0], checkPosition.getY() + arr[1]);
                 move = new Move(position, checkPosition);
