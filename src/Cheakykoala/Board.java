@@ -128,6 +128,7 @@ public class Board {
 
     public void printBoard() {
         for (int i = 0; i < board.length; i++) {
+            System.out.print(8 - i + " ");
             for (int j = 0; j < board[0].length; j++) {
                 if ((i + j) % 2 == 0) {
                     System.out.print("\033[40m");
@@ -139,7 +140,9 @@ public class Board {
             }
             System.out.println();
         }
+        System.out.println("   a  b  c  d  e  f  g  h");
     }
+
 
     public Piece getPieceAt(Position position) {
         return board[position.getY()][position.getX()];
