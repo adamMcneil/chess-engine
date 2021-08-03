@@ -2,6 +2,8 @@ package Cheakykoala;
 
 import Cheakykoala.Pieces.*;
 
+import java.util.Scanner;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,31 +11,93 @@ public class Main {
     public static int index = 0;
 
     public static void main(String[] args) throws InterruptedException {
-       testNodes2();
+//        debugger();
+        Board board = new Board();
+        Scanner consoleInput = new Scanner(System.in);
+        while (true) {
+            board.printBoard();
+            String input = consoleInput.nextLine();
+            System.out.println(input);
+            if (input.equals("go")) {
+//                    Color color;
+//                    if (input.contains("w")){
+//                        color = Color.w;
+//                    }
+//                    else
+//                        color = Color.b;
+                System.out.println(playMinimax(board, Color.w));
+            } else {
+                UCIPosition(board, input);
+            }
+        }
+    }
+
+
+    public static void UCIPosition(Board board, String UCIPosition) {
+        String[] UCIStringArray = UCIPosition.split(" ");
+        if (UCIStringArray[1].equals("startpos")) {
+            board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        } else {
+            board.importBoard(UCIStringArray[1]);
+        }
+        for (int i = 3; i < UCIStringArray.length; i++) {
+//            System.out.print(charToInt(UCIStringArray[i].charAt(0)) + " " +  (8 - Character.valueOf(UCIStringArray[i].charAt(1))));
+//            System.out.println(charToInt(UCIStringArray[i].charAt(2)) + " " + 8 -  Character.valueOf(UCIStringArray[i].charAt(3)));
+            Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
+            Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
+            board.getPieceAt(first).move(board, new Move(first, second));
+        }
+        //go
+//        position startpos moves e2e4
+    }
+
+    public static int charToInt(char letter) {
+        switch (letter) {
+            case 'a':
+                return 0;
+            case 'b':
+                return 1;
+            case 'c':
+                return 2;
+            case 'd':
+                return 3;
+            case 'e':
+                return 4;
+            case 'f':
+                return 5;
+            case 'g':
+                return 6;
+            case 'h':
+                return 7;
+        }
+        return 999;
     }
 
     public static void debugger() {
         Board board = new Board();
-        String fenString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K1R1 b Qkq - 1 1";
+        String fenString = "r3k2r/p1ppqNb1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1";
         board.importBoard(fenString);
         board.printBoard();
+        int total = 0;
+        int nodes = 0;
         Color color;
-        if (fenString.contains("w")){
+        if (fenString.contains("w")) {
             color = Color.w;
-        }
-        else
+        } else
             color = Color.b;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
                     for (Move m : p.getMoves(board)) {
-                        System.out.print (m.getBeginning().convertPosition() + " -> " + m.getEnd().convertPosition() + " ");
-                        System.out.println(countNodes(board.getChild(m), 3, getOppositeColor(color)));
+                        System.out.print(m.getBeginning().convertPosition() + " -> " + m.getEnd().convertPosition() + " ");
+                        nodes = countNodes(board.getChild(m), 2, getOppositeColor(color));
+                        System.out.println(nodes);
+                        total = total + nodes;
                     }
                 }
             }
         }
-        System.out.println (countNodes(board, 4,color));
+        System.out.println(total);
     }
 
     public static void testNodes(Board board) {
@@ -146,7 +210,7 @@ public class Main {
         board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
     }
 
-    public static void playMinimax(Board board, Color color) {
+    public static String playMinimax(Board board, Color color) {
         double bestMoveValue;
         boolean isMaxPlayer;
         if (color == Color.w) {
@@ -180,7 +244,7 @@ public class Main {
             }
         }
         bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
-        board.getPieceAt(bestMove.getBeginning()).move(board, bestMove);
+        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).toString();
     }
 
     public static double evalBoard(Board board) {
