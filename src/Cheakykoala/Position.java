@@ -41,4 +41,8 @@ public class Position {
     public String toString() {
         return "(" + getX() + ", " + getY() + ")";
     }
+
+    public String convertPosition(){
+        return new StringBuilder().append((char) (position[0] + 97)).append((8 - position[1])).toString();
+    }
 }

@@ -450,13 +450,13 @@ public class Board {
         }
     }
 
-    public Board getChild(Board board, Move move) {
+    public Board getChild(Move move) {
         Board child = new Board();
-        child.setInPassingSquare(board.getInPassingSquare());
-        child.setCanEnpassant(board.getCanEnpassant());
-        child.increaseWhiteMoveState(board.getWhiteCastleMoveState());
-        child.increaseBlackMoveState(board.getBlackCastleMoveState());
-        child.copyBoard(board);
+        child.setInPassingSquare(this.getInPassingSquare());
+        child.setCanEnpassant(this.getCanEnpassant());
+        child.increaseWhiteMoveState(this.getWhiteCastleMoveState());
+        child.increaseBlackMoveState(this.getBlackCastleMoveState());
+        child.copyBoard(this);
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }

@@ -9,29 +9,54 @@ public class Main {
     public static int index = 0;
 
     public static void main(String[] args) throws InterruptedException {
-        playGame(100);
+       testNodes2();
     }
 
-    public static void testNodes(Board board){
-        if (countNodes(board, 1, Color.w) == 20)
-            System.out.println ("depth 1");
-        if (countNodes(board, 2, Color.w) == 400)
-            System.out.println ("depth 2");
-        if (countNodes(board, 3, Color.w) == 8902)
-            System.out.println ("depth 3");
-        if (countNodes(board, 4, Color.w) == 197281)
-            System.out.println ("depth 4");
-        if (countNodes(board, 5, Color.w) == 4865609)
-            System.out.println ("depth 5");
-    }
-
-    public static void testNodes2 (){
+    public static void debugger() {
         Board board = new Board();
-        board.importBoard("r3k2N/p6p/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        String fenString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K1R1 b Qkq - 1 1";
+        board.importBoard(fenString);
         board.printBoard();
-        Position position = new Position(4,0);
-        System.out.println (board.getPieceAt(position).getMoves(board));
-        System.out.println (board.getPieceAt(position).getMoves(board).size());
+        Color color;
+        if (fenString.contains("w")){
+            color = Color.w;
+        }
+        else
+            color = Color.b;
+        for (Piece[] pieces : board.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    for (Move m : p.getMoves(board)) {
+                        System.out.print (m.getBeginning().convertPosition() + " -> " + m.getEnd().convertPosition() + " ");
+                        System.out.println(countNodes(board.getChild(m), 3, getOppositeColor(color)));
+                    }
+                }
+            }
+        }
+        System.out.println (countNodes(board, 4,color));
+    }
+
+    public static void testNodes(Board board) {
+        if (countNodes(board, 1, Color.w) == 20)
+            System.out.println("depth 1");
+        if (countNodes(board, 2, Color.w) == 400)
+            System.out.println("depth 2");
+        if (countNodes(board, 3, Color.w) == 8902)
+            System.out.println("depth 3");
+        if (countNodes(board, 4, Color.w) == 197281)
+            System.out.println("depth 4");
+        if (countNodes(board, 5, Color.w) == 4865609)
+            System.out.println("depth 5");
+    }
+
+    public static void testNodes2() {
+        Board board = new Board();
+        board.importBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
+        Color color = Color.w;
+        board.printBoard();
+//        Position position = new Position(4,0);
+//        System.out.println (board.getPieceAt(position).getMoves(board));
+//        System.out.println (board.getPieceAt(position).getMoves(board).size());
 //        if (countNodes(board, 1, Color.w) == 48)
 //            System.out.println ("depth 1");
 //        if (countNodes(board, 2, Color.w) == 2039)
@@ -39,7 +64,12 @@ public class Main {
 //        if (countNodes(board, 3, Color.w) == 97862)
 //            System.out.println ("depth 3");
 //        if (countNodes(board, 4, Color.w) == 4085603)
-//            System.out.println (countNodes(board, 1, Color.b));
+        System.out.println(countNodes(board, 1, color));
+        System.out.println(countNodes(board, 2, color));
+        System.out.println(countNodes(board, 3, color));
+        System.out.println(countNodes(board, 4, color));
+        System.out.println(countNodes(board, 5, color));
+        System.out.println(countNodes(board, 6, color));
     }
 
     public static Color getOppositeColor(Color color) {
@@ -56,7 +86,7 @@ public class Main {
             return 1;
         }
         for (Move move : board.getAllMoves(color)) {
-            child = board.getChild(board, move);
+            child = board.getChild(move);
             count += countNodes(child, depth - 1, getOppositeColor(color));
         }
         return count;
@@ -86,7 +116,7 @@ public class Main {
             System.out.print("Where you would so like to move your pieceage to sir : ");
             String end = input.nextLine();
             System.out.println();
-            System.out.println( convertLetter(beginning.charAt(0)));
+            System.out.println(convertLetter(beginning.charAt(0)));
             System.out.println(8 - Character.getNumericValue(beginning.charAt(1)));
 
             Position first = new Position(convertLetter(beginning.charAt(0)), 8 - Character.getNumericValue(beginning.charAt(1)));
@@ -123,8 +153,7 @@ public class Main {
             bestMoveValue = Double.NEGATIVE_INFINITY;
             isMaxPlayer = false;
 
-        }
-        else {
+        } else {
             bestMoveValue = Double.POSITIVE_INFINITY;
             isMaxPlayer = true;
         }
@@ -136,7 +165,7 @@ public class Main {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
                     for (Move m : p.getMoves(board)) {
-                        child = board.getChild(board, m);
+                        child = board.getChild(m);
                         double mx = minimax(child, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isMaxPlayer);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
@@ -202,7 +231,7 @@ public class Main {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.w) {
                         for (Move move : piece.getMoves(board)) {
-                            eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, false);
+                            eval = minimax(board.getChild(move), depth - 1, alpha, beta, false);
                             maxEval = Math.max(alpha, eval);
                             alpha = Math.max(alpha, eval);
                             if (beta <= alpha) {
@@ -219,7 +248,7 @@ public class Main {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.b) {
                         for (Move move : piece.getMoves(board)) {
-                            eval = minimax(board.getChild(board, move), depth - 1, alpha, beta, true);
+                            eval = minimax(board.getChild(move), depth - 1, alpha, beta, true);
                             minEval = Math.min(minEval, eval);
                             beta = Math.max(beta, eval);
                             if (beta <= alpha) {
@@ -233,11 +262,11 @@ public class Main {
         }
     }
 
-    public static int convertLetter(char x){
+    public static int convertLetter(char x) {
         return (x - 97);
     }
 
-    public static char convertNumber(int x){
+    public static char convertNumber(int x) {
         return ((char) (x + 97));
     }
 }

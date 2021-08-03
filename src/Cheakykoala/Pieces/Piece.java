@@ -133,6 +133,7 @@ public abstract class Piece {
     }
 
     public void move(Board board, Move move) {
+        board.setMoveState(this, move);
         if (move.isPromotionMove(move)) {
             promotionMove(move, board);
         } else if (move.isCastleMove(board)) {
@@ -148,7 +149,6 @@ public abstract class Piece {
                 board.increaseCaptures();
             }
         }
-        board.setMoveState(this, move);
     }
 
     public char getLetter() {

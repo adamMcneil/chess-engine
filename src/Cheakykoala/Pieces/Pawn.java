@@ -108,7 +108,7 @@ public class Pawn extends Piece {
         int direction = this.getDirection(color);
         checkPosition = new Position(position.getX(), position.getY() + direction);
         Move move = new Move(position, checkPosition);
-        if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g && checkPosition.getY() == 0 || checkPosition.getY() == 7) {
+        if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g && (checkPosition.getY() == 0 || checkPosition.getY() == 7)) {
             Move moveQueen = new PromotionMove(position, checkPosition, new Queen(this.color, move.getEnd()));
             Move moveKnight = new PromotionMove(position, checkPosition, new Knight(this.color, move.getEnd()));
             Move moveRook = new PromotionMove(position, checkPosition, new Rook(this.color, move.getEnd()));

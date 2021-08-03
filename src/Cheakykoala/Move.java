@@ -51,7 +51,7 @@ public class Move {
         if (moved.isSameColor(taken)) {
             return false;
         }
-        Board checkBoard = board.getChild(board, this);
+        Board checkBoard = board.getChild(this);
         if (checkBoard.isColorInCheck(color)) {
             return false;
         }
