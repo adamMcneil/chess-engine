@@ -11,25 +11,7 @@ public class Main {
     public static int index = 0;
 
     public static void main(String[] args) throws InterruptedException {
-//        debugger();
-        Board board = new Board();
-        Scanner consoleInput = new Scanner(System.in);
-        while (true) {
-            board.printBoard();
-            String input = consoleInput.nextLine();
-            System.out.println(input);
-            if (input.equals("go")) {
-//                    Color color;
-//                    if (input.contains("w")){
-//                        color = Color.w;
-//                    }
-//                    else
-//                        color = Color.b;
-                System.out.println(playMinimax(board, Color.w));
-            } else {
-                UCIPosition(board, input);
-            }
-        }
+        playGame(9999);
     }
 
 
@@ -100,7 +82,8 @@ public class Main {
         System.out.println(total);
     }
 
-    public static void testNodes(Board board) {
+    public static void testNodes() {
+        Board board = new Board();
         if (countNodes(board, 1, Color.w) == 20)
             System.out.println("depth 1");
         if (countNodes(board, 2, Color.w) == 400)
@@ -115,25 +98,16 @@ public class Main {
 
     public static void testNodes2() {
         Board board = new Board();
+        ArrayList<String> fen = new ArrayList<>();
+        fen.add("r6r/1b2k1bq/8/8/7B/8/8/R3K2R b KQ - 3 2");
+
         board.importBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
         Color color = Color.w;
         board.printBoard();
-//        Position position = new Position(4,0);
-//        System.out.println (board.getPieceAt(position).getMoves(board));
-//        System.out.println (board.getPieceAt(position).getMoves(board).size());
-//        if (countNodes(board, 1, Color.w) == 48)
-//            System.out.println ("depth 1");
-//        if (countNodes(board, 2, Color.w) == 2039)
-//            System.out.println ("depth 2");
-//        if (countNodes(board, 3, Color.w) == 97862)
-//            System.out.println ("depth 3");
-//        if (countNodes(board, 4, Color.w) == 4085603)
-        System.out.println(countNodes(board, 1, color));
-        System.out.println(countNodes(board, 2, color));
-        System.out.println(countNodes(board, 3, color));
-        System.out.println(countNodes(board, 4, color));
-        System.out.println(countNodes(board, 5, color));
-        System.out.println(countNodes(board, 6, color));
+        Position position = new Position(4,0);
+        System.out.println (board.getPieceAt(position).getMoves(board));
+        System.out.println (board.getPieceAt(position).getMoves(board).size());
+
     }
 
     public static Color getOppositeColor(Color color) {
@@ -162,11 +136,11 @@ public class Main {
             board.printBoard();
             System.out.println();
 //            Thread.sleep(3000);
-            playMinimax(board, Color.w);
+            playMinimax(board, 5, Color.w);
             board.printBoard();
             System.out.println();
 //            Thread.sleep(3000);
-            playMinimax(board, Color.b);
+            playHuman(board, Color.b);
         }
     }
 
@@ -210,7 +184,7 @@ public class Main {
         board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
     }
 
-    public static String playMinimax(Board board, Color color) {
+    public static String playMinimax(Board board, int depth, Color color) {
         double bestMoveValue;
         boolean isMaxPlayer;
         if (color == Color.w) {
@@ -230,7 +204,7 @@ public class Main {
                 if (p.getColor() == color) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(m);
-                        double mx = minimax(child, 2, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isMaxPlayer);
+                        double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isMaxPlayer);
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -285,12 +259,12 @@ public class Main {
         double eval;
         double minEval;
         double maxEval;
-//        System.out.println(board.getWinState(Color.w) + " " + board.getWinState(Color.b));
         if (depth == 0 || board.getWinState(Color.w) != 0 || board.getWinState(Color.b) != 0) {
             return (evalBoard(board));
         }
         if (isMaxPlayer) {
             maxEval = -9999;
+            prune:
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.w) {
@@ -299,7 +273,7 @@ public class Main {
                             maxEval = Math.max(alpha, eval);
                             alpha = Math.max(alpha, eval);
                             if (beta <= alpha) {
-                                break;
+                                break prune;
                             }
                         }
                     }
@@ -308,15 +282,16 @@ public class Main {
             return maxEval;
         } else {
             minEval = 9999;
+            prune:
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.b) {
                         for (Move move : piece.getMoves(board)) {
                             eval = minimax(board.getChild(move), depth - 1, alpha, beta, true);
                             minEval = Math.min(minEval, eval);
-                            beta = Math.max(beta, eval);
+                            beta = Math.min(beta, eval);
                             if (beta <= alpha) {
-                                break;
+                                break prune;
                             }
                         }
                     }
