@@ -11,7 +11,9 @@ public class Main {
     public static int index = 0;
 
     public static void main(String[] args) throws InterruptedException {
-        playGame(9999);
+//        playGame(9999);
+        Board board = new Board();
+        apiConnect(board);
     }
 
 
@@ -20,7 +22,7 @@ public class Main {
         while (true) {
             board.printBoard();
             String input = consoleInput.nextLine();
-            System.out.println(input);
+//            System.out.println(input);
             if (input.equals("go")) {
 //                    Color color;
 //                    if (input.contains("w")){
@@ -28,8 +30,13 @@ public class Main {
 //                    }
 //                    else
 //                        color = Color.b;
-                System.out.println(playMinimax(board, 5, Color.w));
-            } else {
+                System.out.println(playMinimax(board, 3, Color.w));
+            } else if (input.equals("uci")){
+                System.out.println ("uciok");
+            } else if (input.equals("isready")){
+                System.out.println("readyok");
+            }
+            else {
                 UCIPosition(board, input);
             }
         }
