@@ -31,10 +31,10 @@ public class Main {
 //                    else
 //                        color = Color.b;
                 System.out.println(playMinimax(board, 3, Color.w));
-            } else if (input.equals("uci")){
-                System.out.println ("uciok");
-            } else if (input.equals("isready")){
-                System.out.println("readyok");
+            } else if (input.contains("uci")){
+                System.out.println ("uciok\\n");
+            } else if (input.contains("isready")){
+                System.out.println("readyok\\n");
             }
             else if (input.contains("position")) {
                 UCIPosition(board, input);
