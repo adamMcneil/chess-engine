@@ -155,12 +155,10 @@ public class Main {
         for (int i = 0; i < depth; i++) {
             board.printBoard();
             System.out.println();
-//            Thread.sleep(3000);
-            moveMinimax(board, 5, Color.w);
+            playRandom(board, Color.w);
             board.printBoard();
             System.out.println();
-//            Thread.sleep(3000);
-            playHuman(board, Color.b);
+            moveMinimax(board, 3,Color.b);
         }
     }
 
@@ -219,14 +217,13 @@ public class Main {
             bestMoveValue = Double.NEGATIVE_INFINITY;
             isMaxPlayer = false;
 
-        } else {
+        } else{
             bestMoveValue = Double.POSITIVE_INFINITY;
             isMaxPlayer = true;
         }
         ArrayList<Move> bestMoves = new ArrayList<>();
         Move bestMove;
         Board child;
-        ArrayList<Double> evals = new ArrayList<>();
         for (Piece[] pieces : board.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
@@ -236,10 +233,18 @@ public class Main {
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
-                        if (mx > bestMoveValue) {
-                            bestMoveValue = mx;
-                            bestMoves.clear();
-                            bestMoves.add(m);
+                        if (color == Color.w){
+                            if (mx > bestMoveValue) {
+                                bestMoveValue = mx;
+                                bestMoves.clear();
+                                bestMoves.add(m);
+                            }
+                        } else {
+                            if (mx < bestMoveValue) {
+                                bestMoveValue = mx;
+                                bestMoves.clear();
+                                bestMoves.add(m);
+                            }
                         }
                     }
                 }
@@ -250,9 +255,6 @@ public class Main {
     }
 
     public static double evalBoard(Board board) {
-        index++;
-//        board.printBoard();
-//        System.out.println(index);
         int eval = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
@@ -287,7 +289,13 @@ public class Main {
         double eval;
         double minEval;
         double maxEval;
-        if (depth == 0 || board.getWinState(Color.w) != 0 || board.getWinState(Color.b) != 0) {
+        if (board.getWinState(Color.w) == 2){
+            return Double.NEGATIVE_INFINITY;
+        }
+        if (board.getWinState(Color.b) == 2){
+            return Double.POSITIVE_INFINITY;
+        }
+        if (depth == 0 ||  board.getWinState(Color.w) != 0) { //checks for stalemate
             return (evalBoard(board));
         }
         if (isMaxPlayer) {
@@ -298,6 +306,7 @@ public class Main {
                     if (piece.getColor() == Color.w) {
                         for (Move move : piece.getMoves(board)) {
                             eval = minimax(board.getChild(move), depth - 1, alpha, beta, false);
+
                             maxEval = Math.max(alpha, eval);
                             alpha = Math.max(alpha, eval);
                             if (beta <= alpha) {
@@ -316,6 +325,7 @@ public class Main {
                     if (piece.getColor() == Color.b) {
                         for (Move move : piece.getMoves(board)) {
                             eval = minimax(board.getChild(move), depth - 1, alpha, beta, true);
+
                             minEval = Math.min(minEval, eval);
                             beta = Math.min(beta, eval);
                             if (beta <= alpha) {
