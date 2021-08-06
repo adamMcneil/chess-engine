@@ -273,14 +273,14 @@ public class Main {
         letter = Character.toUpperCase(letter);
         switch (letter) {
             case 'R':
-                return 5;
+                return 500;
             case 'N':
             case 'B':
-                return 3;
+                return 300;
             case 'Q':
-                return 9;
+                return 900;
             case 'P':
-                return 1;
+                return 100;
         }
         return 0;
     }
@@ -295,11 +295,14 @@ public class Main {
         if (board.getWinState(Color.b) == 2){
             return Double.POSITIVE_INFINITY;
         }
-        if (depth == 0 ||  board.getWinState(Color.w) != 0) { //checks for stalemate
+        if (board.getWinState(Color.w) != 0) { //checks for stalemate
+            return (evalBoard(board) * -1);
+        }
+        if (depth == 0){
             return (evalBoard(board));
         }
         if (isMaxPlayer) {
-            maxEval = -9999;
+            maxEval = Double.NEGATIVE_INFINITY;
             prune:
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
@@ -318,7 +321,7 @@ public class Main {
             }
             return maxEval;
         } else {
-            minEval = 9999;
+            minEval = Double.POSITIVE_INFINITY;
             prune:
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
