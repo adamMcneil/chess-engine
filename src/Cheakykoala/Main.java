@@ -15,6 +15,26 @@ public class Main {
     }
 
 
+    public static void apiConnect(Board board){
+        Scanner consoleInput = new Scanner(System.in);
+        while (true) {
+            board.printBoard();
+            String input = consoleInput.nextLine();
+            System.out.println(input);
+            if (input.equals("go")) {
+//                    Color color;
+//                    if (input.contains("w")){
+//                        color = Color.w;
+//                    }
+//                    else
+//                        color = Color.b;
+                System.out.println(playMinimax(board, 5, Color.w));
+            } else {
+                UCIPosition(board, input);
+            }
+        }
+    }
+
     public static void UCIPosition(Board board, String UCIPosition) {
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
@@ -136,7 +156,7 @@ public class Main {
             board.printBoard();
             System.out.println();
 //            Thread.sleep(3000);
-            playMinimax(board, 5, Color.w);
+            moveMinimax(board, 5, Color.w);
             board.printBoard();
             System.out.println();
 //            Thread.sleep(3000);
@@ -182,6 +202,14 @@ public class Main {
         }
         int y = (int) (Math.random() * moves.size());
         board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
+    }
+
+    public static void moveMinimax(Board board, int depth, Color color) {
+        String movestr = playMinimax(board, depth, color);
+        Position beginning = new Position(convertLetter(movestr.charAt(9)), 8 - Character.getNumericValue(movestr.charAt(10)));
+        Position end = new Position(convertLetter(movestr.charAt(11)), 8 - Character.getNumericValue(movestr.charAt(12)));
+        Move move = new Move(beginning, end);
+        board.getPieceAt(beginning).move(board, move);
     }
 
     public static String playMinimax(Board board, int depth, Color color) {
