@@ -20,7 +20,7 @@ public class Main {
     public static void apiConnect(Board board){
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-            board.printBoard();
+//            board.printBoard();
             String input = consoleInput.nextLine();
 //            System.out.println(input);
             if (input.equals("go")) {
@@ -36,7 +36,7 @@ public class Main {
             } else if (input.equals("isready")){
                 System.out.println("readyok");
             }
-            else {
+            else if (input.contains("position")) {
                 UCIPosition(board, input);
             }
         }
