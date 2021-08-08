@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class Main {
     public static int index = 0;
+    public static Color minimaxColor = Color.g;
 
     public static void main(String[] args) throws InterruptedException {
 //        playGame(9999);
@@ -30,7 +31,7 @@ public class Main {
 //                    }
 //                    else
 //                        color = Color.b;
-                System.out.println(playMinimax(board, 3, Color.w));
+                System.out.println(playMinimax(board, 3, minimaxColor));
             } else if (input.contains("uci")){
                 System.out.println ("uciok");
             } else if (input.contains("isready")){
@@ -43,6 +44,7 @@ public class Main {
     }
 
     public static void UCIPosition(Board board, String UCIPosition) {
+        index = 0;
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
             board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -50,13 +52,45 @@ public class Main {
             board.importBoard(UCIStringArray[1]);
         }
         for (int i = 3; i < UCIStringArray.length; i++) {
-//            System.out.print(charToInt(UCIStringArray[i].charAt(0)) + " " +  (8 - Character.valueOf(UCIStringArray[i].charAt(1))));
-//            System.out.println(charToInt(UCIStringArray[i].charAt(2)) + " " + 8 -  Character.valueOf(UCIStringArray[i].charAt(3)));
+            index++;
+            Move move;
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
             Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
-            Move move = new Move(first, second);
+            if (UCIStringArray[i].length() == 5){
+                move = new PromotionMove(first, second, makePiece(first, UCIStringArray[i].charAt(5)));
+            }
+            else {
+                move = new Move(first, second);
+            }
             board.getPieceAt(first).move(board, move);
         }
+        if (index % 2 == 0){
+            minimaxColor = Color.w;
+        } else {
+            minimaxColor = Color.b;
+        }
+    }
+
+    public static Piece makePiece(Position position, char letter){
+        switch (letter){
+            case 'Q':
+                return new Queen(Color.w, position);
+            case'q':
+                return new Queen(Color.b, position);
+            case'N':
+                return new Knight(Color.w, position);
+            case 'n':
+                return new Knight(Color.b, position);
+            case 'B':
+                return new Bishop(Color.w, position);
+            case 'b':
+                return new Bishop(Color.b, position);
+            case 'R':
+                return new Rook(Color.w, position);
+            case 'r':
+                return new Rook(Color.b, position);
+        }
+        return new Empty(position);
     }
 
     public static int charToInt(char letter) {
