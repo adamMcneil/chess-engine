@@ -20,10 +20,10 @@ public class Main {
     public static void apiConnect(Board board){
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-//            board.printBoard();
+            board.printBoard();
             String input = consoleInput.nextLine();
 //            System.out.println(input);
-            if (input.equals("go")) {
+            if (input.contains("go")) {
 //                    Color color;
 //                    if (input.contains("w")){
 //                        color = Color.w;
@@ -32,9 +32,9 @@ public class Main {
 //                        color = Color.b;
                 System.out.println(playMinimax(board, 3, Color.w));
             } else if (input.contains("uci")){
-                System.out.println ("uciok\\n");
+                System.out.println ("uciok");
             } else if (input.contains("isready")){
-                System.out.println("readyok\\n");
+                System.out.println("readyok");
             }
             else if (input.contains("position")) {
                 UCIPosition(board, input);
@@ -54,10 +54,9 @@ public class Main {
 //            System.out.println(charToInt(UCIStringArray[i].charAt(2)) + " " + 8 -  Character.valueOf(UCIStringArray[i].charAt(3)));
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
             Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
-            board.getPieceAt(first).move(board, new Move(first, second));
+            Move move = new Move(first, second);
+            board.getPieceAt(first).move(board, move);
         }
-        //go
-//        position startpos moves e2e4
     }
 
     public static int charToInt(char letter) {
@@ -258,6 +257,9 @@ public class Main {
             }
         }
         bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
+        if (bestMove.isPromotionMove(bestMove)){
+            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString() ;
+        }
         return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).toString();
     }
 
