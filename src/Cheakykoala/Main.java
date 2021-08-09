@@ -13,17 +13,15 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 //        playGame(9999);
-//        Board board = new Board();
-//        apiConnect(board);
-        Piece p = new Queen(Color.b, new Position(0,0));
-        System.out.println(p.getLetter());
+        Board board = new Board();
+        apiConnect(board);
     }
 
 
     public static void apiConnect(Board board){
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-//            board.printBoard();
+            board.printBoard();
             String input = consoleInput.nextLine();
 //            System.out.println(input);
             if (input.contains("go")) {
@@ -46,14 +44,28 @@ public class Main {
     }
 
     public static void UCIPosition(Board board, String UCIPosition) {
+        //position startps moves e2e4
+        int startMoves = 3;
         index = 0;
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
             board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         } else {
-            board.importBoard(UCIStringArray[1]);
+            int i = 2;
+            String fenString = "";
+            fenString = UCIStringArray[1];
+            while (!(UCIStringArray[i].equals("moves"))){
+                fenString += " " + UCIStringArray[i];
+                i++;
+            }
+            fenString.stripLeading();
+            //position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
+            System.out.println(fenString + " " + UCIPosition.indexOf("moves") + 1);
+            board.importBoard(fenString);
+            board.printBoard();
+            startMoves = i + 1;
         }
-        for (int i = 3; i < UCIStringArray.length; i++) {
+        for (int i = startMoves; i < UCIStringArray.length; i++) {
             index++;
             Move move;
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
