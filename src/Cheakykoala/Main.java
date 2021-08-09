@@ -13,15 +13,17 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
 //        playGame(9999);
-        Board board = new Board();
-        apiConnect(board);
+//        Board board = new Board();
+//        apiConnect(board);
+        Piece p = new Queen(Color.b, new Position(0,0));
+        System.out.println(p.getLetter());
     }
 
 
     public static void apiConnect(Board board){
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-            board.printBoard();
+//            board.printBoard();
             String input = consoleInput.nextLine();
 //            System.out.println(input);
             if (input.contains("go")) {
@@ -57,7 +59,7 @@ public class Main {
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
             Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
             if (UCIStringArray[i].length() == 5){
-                move = new PromotionMove(first, second, makePiece(first, UCIStringArray[i].charAt(4)));
+                move = new PromotionMove(first, second, makePiece(second, UCIStringArray[i].charAt(4)));
             }
             else {
                 move = new Move(first, second);
