@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Main {
     public static int index = 0;
-    public static Color minimaxColor = Color.g;
+    public static Color minimaxColor = Color.w;
 
     public static void main(String[] args) throws InterruptedException {
 //        playGame(9999);
@@ -57,7 +57,7 @@ public class Main {
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
             Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
             if (UCIStringArray[i].length() == 5){
-                move = new PromotionMove(first, second, makePiece(first, UCIStringArray[i].charAt(5)));
+                move = new PromotionMove(first, second, makePiece(first, UCIStringArray[i].charAt(4)));
             }
             else {
                 move = new Move(first, second);
