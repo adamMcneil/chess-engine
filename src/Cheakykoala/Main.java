@@ -10,6 +10,9 @@ import java.util.Scanner;
 public class Main {
     public static int index = 0;
     public static Color minimaxColor = Color.w;
+    public static long startTime = System.currentTimeMillis();
+    public static boolean timeout = false;
+    public static int TIMEOUT_TIME = 3000;
 
     public static void main(String[] args) throws InterruptedException {
 //        playGame(9999);
@@ -23,24 +26,34 @@ public class Main {
         while (true) {
             board.printBoard();
             String input = consoleInput.nextLine();
-//            System.out.println(input);
             if (input.contains("go")) {
-//                    Color color;
-//                    if (input.contains("w")){
-//                        color = Color.w;
-//                    }
-//                    else
-//                        color = Color.b;
                 System.out.println(playMinimax(board, 3, minimaxColor));
             } else if (input.contains("uci")){
                 System.out.println ("uciok");
             } else if (input.contains("isready")){
                 System.out.println("readyok");
-            }
-            else if (input.contains("position")) {
+            } else if (input.contains("position")) {
                 UCIPosition(board, input);
             }
         }
+    }
+
+    public static String onGo(Board board){
+        int INITIAL_DEPTH = 3;
+        int CURRENT_DEPTH;
+        Move bestMove = playMinimax(board, 1, minimaxColor);;
+        startTime = System.currentTimeMillis();
+        for (int i = INITIAL_DEPTH;; i++){
+            if (timeout){
+                break;
+            }
+                CURRENT_DEPTH = INITIAL_DEPTH + i;
+                bestMove = playMinimax(board, CURRENT_DEPTH, minimaxColor);
+        }
+        if (bestMove.isPromotionMove(bestMove)){
+            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString() ;
+        }
+        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).toString();
     }
 
     public static void UCIPosition(Board board, String UCIPosition) {
@@ -60,7 +73,6 @@ public class Main {
             }
             fenString.stripLeading();
             //position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
-            System.out.println(fenString + " " + UCIPosition.indexOf("moves") + 1);
             board.importBoard(fenString);
             board.printBoard();
             startMoves = i + 1;
@@ -71,7 +83,13 @@ public class Main {
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
             Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
             if (UCIStringArray[i].length() == 5){
-                move = new PromotionMove(first, second, makePiece(second, UCIStringArray[i].charAt(4)));
+                char letter = UCIStringArray[i].charAt(4);
+                Color color;
+                if (Character.isUpperCase(letter))
+                    color = Color.w;
+                else
+                    color = Color.b;
+                move = new PromotionMove(first, second, makePiece(second, letter, color));
             }
             else {
                 move = new Move(first, second);
@@ -85,24 +103,24 @@ public class Main {
         }
     }
 
-    public static Piece makePiece(Position position, char letter){
+    public static Piece makePiece(Position position, char letter, Color color){
         switch (letter){
             case 'Q':
-                return new Queen(Color.w, position);
+                return new Queen(color, position);
             case'q':
-                return new Queen(Color.b, position);
+                return new Queen(color, position);
             case'N':
-                return new Knight(Color.w, position);
+                return new Knight(color, position);
             case 'n':
-                return new Knight(Color.b, position);
+                return new Knight(color, position);
             case 'B':
-                return new Bishop(Color.w, position);
+                return new Bishop(color, position);
             case 'b':
-                return new Bishop(Color.b, position);
+                return new Bishop(color, position);
             case 'R':
-                return new Rook(Color.w, position);
+                return new Rook(color, position);
             case 'r':
-                return new Rook(Color.b, position);
+                return new Rook(color, position);
         }
         return new Empty(position);
     }
@@ -204,17 +222,17 @@ public class Main {
         return count;
     }
 
-    public static void playGame(int depth) throws InterruptedException {
-        Board board = new Board();
-        for (int i = 0; i < depth; i++) {
-            board.printBoard();
-            System.out.println();
-            playRandom(board, Color.w);
-            board.printBoard();
-            System.out.println();
-            moveMinimax(board, 3,Color.b);
-        }
-    }
+//    public static void playGame(int depth) throws InterruptedException {
+//        Board board = new Board();
+//        for (int i = 0; i < depth; i++) {
+//            board.printBoard();
+//            System.out.println();
+//            playRandom(board, Color.w);
+//            board.printBoard();
+//            System.out.println();
+//            moveMinimax(board, 3,Color.b);
+//        }
+//    }
 
     public static void playHuman(Board board, Color color) {
         Scanner input = new Scanner(System.in);
@@ -256,15 +274,15 @@ public class Main {
         board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
     }
 
-    public static void moveMinimax(Board board, int depth, Color color) {
-        String movestr = playMinimax(board, depth, color);
-        Position beginning = new Position(convertLetter(movestr.charAt(9)), 8 - Character.getNumericValue(movestr.charAt(10)));
-        Position end = new Position(convertLetter(movestr.charAt(11)), 8 - Character.getNumericValue(movestr.charAt(12)));
-        Move move = new Move(beginning, end);
-        board.getPieceAt(beginning).move(board, move);
-    }
+//    public static void moveMinimax(Board board, int depth, Color color) {
+//        String movestr = playMinimax(board, depth, color);
+//        Position beginning = new Position(convertLetter(movestr.charAt(9)), 8 - Character.getNumericValue(movestr.charAt(10)));
+//        Position end = new Position(convertLetter(movestr.charAt(11)), 8 - Character.getNumericValue(movestr.charAt(12)));
+//        Move move = new Move(beginning, end);
+//        board.getPieceAt(beginning).move(board, move);
+//    }
 
-    public static String playMinimax(Board board, int depth, Color color) {
+    public static Move playMinimax(Board board, int depth, Color color) {
         double bestMoveValue;
         boolean isMaxPlayer;
         if (color == Color.w) {
@@ -304,11 +322,7 @@ public class Main {
                 }
             }
         }
-        bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
-        if (bestMove.isPromotionMove(bestMove)){
-            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString() ;
-        }
-        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).toString();
+        return bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
     }
 
     public static double evalBoard(Board board) {
@@ -346,6 +360,8 @@ public class Main {
         double eval;
         double minEval;
         double maxEval;
+        if (System.currentTimeMillis() - startTime > TIMEOUT_TIME)
+            timeout = true;
         if (board.getWinState(Color.w) == 2){
             return Double.NEGATIVE_INFINITY;
         }
@@ -366,7 +382,6 @@ public class Main {
                     if (piece.getColor() == Color.w) {
                         for (Move move : piece.getMoves(board)) {
                             eval = minimax(board.getChild(move), depth - 1, alpha, beta, false);
-
                             maxEval = Math.max(alpha, eval);
                             alpha = Math.max(alpha, eval);
                             if (beta <= alpha) {
