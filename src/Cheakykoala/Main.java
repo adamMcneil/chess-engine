@@ -217,12 +217,28 @@ public class Main {
             for (Piece piece : pieces) {
                 if (piece.getColor() == Color.w) {
                     eval += getPieceEval(piece);
+                    eval += getTableValue(piece, piece.getColor());
                 } else {
                     eval -= getPieceEval(piece);
+                    eval -= getTableValue(piece, piece.getColor());
                 }
             }
         }
         return eval;
+    }
+
+    public static int getTableValue(Piece piece, Color color){
+        int[] valueTable = piece.getValueTable();
+        Position piecePosition = piece.getPosition();
+        int x = piecePosition.getX();
+        int y = piecePosition.getY();
+        if (color == Color.w){
+            return valueTable[(y * 8) + x];
+        } else if (color != Color.g) {
+            System.out.println(x + " " + y);
+            return valueTable[63 - ((y * 8) + x)];
+        }
+        return 0;
     }
 
     public static double getPieceEval(Piece piece) {

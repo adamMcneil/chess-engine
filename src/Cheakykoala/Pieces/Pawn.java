@@ -9,8 +9,17 @@ import Cheakykoala.PromotionMove;
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
-
     public Pawn(Color c, Position position) {
+        this.valueTable = new int[] {
+                0,  0,  0,  0,  0,  0,  0,  0,
+                50, 50, 50, 50, 50, 50, 50, 50,
+                10, 10, 20, 30, 30, 20, 10, 10,
+                5,  5, 10, 25, 25, 10,  5,  5,
+                0,  0,  0, 20, 20,  0,  0,  0,
+                5, -5,-10,  0,  0,-10, -5,  5,
+                5, 10, 10,-20,-20, 10, 10,  5,
+                0,  0,  0,  0,  0,  0,  0,  0
+        };
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -40,7 +49,7 @@ public class Pawn extends Piece {
         return direction;
     }
 
-    public ArrayList<Move> getUpOne(Board board){
+    public ArrayList<Move> getUpOne(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         Position checkPosition;
         int direction = getDirection(color);
@@ -52,7 +61,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public ArrayList<Move> getUpTwo(Board board){
+    public ArrayList<Move> getUpTwo(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         Position checkPosition;
         int direction = getDirection(color);
@@ -66,7 +75,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public ArrayList<Move> getAttack(Board board){
+    public ArrayList<Move> getAttack(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         Position right = new Position(position.getX() + 1, position.getY() + direction);
@@ -91,7 +100,7 @@ public class Pawn extends Piece {
         Move moveRight = new Move(position, right);
         Position test = board.getInPassingSquare();
         Boolean test2 = board.getCanEnpassant();
-        if (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(board.getInPassingSquare())){
+        if (moveLeft.isMoveLegal(board, color) && board.getCanEnpassant() && left.comparePositions(board.getInPassingSquare())) {
             moves.add(moveLeft);
 //            System.out.println ("We just found a inPassingMoveLeft");
         }

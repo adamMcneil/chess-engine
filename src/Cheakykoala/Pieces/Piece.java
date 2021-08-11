@@ -5,7 +5,7 @@ import Cheakykoala.*;
 import java.util.ArrayList;
 
 public abstract class Piece {
-
+    int[] valueTable;
     Position position;
     char piece;
     char letter;
@@ -18,6 +18,10 @@ public abstract class Piece {
 
     public boolean isOppositeColor(Piece piece) {
         return (this.color == Color.w && piece.getColor() == Color.b) || (this.color == Color.b && piece.getColor() == Color.w);
+    }
+
+    public int[] getValueTable(){
+        return this.valueTable;
     }
 
     public boolean isSameColor(Piece piece) {

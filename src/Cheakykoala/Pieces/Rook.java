@@ -8,9 +8,18 @@ import Cheakykoala.Position;
 import java.util.ArrayList;
 
 public class Rook extends Piece {
-
     public Rook(Color c, Position position) {
         super();
+        this.valueTable = new int[]{
+                0, 0, 0, 0, 0, 0, 0, 0,
+                5, 10, 10, 10, 10, 10, 10, 5,
+                -5, 0, 0, 0, 0, 0, 0, -5,
+                -5, 0, 0, 0, 0, 0, 0, -5,
+                -5, 0, 0, 0, 0, 0, 0, -5,
+                -5, 0, 0, 0, 0, 0, 0, -5,
+                -5, 0, 0, 0, 0, 0, 0, -5,
+                0, 0, 0, 5, 5, 0, 0, 0
+        };
         this.position = position;
         this.color = c;
         if (c == Color.w) {
