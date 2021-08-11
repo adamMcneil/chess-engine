@@ -246,7 +246,7 @@ public class Main {
         if (color == Color.w){
             return valueTable[(y * 8) + x];
         } else if (color != Color.g) {
-            System.out.println(x + " " + y);
+//            System.out.println(x + " " + y);
             return valueTable[63 - ((y * 8) + x)];
         }
         return 0;
