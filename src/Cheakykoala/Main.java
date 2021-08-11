@@ -2,6 +2,7 @@ package Cheakykoala;
 
 import Cheakykoala.Pieces.*;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class Main {
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
     public static int TIMEOUT_TIME = 3000;
-
+    public static HashMap<Move, Integer> moveList =  new HashMap<>();
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
         apiConnect(board);
@@ -24,7 +25,7 @@ public class Main {
         while (true) {
             String input = consoleInput.nextLine();
             if (input.contains("go")) {
-                System.out.println(playMinimax(board, 4, minimaxColor));
+                System.out.println(onGo(board));
             } else if (input.contains("uci")) {
                 System.out.println("uciok");
             } else if (input.contains("isready")) {
@@ -81,16 +82,21 @@ public class Main {
     }
 
     public static String onGo(Board board){
+        timeout = false;
         int INITIAL_DEPTH = 3;
-        int CURRENT_DEPTH;
-        Move bestMove = moveMinimax(board, 1, minimaxColor);;
+        int CURRENT_DEPTH = 0;
         startTime = System.currentTimeMillis();
-        for (int i = INITIAL_DEPTH;; i++){
+        Move bestMove = moveMinimax(board, 1, minimaxColor);
+        for (int i = 0;; i++){
             if (timeout){
                 break;
             }
+            System.out.println(System.currentTimeMillis() - startTime);
             CURRENT_DEPTH = INITIAL_DEPTH + i;
-            bestMove = moveMinimax(board, CURRENT_DEPTH, minimaxColor);
+            System.out.println("current depth is " + CURRENT_DEPTH);
+            Move checkMove = moveMinimax(board, CURRENT_DEPTH, minimaxColor);
+            if (checkMove != null)
+                bestMove = checkMove;
         }
         if (bestMove.isPromotionMove(bestMove)){
             return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString() ;
@@ -100,6 +106,9 @@ public class Main {
 
     public static Move moveMinimax(Board board, int depth, Color color) {
         String movestr = playMinimax(board, depth, color);
+        if (movestr.equals ("no")){
+            return null;
+        }
         Position beginning = new Position(convertLetter(movestr.charAt(9)), 8 - Character.getNumericValue(movestr.charAt(10)));
         Position end = new Position(convertLetter(movestr.charAt(11)), 8 - Character.getNumericValue(movestr.charAt(12)));
         Move move = new Move(beginning, end);
@@ -126,6 +135,8 @@ public class Main {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(m);
                         double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isMaxPlayer);
+                        if (mx == 123456)
+                            return "no";
                         if (bestMoveValue == mx) {
                             bestMoves.add(m);
                         }
@@ -162,9 +173,8 @@ public class Main {
             color = Color.w;
         else
             color = Color.b;
+//        System.out.println(System.currentTimeMillis() - startTime);
 
-        if (System.currentTimeMillis() - startTime > TIMEOUT_TIME)
-            timeout = true;
 
         if (board.isTerminalNode(color)){
             if (board.isColorInCheck(color))
@@ -182,6 +192,10 @@ public class Main {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.w) {
                         for (Move move : piece.getMoves(board)) {
+                            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
+                                timeout = true;
+                                return 123456;
+                            }
                             eval = minimax(board.getChild(move), depth - 1, alpha, beta, false);
                             maxEval = Math.max(alpha, eval);
                             alpha = Math.max(alpha, eval);
@@ -192,6 +206,7 @@ public class Main {
                     }
                 }
             }
+//            sortArray(moveList);
             return maxEval;
         } else {
             minEval = Double.POSITIVE_INFINITY;
@@ -214,6 +229,11 @@ public class Main {
             return minEval;
         }
     }
+
+//    public Move[] sortMoves() {
+//
+//    }
+
 
     public static double evalBoard(Board board) {
         int eval = 0;
