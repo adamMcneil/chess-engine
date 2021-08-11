@@ -19,11 +19,11 @@ public class Board {
         makeBoard();
     }
 
-    public static void increaseCaptures(){
+    public static void increaseCaptures() {
         captures++;
     }
 
-    public static int getCaptures(){
+    public static int getCaptures() {
         return captures;
     }
 
@@ -269,24 +269,67 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public int getWinState(Color color) {
+    public boolean isTerminalNode(Color color){
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == color) {
+                    if (p.canMove(this)){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean whiteInCheckmate() {
+        if (!this.isColorInCheck(Color.w))
+            return false;
+        int moves = 0;
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == Color.w) {
+                    moves += p.getMoves(this).size();
+                    if (moves > 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean blackInCheckmate() {
+        if (!this.isColorInCheck(Color.b))
+            return false;
+        int moves = 0;
+        for (Piece[] pieces : this.getBoard()) {
+            for (Piece p : pieces) {
+                if (p.getColor() == Color.b) {
+                    moves += p.getMoves(this).size();
+                    if (moves > 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public boolean checkStalemate(Color color) {
+        if (this.isColorInCheck(color))
+            return false;
         int moves = 0;
         for (Piece[] pieces : this.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
                     moves += p.getMoves(this).size();
                     if (moves > 0) {
-                        return 0;
+                        return false;
                     }
                 }
             }
         }
-        if (this.isColorInCheck(color) && moves == 0) {
-            return 2;
-        } else if (moves == 0) {
-            return 1;
-        }
-        return 0;
+        return true;
     }
 
     public void setCastleStates(String fenCastleData) {
@@ -334,24 +377,24 @@ public class Board {
         }
     }
 
-    public static Color getColorFromString(String color){
+    public static Color getColorFromString(String color) {
         if (color == "w")
             return Color.w;
-        else if (color == "b"){
+        else if (color == "b") {
             return Color.b;
         }
         return Color.g;
     }
 
-    public Position decodeInPassingSquare(String fenData){
-        if (fenData.equals("-")){
-            return new Position(8,8);
+    public Position decodeInPassingSquare(String fenData) {
+        if (fenData.equals("-")) {
+            return new Position(8, 8);
         }
         this.canEnpassant = true;
         char one = fenData.charAt(0);
         int x = ((int) one) - 97;
         int y = 7 - (Character.getNumericValue(fenData.charAt(1)) - 1);
-        return new Position(x,y);
+        return new Position(x, y);
     }
 
     public void importBoard(String fenBoard) {

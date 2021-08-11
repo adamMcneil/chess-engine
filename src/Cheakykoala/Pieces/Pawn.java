@@ -166,4 +166,18 @@ public class Pawn extends Piece {
 
         return moves;
     }
+
+    public boolean canMove(Board board) {
+        if (getUpOne(board).size() > 0)
+            return true;
+        if (getUpTwo(board).size() > 0)
+            return true;
+        if (getAttack(board).size() > 0)
+            return true;
+        if (getInPassingMoves(board).size() > 0)
+            return true;
+        if (getPromotionMoves(board).size() > 0)
+            return true;
+        return false;
+    }
 }

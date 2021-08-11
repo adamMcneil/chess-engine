@@ -24,7 +24,7 @@ public class Main {
         while (true) {
             String input = consoleInput.nextLine();
             if (input.contains("go")) {
-                System.out.println(playMinimax(board, 1, minimaxColor));
+                System.out.println(playMinimax(board, 4, minimaxColor));
             } else if (input.contains("uci")) {
                 System.out.println("uciok");
             } else if (input.contains("isready")) {
@@ -157,16 +157,20 @@ public class Main {
         double eval;
         double minEval;
         double maxEval;
+        Color color;
+        if (isMaxPlayer)
+            color = Color.w;
+        else
+            color = Color.b;
+
         if (System.currentTimeMillis() - startTime > TIMEOUT_TIME)
             timeout = true;
-        if (board.getWinState(Color.w) == 2) {
-            return Double.NEGATIVE_INFINITY;
-        }
-        if (board.getWinState(Color.b) == 2) {
-            return Double.POSITIVE_INFINITY;
-        }
-        if (board.getWinState(Color.w) != 0) { //checks for stalemate
-            return (evalBoard(board) * -1);
+
+        if (board.isTerminalNode(color)){
+            if (board.isColorInCheck(color))
+                return checkmateEval(color);
+            else
+                return 0; // <--- this is most likely not right
         }
         if (depth == 0) {
             return (evalBoard(board));
@@ -225,6 +229,13 @@ public class Main {
             }
         }
         return eval;
+    }
+
+    public static double checkmateEval(Color color){
+        if (color == Color.w)
+            return Double.NEGATIVE_INFINITY;
+        else
+            return Double.POSITIVE_INFINITY;
     }
 
     public static int getTableValue(Piece piece, Color color){

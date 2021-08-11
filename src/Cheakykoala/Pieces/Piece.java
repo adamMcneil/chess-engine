@@ -30,6 +30,8 @@ public abstract class Piece {
 
     public abstract ArrayList<Move> getMoves(Board board);
 
+    public abstract boolean canMove(Board board);
+
     public ArrayList<Move> getPromotionMoves(Board board) {
         return null;
     }
