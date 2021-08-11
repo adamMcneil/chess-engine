@@ -13,7 +13,7 @@ public class Main {
     public static Color minimaxColor = Color.w;
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
-    public static int TIMEOUT_TIME = 3000;
+    public static int TIMEOUT_TIME = 10000;
     public static HashMap<Move, Integer> moveList =  new HashMap<>();
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
@@ -91,13 +91,13 @@ public class Main {
             if (timeout){
                 break;
             }
-            System.out.println(System.currentTimeMillis() - startTime);
             CURRENT_DEPTH = INITIAL_DEPTH + i;
             System.out.println("current depth is " + CURRENT_DEPTH);
             Move checkMove = moveMinimax(board, CURRENT_DEPTH, minimaxColor);
             if (checkMove != null)
                 bestMove = checkMove;
         }
+        System.out.println(System.currentTimeMillis() - startTime);
         if (bestMove.isPromotionMove(bestMove)){
             return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString() ;
         }
