@@ -33,9 +33,7 @@ public class Position {
     }
 
     public boolean isOnBoard() {
-        if (position[0] < 8 && position[0] > -1 && position[1] < 8 && position[1] > -1)
-            return true;
-        return false;
+        return (position[0] < 8 && position[0] > -1 && position[1] < 8 && position[1] > -1);
     }
 
     public String toString() {

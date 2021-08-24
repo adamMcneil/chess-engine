@@ -16,12 +16,28 @@ public abstract class Piece {
 
     }
 
+    public double getPieceEval() {
+        this.letter = Character.toUpperCase(this.letter);
+        switch (this.letter) {
+            case 'R':
+                return 500;
+            case 'N':
+            case 'B':
+                return 300;
+            case 'Q':
+                return 900;
+            case 'P':
+                return 100;
+        }
+        return 0;
+    }
+
     public boolean isOppositeColor(Piece piece) {
         return (this.color == Color.w && piece.getColor() == Color.b) || (this.color == Color.b && piece.getColor() == Color.w);
     }
 
-    public int[] getValueTable(){
-        return this.valueTable;
+    public int getValueTable(int index){
+        return valueTable[index];
     }
 
     public boolean isSameColor(Piece piece) {

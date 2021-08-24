@@ -12,11 +12,54 @@ public class Board {
     boolean canEnpassant = false;
     int whiteCastleMoveState = 0;
     int blackCastleMoveState = 0;
+    static double boardEval;
     int count = 0;
     Color colorToMove = Color.w;
 
     public Board() {
         makeBoard();
+    }
+
+    public double getBoardEval(){
+        return boardEval;
+    }
+
+    public void changeEval(Move move, Piece movedPiece) {
+        int index = move.getBeginning().getX() + move.getBeginning().getY() * 7;
+        if (movedPiece.getColor() == Color.w) {
+            boardEval = boardEval - movedPiece.getValueTable(index);
+        } else {
+            index = 63 - index;
+            boardEval = boardEval + movedPiece.getValueTable(index);
+        }
+
+        Piece takenPiece = this.getPieceAt(move.getEnd());
+        if (takenPiece.getColor() != Color.g){
+            if (takenPiece.getColor() == Color.w) {
+                boardEval = boardEval - this.getPieceAt(move.getEnd()).getValueTable(index) - takenPiece.getPieceEval();
+
+            } else {
+                index = 63 - index;
+                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueTable(index) + takenPiece.getPieceEval();
+            }
+        }
+
+        if (move.isPromotionMove(move)){
+            if (takenPiece.getColor() == Color.w) {
+                boardEval = boardEval + move.getPiece().getPieceEval();
+            } else {
+                boardEval = boardEval  - move.getPiece().getPieceEval();
+            }
+            movedPiece = move.getPiece();
+        }
+
+        index = move.getEnd().getX() + move.getEnd().getY() * 7;
+        if (movedPiece.getColor() == Color.w) {
+            boardEval = boardEval + movedPiece.getValueTable(index);
+        } else {
+            index = 63 - index;
+            boardEval = boardEval - movedPiece.getValueTable(index);
+        }
     }
 
     public static void increaseCaptures() {
@@ -269,11 +312,11 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public boolean isTerminalNode(Color color){
+    public boolean isTerminalNode(Color color) {
         for (Piece[] pieces : this.getBoard()) {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
-                    if (p.canMove(this)){
+                    if (p.canMove(this)) {
                         return false;
                     }
                 }
@@ -315,6 +358,7 @@ public class Board {
         }
         return true;
     }
+
     public boolean checkStalemate(Color color) {
         if (this.isColorInCheck(color))
             return false;
@@ -500,6 +544,7 @@ public class Board {
         child.increaseWhiteMoveState(this.getWhiteCastleMoveState());
         child.increaseBlackMoveState(this.getBlackCastleMoveState());
         child.copyBoard(this);
+        child.changeEval(move, child.getPieceAt(move.getBeginning()));
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }

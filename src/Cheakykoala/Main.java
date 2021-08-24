@@ -72,7 +72,9 @@ public class Main {
             } else {
                 move = new Move(first, second);
             }
-            board.getPieceAt(first).move(board, move);
+            Piece movedPiece = board.getPieceAt(first);
+            board.changeEval(move, movedPiece);
+            movedPiece.move(board, move);
             if (index % 2 == 0) {
                 minimaxColor = Color.w;
             } else {
@@ -151,10 +153,10 @@ public class Main {
 
     public static void timeMinimax() {
         Board board = new Board();
-        board.importBoard("r2q1bnr/pp1p1kpp/1p1pn3/2b2p2/B2P2QP/1PP1NR2/P1N1B1P1/R3KP2 w Q - 0 1");
+//        board.importBoard("r2q1bnr/pp1p1kpp/1p1pn3/2b2p2/B2P2QP/1PP1NR2/P1N1B1P1/R3KP2 w Q - 0 1");
         board.printBoard();
         double start = System.currentTimeMillis();
-        moveMinimax(board, 5, Color.w);
+        System.out.println (moveMinimax(board, 5, Color.w));
         double end = System.currentTimeMillis();
         System.out.println((end - start) / 1000.0);
     }
@@ -166,26 +168,16 @@ public class Main {
         double minEval;
         double maxEval;
         Color color;
-        if (isMaxPlayer)
-            color = Color.w;
-        else
-            color = Color.b;
-//        System.out.println(System.currentTimeMillis() - startTime);
-        if (board.isTerminalNode(color)){
-            if (board.isColorInCheck(color))
-                return checkmateEval(color);
-            else
-                return 0; // <--- this is most likely not right
-        }
         if (depth == 0) {
-            return (evalBoard(board));
+            return (board.getBoardEval());
         }
         if (isMaxPlayer) {
+            color = Color.w;
             maxEval = Double.NEGATIVE_INFINITY;
-            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
-                timeout = true;
-                return 123456;
-            }
+//            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
+//                timeout = true;
+//                return 123456;
+//            }
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
                     if (piece.getColor() == Color.w) {
@@ -199,6 +191,12 @@ public class Main {
                 }
             }
             moveList.addAll(0,captureMoveList);
+            if (moveList.isEmpty()){
+                if (board.isColorInCheck(color))
+                    return checkmateEval(color);
+                else
+                    return 0; // <--- this is most likely not right
+            }
             for (Move m: moveList){
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
                 maxEval = Math.max(alpha, eval);
@@ -209,7 +207,9 @@ public class Main {
             }
 //            sortArray(moveList);
             return maxEval;
-        } else {
+        }
+        else {
+            color = Color.b;
             minEval = Double.POSITIVE_INFINITY;
             for (Piece[] pieces : board.getBoard()) {
                 for (Piece piece : pieces) {
@@ -224,6 +224,12 @@ public class Main {
                 }
             }
             moveList.addAll(0,captureMoveList);
+            if (moveList.isEmpty()){
+                if (board.isColorInCheck(color))
+                    return checkmateEval(color);
+                else
+                    return 0; // <--- this is most likely not right
+            }
             for (Move m: moveList) {
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
                 minEval = Math.min(minEval, eval);
@@ -235,11 +241,10 @@ public class Main {
             return minEval;
         }
     }
-
+    //*-------------------------------with sorted by capture moves-----------------------------*//
 //    public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
-//        ArrayList<Move> moveList = new ArrayList<>();
-//        ArrayList<Move> captureMoveList = new ArrayList<>();
-//        boolean pruned = false;
+//        ArrayList<Move> moveList =  new ArrayList<>();
+//        ArrayList<Move> captureMoveList =  new ArrayList<>();
 //        double eval;
 //        double minEval;
 //        double maxEval;
@@ -248,88 +253,93 @@ public class Main {
 //            color = Color.w;
 //        else
 //            color = Color.b;
-////        System.out.println(System.currentTimeMillis() - startTime);
-//        if (board.isTerminalNode(color)) {
-//            if (board.isColorInCheck(color))
-//                return checkmateEval(color);
-//            else
-//                return 0; // <--- this is most likely not right
-//        }
+////        }
 //        if (depth == 0) {
 //            return (evalBoard(board));
 //        }
 //        if (isMaxPlayer) {
 //            maxEval = Double.NEGATIVE_INFINITY;
-//            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME) {
-//                timeout = true;
-//                return 123456;
-//            }
-//            prune:
-//            if (!pruned){
-//                for (Piece[] pieces : board.getBoard()) {
-//                    for (Piece piece : pieces) {
-//                        if (piece.getColor() == Color.w) {
-//                            for (Move move : piece.getMoves(board)) {
-//                                eval = minimax(board.getChild(move), depth - 1, alpha, beta, false);
-//                                maxEval = Math.max(alpha, eval);
-//                                alpha = Math.max(alpha, eval);
-//                                if (beta <= alpha) {
-//                                    pruned = true;
-//                                    break prune;
-//                                }
-//                            }
+////            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
+////                timeout = true;
+////                return 123456;
+////            }
+//            for (Piece[] pieces : board.getBoard()) {
+//                for (Piece piece : pieces) {
+//                    if (piece.getColor() == Color.w) {
+//                        for (Move move : piece.getMoves(board)) {
+//                            if (move.isCapture(board))
+//                                captureMoveList.add(move);
+//                            else
+//                                moveList.add(move);
 //                        }
 //                    }
 //                }
 //            }
-//            pruned = false;
+//            moveList.addAll(0,captureMoveList);
+//            if (moveList.isEmpty()){
+//                if (board.isColorInCheck(color))
+//                    return checkmateEval(color);
+//                else
+//                    return 0; // <--- this is most likely not right
+//            }
+//            for (Move m: moveList){
+//                eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
+//                maxEval = Math.max(alpha, eval);
+//                alpha = Math.max(alpha, eval);
+//                if (beta <= alpha) {
+//                    break;
+//                }
+//            }
 ////            sortArray(moveList);
 //            return maxEval;
 //        } else {
 //            minEval = Double.POSITIVE_INFINITY;
-//            prune:
-//            if (!pruned) {
-//                for (Piece[] pieces : board.getBoard()) {
-//                    for (Piece piece : pieces) {
-//                        if (piece.getColor() == Color.b) {
-//                            for (Move move : piece.getMoves(board)) {
-//                                eval = minimax(board.getChild(move), depth - 1, alpha, beta, true);
-//                                minEval = Math.min(minEval, eval);
-//                                beta = Math.min(beta, eval);
-//                                if (beta <= alpha) {
-//                                    pruned = true;
-//                                    break prune;
-//                                }
-//                            }
+//            for (Piece[] pieces : board.getBoard()) {
+//                for (Piece piece : pieces) {
+//                    if (piece.getColor() == Color.b) {
+//                        for (Move move : piece.getMoves(board)) {
+//                            if (move.isCapture(board))
+//                                captureMoveList.add(move);
+//                            else
+//                                moveList.add(move);
 //                        }
 //                    }
 //                }
 //            }
-//            pruned = false;
+//            moveList.addAll(0,captureMoveList);
+//            if (moveList.isEmpty()){
+//                if (board.isColorInCheck(color))
+//                    return checkmateEval(color);
+//                else
+//                    return 0; // <--- this is most likely not right
+//            }
+//            for (Move m: moveList) {
+//                eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
+//                minEval = Math.min(minEval, eval);
+//                beta = Math.min(beta, eval);
+//                if (beta <= alpha) {
+//                    break;
+//                }
+//            }
+//            return minEval;
 //        }
-//        return minEval;
 //    }
 
-//    public Move[] sortMoves() {
-//
+//    public static double evalBoard(Board board) {
+//        int eval = 0;
+//        for (Piece[] pieces : board.getBoard()) {
+//            for (Piece piece : pieces) {
+//                if (piece.getColor() == Color.w) {
+//                    eval += getPieceEval(piece);
+//                    eval += getTableValue(piece, piece.getColor());
+//                } else {
+//                    eval -= getPieceEval(piece);
+//                    eval -= getTableValue(piece, piece.getColor());
+//                }
+//            }
+//        }
+//        return eval;
 //    }
-
-
-    public static double evalBoard(Board board) {
-        int eval = 0;
-        for (Piece[] pieces : board.getBoard()) {
-            for (Piece piece : pieces) {
-                if (piece.getColor() == Color.w) {
-                    eval += getPieceEval(piece);
-                    eval += getTableValue(piece, piece.getColor());
-                } else {
-                    eval -= getPieceEval(piece);
-                    eval -= getTableValue(piece, piece.getColor());
-                }
-            }
-        }
-        return eval;
-    }
 
     public static double checkmateEval(Color color) {
         if (color == Color.w)
@@ -338,36 +348,19 @@ public class Main {
             return Double.POSITIVE_INFINITY;
     }
 
-    public static int getTableValue(Piece piece, Color color) {
-        int[] valueTable = piece.getValueTable();
-        Position piecePosition = piece.getPosition();
-        int x = piecePosition.getX();
-        int y = piecePosition.getY();
-        if (color == Color.w) {
-            return valueTable[(y * 8) + x];
-        } else if (color != Color.g) {
-//            System.out.println(x + " " + y);
-            return valueTable[63 - ((y * 8) + x)];
-        }
-        return 0;
-    }
-
-    public static double getPieceEval(Piece piece) {
-        char letter = piece.getLetter();
-        letter = Character.toUpperCase(letter);
-        switch (letter) {
-            case 'R':
-                return 500;
-            case 'N':
-            case 'B':
-                return 300;
-            case 'Q':
-                return 900;
-            case 'P':
-                return 100;
-        }
-        return 0;
-    }
+//    public static int getTableValue(Piece piece, Color color) {
+//        int[] valueTable = piece.getValueTable();
+//        Position piecePosition = piece.getPosition();
+//        int x = piecePosition.getX();
+//        int y = piecePosition.getY();
+//        if (color == Color.w) {
+//            return valueTable[(y * 8) + x];
+//        } else if (color != Color.g) {
+////            System.out.println(x + " " + y);
+//            return valueTable[63 - ((y * 8) + x)];
+//        }
+//        return 0;
+//    }
 
     public static void playHuman(Board board, Color color) {
         Scanner input = new Scanner(System.in);

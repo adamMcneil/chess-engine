@@ -20,10 +20,7 @@ public class Move {
     }
 
     public boolean isCastleMove(Board board) {
-        if (board.getPieceAt(this.getBeginning()).isKing() && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2) {
-            return true;
-        }
-        return false;
+        return (board.getPieceAt(this.getBeginning()).isKing() && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2);
     }
 
     public boolean isCapture(Board board) {
