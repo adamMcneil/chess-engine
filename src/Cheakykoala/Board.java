@@ -33,17 +33,16 @@ public class Board {
         if (movedPiece.getColor() == Color.w) {
             boardEval = boardEval - movedPiece.getValueInt(index);
         } else {
-            index = 63 - index;
-            boardEval = boardEval + movedPiece.getValueInt(index);
+            boardEval = boardEval + movedPiece.getValueInt(63 - index);
         }
 
         Piece takenPiece = this.getPieceAt(move.getEnd());
+        index = move.getEnd().getX() + move.getEnd().getY() * 8;
         if (takenPiece.getColor() != Color.g){
             if (takenPiece.getColor() == Color.w) {
                 boardEval = boardEval - this.getPieceAt(move.getEnd()).getValueInt(index) - takenPiece.getPieceEval();
             } else {
-                index = 63 - index;
-                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueInt(index) + takenPiece.getPieceEval();
+                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueInt(63 - index) + takenPiece.getPieceEval();
             }
         }
 
@@ -56,12 +55,32 @@ public class Board {
             movedPiece = move.getPiece();
         }
 
-        index = move.getEnd().getX() + move.getEnd().getY() * 8;
         if (movedPiece.getColor() == Color.w) {
-            boardEval = boardEval + movedPiece.getValueInt(index);
+            boardEval = boardEval + movedPiece.getValueInt(63 - index);
         } else {
-            index = 63 - index;
             boardEval = boardEval - movedPiece.getValueInt(index);
+        }
+
+        if (move.isInPassingMove(this)){
+            if (movedPiece.getColor() == Color.w){
+                boardEval+= 100;
+                boardEval = boardEval + takenPiece.getValueInt(63 - (index - 8));
+            }
+            else{
+                boardEval -= 100;
+                boardEval = boardEval - takenPiece.getValueInt(index + 8);
+            }
+        }
+        if (move.isCastleMove(this)){
+            if (movedPiece.getColor() == Color.w){
+                if (index == 58){
+                    boardEval+= 5;
+                }
+            }else{
+                if (index == 2){
+                    boardEval-= 5;
+                }
+            }
         }
     }
 

@@ -76,6 +76,7 @@ public class Main {
             } else {
                 move = new Move(first, second);
             }
+            System.out.println (board.getBoardEval());
             board.getPieceAt(first).move(board, move);
             if (index % 2 == 0) {
                 minimaxColor = Color.w;
