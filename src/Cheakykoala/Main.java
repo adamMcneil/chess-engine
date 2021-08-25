@@ -13,17 +13,19 @@ public class Main {
     public static Color minimaxColor = Color.w;
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
-    public static int TIMEOUT_TIME = 20000;
+    public static int TIMEOUT_TIME = 1000;
 
     public static void main(String[] args) throws InterruptedException {
-//        Board board = new Board();
-//        apiConnect(board);
-        timeMinimax();
+        Board board = new Board();
+        apiConnect(board);
+//        timeMinimax();
     }
 
     public static void apiConnect(Board board) {
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
+            System.out.println(board.getBoardEval());
+            board.printBoard();
             String input = consoleInput.nextLine();
             if (input.contains("go")) {
                 System.out.println(onGo(board));
@@ -43,6 +45,7 @@ public class Main {
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
             board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            board.setBoardEval(evalBoard(board));
         } else {
             int i = 2;
             String fenString = "";
@@ -54,6 +57,7 @@ public class Main {
             fenString.stripLeading();
             //position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
             board.importBoard(fenString);
+            board.setBoardEval(evalBoard(board));
             board.printBoard();
             startMoves = i + 1;
         }
@@ -72,9 +76,7 @@ public class Main {
             } else {
                 move = new Move(first, second);
             }
-            Piece movedPiece = board.getPieceAt(first);
-            board.changeEval(move, movedPiece);
-            movedPiece.move(board, move);
+            board.getPieceAt(first).move(board, move);
             if (index % 2 == 0) {
                 minimaxColor = Color.w;
             } else {
@@ -153,12 +155,14 @@ public class Main {
 
     public static void timeMinimax() {
         Board board = new Board();
-//        board.importBoard("r2q1bnr/pp1p1kpp/1p1pn3/2b2p2/B2P2QP/1PP1NR2/P1N1B1P1/R3KP2 w Q - 0 1");
+        board.importBoard("r2q1bnr/pp1p1kpp/1p1pn3/2b2p2/B2P2QP/1PP1NR2/P1N1B1P1/R3KP2 w Q - 0 1");
+        board.setBoardEval(evalBoard(board));
         board.printBoard();
         double start = System.currentTimeMillis();
-        System.out.println (moveMinimax(board, 5, Color.w));
+        System.out.println (moveMinimax(board, 4, Color.w));
         double end = System.currentTimeMillis();
         System.out.println((end - start) / 1000.0);
+        System.out.println(board.getBoardEval());
     }
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
@@ -325,21 +329,37 @@ public class Main {
 //        }
 //    }
 
-//    public static double evalBoard(Board board) {
-//        int eval = 0;
-//        for (Piece[] pieces : board.getBoard()) {
-//            for (Piece piece : pieces) {
-//                if (piece.getColor() == Color.w) {
-//                    eval += getPieceEval(piece);
-//                    eval += getTableValue(piece, piece.getColor());
-//                } else {
-//                    eval -= getPieceEval(piece);
-//                    eval -= getTableValue(piece, piece.getColor());
-//                }
-//            }
-//        }
-//        return eval;
-//    }
+    public static double evalBoard(Board board) {
+        int eval = 0;
+        for (Piece[] pieces : board.getBoard()) {
+            for (Piece piece : pieces) {
+                if (piece.getColor() == Color.w) {
+                    eval += getPieceEval(piece);
+                    eval += getTableValue(piece, piece.getColor());
+                } else {
+                    eval -= getPieceEval(piece);
+                    eval -= getTableValue(piece, piece.getColor());
+                }
+            }
+        }
+        return eval;
+    }
+
+    public static double getPieceEval(Piece piece) {
+        char letter = Character.toUpperCase(piece.getLetter());
+        switch (letter) {
+            case 'R':
+                return 500;
+            case 'N':
+            case 'B':
+                return 300;
+            case 'Q':
+                return 900;
+            case 'P':
+                return 100;
+        }
+        return 0;
+    }
 
     public static double checkmateEval(Color color) {
         if (color == Color.w)
@@ -348,19 +368,19 @@ public class Main {
             return Double.POSITIVE_INFINITY;
     }
 
-//    public static int getTableValue(Piece piece, Color color) {
-//        int[] valueTable = piece.getValueTable();
-//        Position piecePosition = piece.getPosition();
-//        int x = piecePosition.getX();
-//        int y = piecePosition.getY();
-//        if (color == Color.w) {
-//            return valueTable[(y * 8) + x];
-//        } else if (color != Color.g) {
-////            System.out.println(x + " " + y);
-//            return valueTable[63 - ((y * 8) + x)];
-//        }
-//        return 0;
-//    }
+    public static int getTableValue(Piece piece, Color color) {
+        int[] valueTable = piece.getValueTable();
+        Position piecePosition = piece.getPosition();
+        int x = piecePosition.getX();
+        int y = piecePosition.getY();
+        if (color == Color.w) {
+            return valueTable[(y * 8) + x];
+        } else if (color != Color.g) {
+
+            return valueTable[63 - ((y * 8) + x)];
+        }
+        return 0;
+    }
 
     public static void playHuman(Board board, Color color) {
         Scanner input = new Scanner(System.in);
@@ -439,6 +459,7 @@ public class Main {
         Board board = new Board();
         String fenString = "r3k2r/p1ppqNb1/bn2pnp1/3P4/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1";
         board.importBoard(fenString);
+        board.setBoardEval(evalBoard(board));
         board.printBoard();
         int total = 0;
         int nodes = 0;
@@ -480,8 +501,8 @@ public class Main {
         Board board = new Board();
         ArrayList<String> fen = new ArrayList<>();
         fen.add("r6r/1b2k1bq/8/8/7B/8/8/R3K2R b KQ - 3 2");
-
         board.importBoard("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ");
+        board.setBoardEval(evalBoard(board));
         Color color = Color.w;
         board.printBoard();
         Position position = new Position(4, 0);

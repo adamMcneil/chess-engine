@@ -9,10 +9,10 @@ public class Board {
     private static int captures = 0;
     Piece[][] board = new Piece[8][8];
     Position inPassingSquare = new Position(8, 8);
-    boolean canEnpassant = false;
-    int whiteCastleMoveState = 0;
-    int blackCastleMoveState = 0;
-    static double boardEval;
+    public boolean canEnpassant = false;
+    public int whiteCastleMoveState = 0;
+    public int blackCastleMoveState = 0;
+    public double boardEval;
     int count = 0;
     Color colorToMove = Color.w;
 
@@ -24,23 +24,26 @@ public class Board {
         return boardEval;
     }
 
+    public void setBoardEval(double newBoardEval){
+        this.boardEval = newBoardEval;
+    }
+
     public void changeEval(Move move, Piece movedPiece) {
-        int index = move.getBeginning().getX() + move.getBeginning().getY() * 7;
+        int index = move.getBeginning().getX() + move.getBeginning().getY() * 8;
         if (movedPiece.getColor() == Color.w) {
-            boardEval = boardEval - movedPiece.getValueTable(index);
+            boardEval = boardEval - movedPiece.getValueInt(index);
         } else {
             index = 63 - index;
-            boardEval = boardEval + movedPiece.getValueTable(index);
+            boardEval = boardEval + movedPiece.getValueInt(index);
         }
 
         Piece takenPiece = this.getPieceAt(move.getEnd());
         if (takenPiece.getColor() != Color.g){
             if (takenPiece.getColor() == Color.w) {
-                boardEval = boardEval - this.getPieceAt(move.getEnd()).getValueTable(index) - takenPiece.getPieceEval();
-
+                boardEval = boardEval - this.getPieceAt(move.getEnd()).getValueInt(index) - takenPiece.getPieceEval();
             } else {
                 index = 63 - index;
-                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueTable(index) + takenPiece.getPieceEval();
+                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueInt(index) + takenPiece.getPieceEval();
             }
         }
 
@@ -53,12 +56,12 @@ public class Board {
             movedPiece = move.getPiece();
         }
 
-        index = move.getEnd().getX() + move.getEnd().getY() * 7;
+        index = move.getEnd().getX() + move.getEnd().getY() * 8;
         if (movedPiece.getColor() == Color.w) {
-            boardEval = boardEval + movedPiece.getValueTable(index);
+            boardEval = boardEval + movedPiece.getValueInt(index);
         } else {
             index = 63 - index;
-            boardEval = boardEval - movedPiece.getValueTable(index);
+            boardEval = boardEval - movedPiece.getValueInt(index);
         }
     }
 
@@ -185,7 +188,6 @@ public class Board {
         }
         System.out.println("  a  b  c  d  e  f  g  h");
     }
-
 
     public Piece getPieceAt(Position position) {
         return board[position.getY()][position.getX()];
@@ -441,6 +443,7 @@ public class Board {
         return new Position(x, y);
     }
 
+
     public void importBoard(String fenBoard) {
         int x = 0;
         int y = 0;
@@ -544,7 +547,7 @@ public class Board {
         child.increaseWhiteMoveState(this.getWhiteCastleMoveState());
         child.increaseBlackMoveState(this.getBlackCastleMoveState());
         child.copyBoard(this);
-        child.changeEval(move, child.getPieceAt(move.getBeginning()));
+        child.setBoardEval(this.getBoardEval());
         child.getPieceAt(move.getBeginning()).move(child, move);
         return child;
     }

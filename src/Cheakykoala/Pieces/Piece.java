@@ -22,12 +22,15 @@ public abstract class Piece {
             case 'R':
                 return 500;
             case 'N':
+                return 320;
             case 'B':
-                return 300;
+                return 330;
             case 'Q':
                 return 900;
             case 'P':
                 return 100;
+            case 'K':
+                return 20000;
         }
         return 0;
     }
@@ -36,8 +39,12 @@ public abstract class Piece {
         return (this.color == Color.w && piece.getColor() == Color.b) || (this.color == Color.b && piece.getColor() == Color.w);
     }
 
-    public int getValueTable(int index){
+    public int getValueInt(int index){
         return valueTable[index];
+    }
+
+    public int[] getValueTable(){
+        return valueTable;
     }
 
     public boolean isSameColor(Piece piece) {
@@ -155,6 +162,7 @@ public abstract class Piece {
     }
 
     public void move(Board board, Move move) {
+        board.changeEval(move, this);
         board.setMoveState(this, move);
         if (move.isPromotionMove(move)) {
             promotionMove(move, board);
