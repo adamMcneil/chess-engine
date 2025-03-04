@@ -2,3 +2,5 @@ out/
 .idea/
 /build
 /.gradle
+/.run
+.project
