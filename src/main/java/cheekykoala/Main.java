@@ -14,7 +14,8 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Welcome to Cheekykoala!");
-        // Board board = new Board();
+        Board board = new Board();
+        board.printBoard();
         // apiConnect(board);
         // timeMinimax();
     }
