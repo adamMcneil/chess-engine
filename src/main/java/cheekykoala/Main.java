@@ -12,9 +12,10 @@ public class Main {
     public static boolean timeout = false;
     public static int TIMEOUT_TIME = 60000;
 
-    public static void main(String[] args) throws InterruptedException {
-        Board board = new Board();
-        apiConnect(board);
+    public static void main(String[] args) {
+        System.out.println("Welcome to Cheekykoala!");
+        // Board board = new Board();
+        // apiConnect(board);
         // timeMinimax();
     }
 

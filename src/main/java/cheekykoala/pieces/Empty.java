@@ -1,7 +1,6 @@
 package cheekykoala.pieces;
 
 import cheekykoala.Board;
-import cheekykoala.Color;
 import cheekykoala.Move;
 import cheekykoala.Position;
 

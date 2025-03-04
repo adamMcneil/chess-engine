@@ -1,6 +1,6 @@
-package Cheakykoala.Pieces;
+package cheekykoala.pieces;
 
-import Cheakykoala.*;
+import cheekykoala.*;
 
 import java.util.ArrayList;
 
