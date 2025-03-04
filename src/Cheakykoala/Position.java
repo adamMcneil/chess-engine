@@ -4,7 +4,7 @@ public class Position {
     int[] position;
 
     public Position(int x, int y) {
-        position = new int[]{x, y};
+        position = new int[] { x, y };
     }
 
     public int getX() {
@@ -15,15 +15,15 @@ public class Position {
         return position[1];
     }
 
-    public void setX(int x){
-        position [0] = x;
+    public void setX(int x) {
+        position[0] = x;
     }
 
-    public void setY(int y){
-        position [1] = y;
+    public void setY(int y) {
+        position[1] = y;
     }
 
-    public void isEqualTo(Position p){
+    public void isEqualTo(Position p) {
         setX(p.getX());
         setY(p.getY());
     }
@@ -40,7 +40,7 @@ public class Position {
         return "(" + getX() + ", " + getY() + ")";
     }
 
-    public String convertPosition(){
+    public String convertPosition() {
         return new StringBuilder().append((char) (position[0] + 97)).append((8 - position[1])).toString();
     }
 }

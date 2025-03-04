@@ -20,11 +20,11 @@ public class Board {
         makeBoard();
     }
 
-    public double getBoardEval(){
+    public double getBoardEval() {
         return boardEval;
     }
 
-    public void setBoardEval(double newBoardEval){
+    public void setBoardEval(double newBoardEval) {
         this.boardEval = newBoardEval;
     }
 
@@ -38,19 +38,20 @@ public class Board {
 
         Piece takenPiece = this.getPieceAt(move.getEnd());
         index = move.getEnd().getX() + move.getEnd().getY() * 8;
-        if (takenPiece.getColor() != Color.g){
+        if (takenPiece.getColor() != Color.g) {
             if (takenPiece.getColor() == Color.w) {
                 boardEval = boardEval - this.getPieceAt(move.getEnd()).getValueInt(index) - takenPiece.getPieceEval();
             } else {
-                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueInt(63 - index) + takenPiece.getPieceEval();
+                boardEval = boardEval + this.getPieceAt(move.getEnd()).getValueInt(63 - index)
+                        + takenPiece.getPieceEval();
             }
         }
 
-        if (move.isPromotionMove(move)){
+        if (move.isPromotionMove(move)) {
             if (takenPiece.getColor() == Color.w) {
                 boardEval = boardEval + move.getPiece().getPieceEval();
             } else {
-                boardEval = boardEval  - move.getPiece().getPieceEval();
+                boardEval = boardEval - move.getPiece().getPieceEval();
             }
             movedPiece = move.getPiece();
         }
@@ -61,24 +62,23 @@ public class Board {
             boardEval = boardEval - movedPiece.getValueInt(63 - index);
         }
 
-        if (move.isInPassingMove(this)){
-            if (movedPiece.getColor() == Color.w){
-                boardEval+= 100;
+        if (move.isInPassingMove(this)) {
+            if (movedPiece.getColor() == Color.w) {
+                boardEval += 100;
                 boardEval = boardEval + movedPiece.getValueInt(63 - (index - 8));
-            }
-            else{
+            } else {
                 boardEval -= 100;
                 boardEval = boardEval - movedPiece.getValueInt(index + 8);
             }
         }
-        if (move.isCastleMove(this)){
-            if (movedPiece.getColor() == Color.w){
-                if (index == 58){
-                    boardEval+= 5;
+        if (move.isCastleMove(this)) {
+            if (movedPiece.getColor() == Color.w) {
+                if (index == 58) {
+                    boardEval += 5;
                 }
-            }else{
-                if (index == 2){
-                    boardEval-= 5;
+            } else {
+                if (index == 2) {
+                    boardEval -= 5;
                 }
             }
         }
@@ -142,16 +142,20 @@ public class Board {
         }
         if (piece.isRook()) {
             if (piece.getColor() == Color.w) {
-                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 7 && this.getWhiteCastleMoveState() != 2) {
+                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 7
+                        && this.getWhiteCastleMoveState() != 2) {
                     this.increaseWhiteMoveState(2);
-                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 7 && this.getWhiteCastleMoveState() != 1) {
+                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 7
+                        && this.getWhiteCastleMoveState() != 1) {
                     this.increaseWhiteMoveState(1);
                 }
             }
             if (piece.getColor() == Color.b) {
-                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 0 && this.getBlackCastleMoveState() != 2) {
+                if (piece.getPosition().getX() == 0 && piece.getPosition().getY() == 0
+                        && this.getBlackCastleMoveState() != 2) {
                     this.increaseBlackMoveState(2);
-                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 0 && this.getBlackCastleMoveState() != 1) {
+                } else if (piece.getPosition().getX() == 7 && piece.getPosition().getY() == 0
+                        && this.getBlackCastleMoveState() != 1) {
                     this.increaseBlackMoveState(1);
                 }
             }
@@ -195,13 +199,13 @@ public class Board {
         for (int i = 0; i < board.length; i++) {
             System.out.print(8 - i + " ");
             for (int j = 0; j < board[0].length; j++) {
-//                if ((i + j) % 2 == 0) {
-//                    System.out.print("\033[40m");
-//                }
+                // if ((i + j) % 2 == 0) {
+                // System.out.print("\033[40m");
+                // }
                 System.out.print(board[i][j].getPiece() + "  ");
-//                if ((i + j) % 2 == 0) {
-//                    System.out.print("\033[0m");
-//                }
+                // if ((i + j) % 2 == 0) {
+                // System.out.print("\033[0m");
+                // }
             }
             System.out.println();
         }
@@ -220,46 +224,47 @@ public class Board {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 Piece checkpiece = this.getPieceAt(new Position(j, i));
-                if (this.getPieceAt(new Position(j, i)).isKing() && this.getPieceAt(new Position(j, i)).getColor() == color) {
+                if (this.getPieceAt(new Position(j, i)).isKing()
+                        && this.getPieceAt(new Position(j, i)).getColor() == color) {
                     Position checkPosition = null;
                     Position home = new Position(j, i);
                     int[][] knightMoves = {
-                            {2, 1},
-                            {2, -1},
-                            {1, 2},
-                            {1, -2},
-                            {-1, 2},
-                            {-1, -2},
-                            {-2, 1},
-                            {-2, -1}
+                            { 2, 1 },
+                            { 2, -1 },
+                            { 1, 2 },
+                            { 1, -2 },
+                            { -1, 2 },
+                            { -1, -2 },
+                            { -2, 1 },
+                            { -2, -1 }
                     };
                     int[][] straightMoves = {
-                            {1, 0},
-                            {0, -1},
-                            {-1, 0},
-                            {0, 1}
+                            { 1, 0 },
+                            { 0, -1 },
+                            { -1, 0 },
+                            { 0, 1 }
                     };
                     int[][] diagonalMoves = {
-                            {1, 1},
-                            {1, -1},
-                            {-1, -1},
-                            {-1, 1}
+                            { 1, 1 },
+                            { 1, -1 },
+                            { -1, -1 },
+                            { -1, 1 }
                     };
                     int[][] kingMoves = {
-                            {1, 0},
-                            {0, -1},
-                            {-1, 0},
-                            {0, 1},
-                            {1, -1},
-                            {1, 1},
-                            {-1, -1},
-                            {-1, 1}
+                            { 1, 0 },
+                            { 0, -1 },
+                            { -1, 0 },
+                            { 0, 1 },
+                            { 1, -1 },
+                            { 1, 1 },
+                            { -1, -1 },
+                            { -1, 1 }
                     };
                     for (int[] knightMove : knightMoves) {
                         checkPosition = new Position(home.getX() + knightMove[0], home.getY() + knightMove[1]);
                         if (checkPosition.isOnBoard()) {
                             if (getPieceAt(checkPosition).isKnight() && getPieceAt(checkPosition).getColor() != color) {
-//                                System.out.println ("in check");
+                                // System.out.println ("in check");
                                 return true;
                             }
                         }
@@ -268,28 +273,32 @@ public class Board {
                     for (int[] straightMove : straightMoves) {
                         checkPosition = new Position(home.getX() + straightMove[0], home.getY() + straightMove[1]);
                         while (checkPosition.isOnBoard()) {
-                            if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isRook()) && getPieceAt(checkPosition).getColor() != color) {
-//                                System.out.println ("in check");
+                            if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isRook())
+                                    && getPieceAt(checkPosition).getColor() != color) {
+                                // System.out.println ("in check");
                                 return true;
                             }
                             if (getPieceAt(checkPosition).getColor() != Color.g) {
                                 break;
                             }
-                            checkPosition = new Position(checkPosition.getX() + straightMove[0], checkPosition.getY() + straightMove[1]);
+                            checkPosition = new Position(checkPosition.getX() + straightMove[0],
+                                    checkPosition.getY() + straightMove[1]);
                         }
                     }
 
                     for (int[] diagonalMove : diagonalMoves) {
                         checkPosition = new Position(home.getX() + diagonalMove[0], home.getY() + diagonalMove[1]);
                         while (checkPosition.isOnBoard()) {
-                            if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isBishop()) && getPieceAt(checkPosition).getColor() != color) {
-//                                System.out.println ("in check");
+                            if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isBishop())
+                                    && getPieceAt(checkPosition).getColor() != color) {
+                                // System.out.println ("in check");
                                 return true;
                             }
                             if (getPieceAt(checkPosition).getColor() != Color.g) {
                                 break;
                             }
-                            checkPosition = new Position(checkPosition.getX() + diagonalMove[0], checkPosition.getY() + diagonalMove[1]);
+                            checkPosition = new Position(checkPosition.getX() + diagonalMove[0],
+                                    checkPosition.getY() + diagonalMove[1]);
                         }
                     }
 
@@ -300,12 +309,14 @@ public class Board {
                         direction = 1;
                     Position leftCheckPosition = new Position(home.getX() - 1, home.getY() + direction);
                     Position rightCheckPosition = new Position(home.getX() + 1, home.getY() + direction);
-                    if (leftCheckPosition.isOnBoard() && getPieceAt(leftCheckPosition).isPawn() && getPieceAt(leftCheckPosition).getColor() != color) {
-//                        System.out.println ("in check");
+                    if (leftCheckPosition.isOnBoard() && getPieceAt(leftCheckPosition).isPawn()
+                            && getPieceAt(leftCheckPosition).getColor() != color) {
+                        // System.out.println ("in check");
                         return true;
                     }
-                    if (rightCheckPosition.isOnBoard() && getPieceAt(rightCheckPosition).isPawn() && getPieceAt(rightCheckPosition).getColor() != color) {
-//                        System.out.println ("in check");
+                    if (rightCheckPosition.isOnBoard() && getPieceAt(rightCheckPosition).isPawn()
+                            && getPieceAt(rightCheckPosition).getColor() != color) {
+                        // System.out.println ("in check");
                         return true;
                     }
 
@@ -313,7 +324,7 @@ public class Board {
                         checkPosition = new Position(home.getX() + kingMove[0], home.getY() + kingMove[1]);
                         if (checkPosition.isOnBoard()) {
                             if (getPieceAt(checkPosition).isKing()) {
-//                                System.out.println ("in check");
+                                // System.out.println ("in check");
                                 return true;
                             }
                         }
@@ -321,7 +332,7 @@ public class Board {
                 }
             }
         }
-//        System.out.println ("not in check");
+        // System.out.println ("not in check");
         return false;
     }
 
@@ -461,7 +472,6 @@ public class Board {
         int y = 7 - (Character.getNumericValue(fenData.charAt(1)) - 1);
         return new Position(x, y);
     }
-
 
     public void importBoard(String fenBoard) {
         int x = 0;

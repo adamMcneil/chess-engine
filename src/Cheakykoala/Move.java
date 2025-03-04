@@ -11,28 +11,31 @@ public class Move {
         this.end = end;
     }
 
-    public Piece getPiece(){
+    public Piece getPiece() {
         return null;
     }
 
-    public boolean isPromotionMove(Move move){
+    public boolean isPromotionMove(Move move) {
         return false;
     }
 
     public boolean isCastleMove(Board board) {
-        return (board.getPieceAt(this.getBeginning()).isKing() && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2);
+        return (board.getPieceAt(this.getBeginning()).isKing()
+                && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2);
     }
 
     public boolean isCapture(Board board) {
         return !board.getPieceAt(this.end).isEmpty();
     }
 
-    public boolean isInPassingMove(Board board){
-        return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty() && this.getBeginning().getX() != this.getEnd().getX());
+    public boolean isInPassingMove(Board board) {
+        return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty()
+                && this.getBeginning().getX() != this.getEnd().getX());
     }
 
-    public boolean isUpTwoMove(Board board){
-        return (board.getPieceAt(this.getBeginning()).isPawn() && Math.abs(this.getBeginning().getY() - this.getEnd().getY()) == 2 );
+    public boolean isUpTwoMove(Board board) {
+        return (board.getPieceAt(this.getBeginning()).isPawn()
+                && Math.abs(this.getBeginning().getY() - this.getEnd().getY()) == 2);
     }
 
     public String toString() {

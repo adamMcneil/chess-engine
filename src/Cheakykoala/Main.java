@@ -18,13 +18,13 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Board board = new Board();
         apiConnect(board);
-//        timeMinimax();
+        // timeMinimax();
     }
 
     public static void apiConnect(Board board) {
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-//            board.printBoard();
+            // board.printBoard();
             String input = consoleInput.nextLine();
             if (input.contains("go")) {
                 System.out.println(onGo(board));
@@ -54,7 +54,7 @@ public class Main {
                 i++;
             }
             fenString.stripLeading();
-            //position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
+            // position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
             board.importBoard(fenString);
             board.setBoardEval(evalBoard(board));
             board.printBoard();
@@ -63,19 +63,19 @@ public class Main {
         for (int i = startMoves; i < UCIStringArray.length; i++) {
             index++;
             Move move;
-            Position first = new Position(charToInt(UCIStringArray[i].charAt(0)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
-            Position second = new Position(charToInt(UCIStringArray[i].charAt(2)), 8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
-
+            Position first = new Position(charToInt(UCIStringArray[i].charAt(0)),
+                    8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
+            Position second = new Position(charToInt(UCIStringArray[i].charAt(2)),
+                    8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
 
             if (UCIStringArray[i].length() == 5) {
                 char letter = UCIStringArray[i].charAt(4);
                 move = new PromotionMove(first, second, makePiece(second, letter));
 
-
             } else {
                 move = new Move(first, second);
             }
-//            System.out.println (board.getBoardEval());
+            // System.out.println (board.getBoardEval());
             board.getPieceAt(first).move(board, move);
             if (index % 2 == 0) {
                 minimaxColor = Color.w;
@@ -91,7 +91,7 @@ public class Main {
         int CURRENT_DEPTH = 0;
         startTime = System.currentTimeMillis();
         Move bestMove = moveMinimax(board, 1, minimaxColor);
-        for (int i = 0; ; i++) {
+        for (int i = 0;; i++) {
             if (timeout) {
                 break;
             }
@@ -102,12 +102,14 @@ public class Main {
                 bestMove = checkMove;
             }
         }
-//        System.out.println(System.currentTimeMillis() - startTime);
+        // System.out.println(System.currentTimeMillis() - startTime);
         System.out.println(board.getBoardEval());
         if (bestMove.isPromotionMove(bestMove)) {
-            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString();
+            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition())
+                    .append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString();
         }
-        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition()).append(bestMove.getEnd().convertPosition()).toString();
+        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition())
+                .append(bestMove.getEnd().convertPosition()).toString();
     }
 
     public static Move moveMinimax(Board board, int depth, Color color) {
@@ -128,7 +130,8 @@ public class Main {
                 if (p.getColor() == color) {
                     for (Move m : p.getMoves(board)) {
                         child = board.getChild(m);
-                        double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isMaxPlayer);
+                        double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
+                                isMaxPlayer);
                         if (mx == 123456)
                             return null;
                         if (bestMoveValue == mx) {
@@ -161,15 +164,15 @@ public class Main {
         board.setBoardEval(evalBoard(board));
         board.printBoard();
         double start = System.currentTimeMillis();
-        System.out.println (moveMinimax(board, 4, Color.w));
+        System.out.println(moveMinimax(board, 4, Color.w));
         double end = System.currentTimeMillis();
         System.out.println((end - start) / 1000.0);
         System.out.println(board.getBoardEval());
     }
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
-        ArrayList<Move> moveList =  new ArrayList<>();
-        ArrayList<Move> captureMoveList =  new ArrayList<>();
+        ArrayList<Move> moveList = new ArrayList<>();
+        ArrayList<Move> captureMoveList = new ArrayList<>();
         double eval;
         double minEval;
         double maxEval;
@@ -180,7 +183,7 @@ public class Main {
         if (isMaxPlayer) {
             color = Color.w;
             maxEval = Double.NEGATIVE_INFINITY;
-            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
+            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME) {
                 timeout = true;
                 return 123456;
             }
@@ -196,14 +199,14 @@ public class Main {
                     }
                 }
             }
-            moveList.addAll(0,captureMoveList);
-            if (moveList.isEmpty()){
+            moveList.addAll(0, captureMoveList);
+            if (moveList.isEmpty()) {
                 if (board.isColorInCheck(color))
                     return checkmateEval(color);
                 else
                     return 0; // <--- this is most likely not right
             }
-            for (Move m: moveList){
+            for (Move m : moveList) {
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
                 maxEval = Math.max(alpha, eval);
                 alpha = Math.max(alpha, eval);
@@ -211,10 +214,9 @@ public class Main {
                     break;
                 }
             }
-//            sortArray(moveList);
+            // sortArray(moveList);
             return maxEval;
-        }
-        else {
+        } else {
             color = Color.b;
             minEval = Double.POSITIVE_INFINITY;
             for (Piece[] pieces : board.getBoard()) {
@@ -229,14 +231,14 @@ public class Main {
                     }
                 }
             }
-            moveList.addAll(0,captureMoveList);
-            if (moveList.isEmpty()){
+            moveList.addAll(0, captureMoveList);
+            if (moveList.isEmpty()) {
                 if (board.isColorInCheck(color))
                     return checkmateEval(color);
                 else
                     return 0; // <--- this is most likely not right
             }
-            for (Move m: moveList) {
+            for (Move m : moveList) {
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
@@ -247,89 +249,91 @@ public class Main {
             return minEval;
         }
     }
-    //*-------------------------------with sorted by capture moves-----------------------------*//
-//    public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
-//        ArrayList<Move> moveList =  new ArrayList<>();
-//        ArrayList<Move> captureMoveList =  new ArrayList<>();
-//        double eval;
-//        double minEval;
-//        double maxEval;
-//        Color color;
-//        if (isMaxPlayer)
-//            color = Color.w;
-//        else
-//            color = Color.b;
-////        }
-//        if (depth == 0) {
-//            return (evalBoard(board));
-//        }
-//        if (isMaxPlayer) {
-//            maxEval = Double.NEGATIVE_INFINITY;
-////            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
-////                timeout = true;
-////                return 123456;
-////            }
-//            for (Piece[] pieces : board.getBoard()) {
-//                for (Piece piece : pieces) {
-//                    if (piece.getColor() == Color.w) {
-//                        for (Move move : piece.getMoves(board)) {
-//                            if (move.isCapture(board))
-//                                captureMoveList.add(move);
-//                            else
-//                                moveList.add(move);
-//                        }
-//                    }
-//                }
-//            }
-//            moveList.addAll(0,captureMoveList);
-//            if (moveList.isEmpty()){
-//                if (board.isColorInCheck(color))
-//                    return checkmateEval(color);
-//                else
-//                    return 0; // <--- this is most likely not right
-//            }
-//            for (Move m: moveList){
-//                eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
-//                maxEval = Math.max(alpha, eval);
-//                alpha = Math.max(alpha, eval);
-//                if (beta <= alpha) {
-//                    break;
-//                }
-//            }
-////            sortArray(moveList);
-//            return maxEval;
-//        } else {
-//            minEval = Double.POSITIVE_INFINITY;
-//            for (Piece[] pieces : board.getBoard()) {
-//                for (Piece piece : pieces) {
-//                    if (piece.getColor() == Color.b) {
-//                        for (Move move : piece.getMoves(board)) {
-//                            if (move.isCapture(board))
-//                                captureMoveList.add(move);
-//                            else
-//                                moveList.add(move);
-//                        }
-//                    }
-//                }
-//            }
-//            moveList.addAll(0,captureMoveList);
-//            if (moveList.isEmpty()){
-//                if (board.isColorInCheck(color))
-//                    return checkmateEval(color);
-//                else
-//                    return 0; // <--- this is most likely not right
-//            }
-//            for (Move m: moveList) {
-//                eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
-//                minEval = Math.min(minEval, eval);
-//                beta = Math.min(beta, eval);
-//                if (beta <= alpha) {
-//                    break;
-//                }
-//            }
-//            return minEval;
-//        }
-//    }
+    // *-------------------------------with sorted by capture
+    // moves-----------------------------*//
+    // public static double minimax(Board board, int depth, double alpha, double
+    // beta, boolean isMaxPlayer) {
+    // ArrayList<Move> moveList = new ArrayList<>();
+    // ArrayList<Move> captureMoveList = new ArrayList<>();
+    // double eval;
+    // double minEval;
+    // double maxEval;
+    // Color color;
+    // if (isMaxPlayer)
+    // color = Color.w;
+    // else
+    // color = Color.b;
+    //// }
+    // if (depth == 0) {
+    // return (evalBoard(board));
+    // }
+    // if (isMaxPlayer) {
+    // maxEval = Double.NEGATIVE_INFINITY;
+    //// if (System.currentTimeMillis() - startTime > TIMEOUT_TIME){
+    //// timeout = true;
+    //// return 123456;
+    //// }
+    // for (Piece[] pieces : board.getBoard()) {
+    // for (Piece piece : pieces) {
+    // if (piece.getColor() == Color.w) {
+    // for (Move move : piece.getMoves(board)) {
+    // if (move.isCapture(board))
+    // captureMoveList.add(move);
+    // else
+    // moveList.add(move);
+    // }
+    // }
+    // }
+    // }
+    // moveList.addAll(0,captureMoveList);
+    // if (moveList.isEmpty()){
+    // if (board.isColorInCheck(color))
+    // return checkmateEval(color);
+    // else
+    // return 0; // <--- this is most likely not right
+    // }
+    // for (Move m: moveList){
+    // eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
+    // maxEval = Math.max(alpha, eval);
+    // alpha = Math.max(alpha, eval);
+    // if (beta <= alpha) {
+    // break;
+    // }
+    // }
+    //// sortArray(moveList);
+    // return maxEval;
+    // } else {
+    // minEval = Double.POSITIVE_INFINITY;
+    // for (Piece[] pieces : board.getBoard()) {
+    // for (Piece piece : pieces) {
+    // if (piece.getColor() == Color.b) {
+    // for (Move move : piece.getMoves(board)) {
+    // if (move.isCapture(board))
+    // captureMoveList.add(move);
+    // else
+    // moveList.add(move);
+    // }
+    // }
+    // }
+    // }
+    // moveList.addAll(0,captureMoveList);
+    // if (moveList.isEmpty()){
+    // if (board.isColorInCheck(color))
+    // return checkmateEval(color);
+    // else
+    // return 0; // <--- this is most likely not right
+    // }
+    // for (Move m: moveList) {
+    // eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
+    // minEval = Math.min(minEval, eval);
+    // beta = Math.min(beta, eval);
+    // if (beta <= alpha) {
+    // break;
+    // }
+    // }
+    // return minEval;
+    // }
+    // }
 
     public static double evalBoard(Board board) {
         int eval = 0;
@@ -397,7 +401,8 @@ public class Main {
             System.out.println(convertLetter(beginning.charAt(0)));
             System.out.println(8 - Character.getNumericValue(beginning.charAt(1)));
 
-            Position first = new Position(convertLetter(beginning.charAt(0)), 8 - Character.getNumericValue(beginning.charAt(1)));
+            Position first = new Position(convertLetter(beginning.charAt(0)),
+                    8 - Character.getNumericValue(beginning.charAt(1)));
             Position last = new Position(convertLetter(end.charAt(0)), 8 - Character.getNumericValue(end.charAt(1)));
             if (new Move(first, last).isMoveLegal(board, color)) {
                 wasLegal = true;
@@ -474,7 +479,8 @@ public class Main {
             for (Piece p : pieces) {
                 if (p.getColor() == color) {
                     for (Move m : p.getMoves(board)) {
-                        System.out.print(m.getBeginning().convertPosition() + " -> " + m.getEnd().convertPosition() + " ");
+                        System.out.print(
+                                m.getBeginning().convertPosition() + " -> " + m.getEnd().convertPosition() + " ");
                         nodes = countNodes(board.getChild(m), 2, getOppositeColor(color));
                         System.out.println(nodes);
                         total = total + nodes;

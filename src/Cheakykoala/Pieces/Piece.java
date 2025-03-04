@@ -36,14 +36,15 @@ public abstract class Piece {
     }
 
     public boolean isOppositeColor(Piece piece) {
-        return (this.color == Color.w && piece.getColor() == Color.b) || (this.color == Color.b && piece.getColor() == Color.w);
+        return (this.color == Color.w && piece.getColor() == Color.b)
+                || (this.color == Color.b && piece.getColor() == Color.w);
     }
 
-    public int getValueInt(int index){
+    public int getValueInt(int index) {
         return valueTable[index];
     }
 
-    public int[] getValueTable(){
+    public int[] getValueTable() {
         return valueTable;
     }
 
@@ -139,7 +140,7 @@ public abstract class Piece {
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
         board.addPiece(taken, new Empty(taken));
         board.setCanEnpassant(false);
-//        System.out.println ("We just did a inPassingMove");
+        // System.out.println ("We just did a inPassingMove");
     }
 
     public void upTwoMove(Move move, Board board) {
@@ -175,7 +176,7 @@ public abstract class Piece {
             upTwoMove(move, board);
         } else {
             normalMove(move, board);
-            if (move.isCapture(board)){
+            if (move.isCapture(board)) {
                 board.increaseCaptures();
             }
         }

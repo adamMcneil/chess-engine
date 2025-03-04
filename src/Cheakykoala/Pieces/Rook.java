@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Rook extends Piece {
     public Rook(Color c, Position position) {
         super();
-        this.valueTable = new int[]{
+        this.valueTable = new int[] {
                 0, 0, 0, 0, 0, 0, 0, 0,
                 5, 10, 10, 10, 10, 10, 10, 5,
                 -5, 0, 0, 0, 0, 0, 0, -5,
@@ -39,10 +39,10 @@ public class Rook extends Piece {
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[][] baseMoves = {
-                {1, 0},
-                {0, 1},
-                {-1, 0},
-                {0, -1},
+                { 1, 0 },
+                { 0, 1 },
+                { -1, 0 },
+                { 0, -1 },
         };
         for (int[] arr : baseMoves) {
             Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
@@ -66,10 +66,10 @@ public class Rook extends Piece {
     @Override
     public boolean canMove(Board board) {
         int[][] baseMoves = {
-                {1, 0},
-                {0, 1},
-                {-1, 0},
-                {0, -1},
+                { 1, 0 },
+                { 0, 1 },
+                { -1, 0 },
+                { 0, -1 },
         };
         for (int[] arr : baseMoves) {
             Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
@@ -89,4 +89,3 @@ public class Rook extends Piece {
         return false;
     }
 }
-
