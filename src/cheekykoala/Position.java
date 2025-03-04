@@ -1,4 +1,4 @@
-package Cheakykoala;
+package cheekykoala;
 
 public class Position {
     int[] position;

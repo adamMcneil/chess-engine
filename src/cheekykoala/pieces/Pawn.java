@@ -1,10 +1,10 @@
-package Cheakykoala.Pieces;
+package cheekykoala.pieces;
 
-import Cheakykoala.Board;
-import Cheakykoala.Color;
-import Cheakykoala.Move;
-import Cheakykoala.Position;
-import Cheakykoala.PromotionMove;
+import cheekykoala.Board;
+import cheekykoala.Color;
+import cheekykoala.Move;
+import cheekykoala.Position;
+import cheekykoala.PromotionMove;
 
 import java.util.ArrayList;
 

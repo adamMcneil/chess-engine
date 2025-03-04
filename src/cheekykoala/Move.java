@@ -1,6 +1,6 @@
-package Cheakykoala;
+package cheekykoala;
 
-import Cheakykoala.Pieces.Piece;
+import cheekykoala.pieces.Piece;
 
 public class Move {
     Position beginning;

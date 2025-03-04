@@ -1,12 +1,9 @@
-package Cheakykoala;
+package cheekykoala;
 
-import Cheakykoala.Pieces.*;
+import cheekykoala.pieces.*;
 
-import java.util.HashMap;
 import java.util.Scanner;
-
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main {
     public static int index = 0;
