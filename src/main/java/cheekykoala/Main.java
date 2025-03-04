@@ -16,6 +16,8 @@ public class Main {
         System.out.println("Welcome to Cheekykoala!");
         Board board = new Board();
         board.printBoard();
+        Move move = moveMinimax(board, 5, Color.w);
+        System.out.println(move);
         // apiConnect(board);
         // timeMinimax();
     }
