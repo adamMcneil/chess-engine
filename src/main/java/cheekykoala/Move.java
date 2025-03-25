@@ -21,7 +21,8 @@ public class Move {
 
     public boolean isCastleMove(Board board) {
         return (board.getPieceAt(this.getBeginning()).isKing()
-                && Math.abs(this.getEnd().getX() - this.getBeginning().getX()) == 2);
+                && (this.getEnd().getX() - this.getBeginning().getX() == 2
+                || this.getEnd().getX() - this.getBeginning().getX() == -2));
     }
 
     public boolean isCapture(Board board) {
