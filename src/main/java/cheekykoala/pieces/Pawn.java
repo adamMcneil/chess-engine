@@ -19,6 +19,16 @@ public class Pawn extends Piece {
                 -35, -1, -20, -23, -15, 24, 38, -22,
                 0, 0, 0, 0, 0, 0, 0, 0,
     };
+
+    public Pawn(Pawn other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Pawn(this);
+    }
+
     public Pawn(Color c, Position position) {
         this.position = position;
         this.color = c;

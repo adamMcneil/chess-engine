@@ -16,6 +16,16 @@ public class Queen extends Piece {
                 -20, -10, -10, -5, -5, -10, -10, -20
     };
 
+    public Queen(Queen other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Queen(this);
+    }
+
+
     public Queen(Color c, Position position) {
         this.position = position;
         this.color = c;

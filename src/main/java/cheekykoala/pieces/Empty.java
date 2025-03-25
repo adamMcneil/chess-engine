@@ -16,6 +16,15 @@ public class Empty extends Piece {
         this.letter = ' ';
     }
 
+    public Empty(Empty other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Empty(this);
+    }
+
     @Override
     public double[] getTableValue() {
         return new double[] {};

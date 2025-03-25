@@ -18,6 +18,16 @@ public class Knight extends Piece {
                 -40, -20, 0, 5, 5, 0, -20, -40,
                 -50, -40, -30, -30, -30, -30, -40, -50,
     };
+
+    public Knight(Knight other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Knight(this);
+    }
+
     public Knight(Color c, Position position) {
         this.position = position;
         this.color = c;

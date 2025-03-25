@@ -536,8 +536,7 @@ public class Board {
         int x = 0, y = 0;
         for (Piece[] pieces : board.getBoard()) {
             for (Piece piece : pieces) {
-                Piece pieceCopy = getPiece(piece.getLetter(), x, y);
-                this.getBoard()[y][x] = pieceCopy;
+                this.getBoard()[y][x] = piece.copy();
                 x++;
             }
             x = 0;

@@ -20,6 +20,8 @@ public abstract class Piece {
         this.color = other.color;
     }
 
+    public abstract Piece copy();
+
     public double getValue() {
         Position piecePosition = getPosition();
         int x = piecePosition.getX();

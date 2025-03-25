@@ -18,6 +18,16 @@ public class King extends Piece {
                 20, 20, 0, 0, 0, 0, 20, 20,
                 20, 30, 10, 0, 0, 10, 30, 20
     };
+
+    public King(King other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new King(this);
+    }
+
     public King(Color c, Position position) {
         this.position = position;
         this.color = c;

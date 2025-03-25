@@ -19,6 +19,15 @@ public class Bishop extends Piece {
                 -20, -10, -10, -10, -10, -10, -10, -20,
     };
 
+    public Bishop(Bishop bishop) {
+        super(bishop);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Bishop(this);
+    }
+
     public Bishop(Color c, Position position) {
         this.position = position;
         this.color = c;

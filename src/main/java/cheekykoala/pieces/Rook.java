@@ -15,6 +15,16 @@ public class Rook extends Piece {
                 -5, 0, 0, 0, 0, 0, 0, -5,
                 0, 0, 0, 5, 5, 0, 0, 0
     };
+
+    public Rook(Rook other) {
+        super(other);
+    }
+
+    @Override
+    public Piece copy() {
+        return new Rook(this);
+    }
+
     public Rook(Color c, Position position) {
         super();
         this.position = position;
