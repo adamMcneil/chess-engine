@@ -23,11 +23,6 @@ public class Position {
         position[1] = y;
     }
 
-    public void isEqualTo(Position p) {
-        setX(p.getX());
-        setY(p.getY());
-    }
-
     public boolean comparePositions(Position x) {
         return (x.getX() == this.getX() && x.getY() == this.getY());
     }

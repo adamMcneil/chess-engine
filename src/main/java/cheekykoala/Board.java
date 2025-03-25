@@ -3,6 +3,7 @@ package cheekykoala;
 import cheekykoala.pieces.*;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Board {
 
@@ -344,70 +345,6 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
-    public boolean isTerminalNode(Color color) {
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    if (p.canMove(this)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean whiteInCheckmate() {
-        if (!this.isColorInCheck(Color.w))
-            return false;
-        int moves = 0;
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == Color.w) {
-                    moves += p.getMoves(this).size();
-                    if (moves > 0) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean blackInCheckmate() {
-        if (!this.isColorInCheck(Color.b))
-            return false;
-        int moves = 0;
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == Color.b) {
-                    moves += p.getMoves(this).size();
-                    if (moves > 0) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public boolean checkStalemate(Color color) {
-        if (this.isColorInCheck(color))
-            return false;
-        int moves = 0;
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    moves += p.getMoves(this).size();
-                    if (moves > 0) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     public void setCastleStates(String fenCastleData) {
         boolean whiteKing = false;
         boolean whiteQueen = false;
@@ -454,9 +391,9 @@ public class Board {
     }
 
     public static Color getColorFromString(String color) {
-        if (color == "w")
+        if (Objects.equals(color, "w"))
             return Color.w;
-        else if (color == "b") {
+        else if (Objects.equals(color, "b")) {
             return Color.b;
         }
         return Color.g;
