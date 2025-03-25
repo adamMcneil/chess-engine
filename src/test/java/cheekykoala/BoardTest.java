@@ -79,7 +79,7 @@ class BoardTest {
         assertTrue(pawn.isPawn());
         assertSame(pawn.getColor(), Color.w);
         int moves = pawn.getMoves(board).size();
-        assertEquals(1, moves); // Assuming no double move or captures available
+        assertEquals(1, moves);
     }
 
     @Test
@@ -95,6 +95,5 @@ class BoardTest {
         assertEquals(4, whiteMoves);
         assertEquals(4, blackMoves);
     }
-
 
 }

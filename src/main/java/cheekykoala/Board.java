@@ -66,10 +66,10 @@ public class Board {
         if (move.isInPassingMove(this)) {
             if (movedPiece.getColor() == Color.w) {
                 boardEval += 100;
-                boardEval = boardEval + movedPiece.getValueInt(63 - (index - 8));
+                // boardEval = boardEval + movedPiece.getValueInt(63 - (index - 8));
             } else {
                 boardEval -= 100;
-                boardEval = boardEval - movedPiece.getValueInt(index + 8);
+                // boardEval = boardEval - movedPiece.getValueInt(index + 8);
             }
         }
         if (move.isCastleMove(this)) {
