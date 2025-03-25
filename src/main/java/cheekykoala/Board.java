@@ -6,6 +6,38 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Board {
+    private static final int[][] knightMoves = {
+            { 2, 1 },
+            { 2, -1 },
+            { 1, 2 },
+            { 1, -2 },
+            { -1, 2 },
+            { -1, -2 },
+            { -2, 1 },
+            { -2, -1 }
+    };
+    private static final int[][] straightMoves = {
+            { 1, 0 },
+            { 0, -1 },
+            { -1, 0 },
+            { 0, 1 }
+    };
+    private static final int[][] diagonalMoves = {
+            { 1, 1 },
+            { 1, -1 },
+            { -1, -1 },
+            { -1, 1 }
+    };
+    private static final int[][] kingMoves = {
+            { 1, 0 },
+            { 0, -1 },
+            { -1, 0 },
+            { 0, 1 },
+            { 1, -1 },
+            { 1, 1 },
+            { -1, -1 },
+            { -1, 1 }
+    };
 
     private static int captures = 0;
     Piece[][] board = new Piece[8][8];
@@ -263,43 +295,10 @@ public class Board {
     public boolean isColorInCheck(Color color) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                Piece checkpiece = this.getPieceAt(new Position(j, i));
                 if (this.getPieceAt(new Position(j, i)).isKing()
                         && this.getPieceAt(new Position(j, i)).getColor() == color) {
-                    Position checkPosition = null;
+                    Position checkPosition;
                     Position home = new Position(j, i);
-                    int[][] knightMoves = {
-                            { 2, 1 },
-                            { 2, -1 },
-                            { 1, 2 },
-                            { 1, -2 },
-                            { -1, 2 },
-                            { -1, -2 },
-                            { -2, 1 },
-                            { -2, -1 }
-                    };
-                    int[][] straightMoves = {
-                            { 1, 0 },
-                            { 0, -1 },
-                            { -1, 0 },
-                            { 0, 1 }
-                    };
-                    int[][] diagonalMoves = {
-                            { 1, 1 },
-                            { 1, -1 },
-                            { -1, -1 },
-                            { -1, 1 }
-                    };
-                    int[][] kingMoves = {
-                            { 1, 0 },
-                            { 0, -1 },
-                            { -1, 0 },
-                            { 0, 1 },
-                            { 1, -1 },
-                            { 1, 1 },
-                            { -1, -1 },
-                            { -1, 1 }
-                    };
                     for (int[] knightMove : knightMoves) {
                         checkPosition = new Position(home.getX() + knightMove[0], home.getY() + knightMove[1]);
                         if (checkPosition.isOnBoard()) {
@@ -464,7 +463,7 @@ public class Board {
                 x++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
-                    board[y][x] = new Empty(new Position(x, y));
+                    board[y][x] = Empty.getInstance();
                     x++;
                 }
             } else {
@@ -515,7 +514,7 @@ public class Board {
                 piece = new Pawn(Color.w, new Position(x, y));
                 return piece;
         }
-        piece = new Empty(new Position(x, y));
+        piece = Empty.getInstance();
         return piece;
     }
 

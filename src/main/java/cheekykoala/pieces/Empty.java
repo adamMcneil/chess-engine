@@ -1,6 +1,7 @@
 package cheekykoala.pieces;
 
 import cheekykoala.Board;
+import cheekykoala.Color;
 import cheekykoala.Move;
 import cheekykoala.Position;
 
@@ -8,21 +9,22 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Empty extends Piece {
+    private static final Empty INSTANCE = new Empty(new Position(0, 0));
+
+    public static Empty getInstance() {
+        return INSTANCE;
+    }
 
     public Empty(Position position) {
         this.position = position;
-        this.color = color.g;
+        this.color = Color.g;
         this.piece = ' ';
         this.letter = ' ';
     }
 
-    public Empty(Empty other) {
-        super(other);
-    }
-
     @Override
     public Piece copy() {
-        return new Empty(this);
+        return INSTANCE;
     }
 
     @Override

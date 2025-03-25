@@ -327,7 +327,7 @@ public class Main {
         if (letter == 'R')
             return new Rook(minimaxColor, position);
 
-        return new Empty(position);
+        return Empty.getInstance();
     }
 
     public static int charToInt(char letter) {

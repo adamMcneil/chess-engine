@@ -134,7 +134,7 @@ public abstract class Piece {
 
     public void promotionMove(Move move, Board board) {
         board.addPiece(move.getEnd(), move.getPiece());
-        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+        board.addPiece(move.getBeginning(), Empty.getInstance());
         board.setCanEnpassant(false);
     }
 
@@ -154,18 +154,18 @@ public abstract class Piece {
         }
         Position movedTo = new Position(x1, y);
         board.addPiece(movedTo, this);
-        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+        board.addPiece(move.getBeginning(), Empty.getInstance());
         movedTo = new Position(x, y);
         board.addPiece(movedTo, board.get(x2, y));
         Position movedFrom = new Position(x2, y);
-        board.addPiece(movedFrom, new Empty(movedFrom));
+        board.addPiece(movedFrom, Empty.getInstance());
         board.setCanEnpassant(false);
     }
 
     public void inPassingMove(Move move, Board board) {
         Position taken = new Position(move.getEnd().getX(), move.getBeginning().getY());
         board.addPiece(move.getEnd(), new Pawn(color, move.getEnd()));
-        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+        board.addPiece(move.getBeginning(), Empty.getInstance());
         board.addPiece(taken, new Empty(taken));
         board.setCanEnpassant(false);
     }
@@ -185,7 +185,7 @@ public abstract class Piece {
     public void normalMove(Move move, Board board) {
         board.addPiece(move.getEnd(), this);
         this.setPosition(move.getEnd());
-        board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
+        board.addPiece(move.getBeginning(), Empty.getInstance());
         board.setCanEnpassant(false);
     }
 
