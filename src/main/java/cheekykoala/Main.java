@@ -10,22 +10,16 @@ public class Main {
     public static Color minimaxColor = Color.w;
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
-    public static int TIMEOUT_TIME = 60000;
+    public static int TIMEOUT_TIME = 10000;
 
     public static void main(String[] args) {
-        System.out.println("Welcome to Cheekykoala!");
         Board board = new Board();
-        board.printBoard();
-        Move move = moveMinimax(board, 5, Color.w);
-        System.out.println(move);
-        // apiConnect(board);
-        // timeMinimax();
+        apiConnect(board);
     }
 
     public static void apiConnect(Board board) {
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
-            // board.printBoard();
             String input = consoleInput.nextLine();
             if (input.contains("go")) {
                 System.out.println(onGo(board));
@@ -35,6 +29,8 @@ public class Main {
                 System.out.println("readyok");
             } else if (input.contains("position")) {
                 UCIPosition(board, input);
+            } else if (input.contains("quit")) {
+                break;
             }
         }
     }
