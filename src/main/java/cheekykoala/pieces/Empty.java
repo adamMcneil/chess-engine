@@ -23,9 +23,4 @@ public class Empty extends Piece {
     public ArrayList<Move> getMoves(Board board) {
         return new ArrayList();
     }
-
-    @Override
-    public boolean canMove(Board board) {
-        return false;
-    }
 }

@@ -116,25 +116,4 @@ public class King extends Piece {
         return moves;
     }
 
-    @Override
-    public boolean canMove(Board board) {
-        int[][] baseMoves = {
-                { 1, 1 },
-                { 1, 0 },
-                { 1, -1 },
-                { 0, -1 },
-                { -1, -1 },
-                { -1, 0 },
-                { -1, 1 },
-                { 0, 1 },
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            if (move.isMoveLegal(board, color)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

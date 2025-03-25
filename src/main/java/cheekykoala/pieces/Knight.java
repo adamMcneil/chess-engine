@@ -54,28 +54,6 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean canMove(Board board) {
-        int[][] baseMoves = {
-                { 2, 1 },
-                { 2, -1 },
-                { 1, 2 },
-                { 1, -2 },
-                { -1, 2 },
-                { -1, -2 },
-                { -2, 1 },
-                { -2, -1 },
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            if (move.isMoveLegal(board, color)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean isKnight() {
         return true;
     }
