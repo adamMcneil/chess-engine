@@ -5,10 +5,8 @@ import cheekykoala.*;
 import java.util.ArrayList;
 
 public class Rook extends Piece {
-    public Rook(Color c, Position position) {
-        super();
-        this.valueTable = new int[] {
-                0, 0, 0, 0, 0, 0, 0, 0,
+        private static final double[] valueTable = new double[] {
+        0, 0, 0, 0, 0, 0, 0, 0,
                 5, 10, 10, 10, 10, 10, 10, 5,
                 -5, 0, 0, 0, 0, 0, 0, -5,
                 -5, 0, 0, 0, 0, 0, 0, -5,
@@ -16,7 +14,9 @@ public class Rook extends Piece {
                 -5, 0, 0, 0, 0, 0, 0, -5,
                 -5, 0, 0, 0, 0, 0, 0, -5,
                 0, 0, 0, 5, 5, 0, 0, 0
-        };
+    };
+    public Rook(Color c, Position position) {
+        super();
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -26,6 +26,11 @@ public class Rook extends Piece {
             piece = (char) 0x2656;
             letter = 'r';
         }
+    }
+
+    @Override
+    public double[] getTableValue() {
+        return valueTable;
     }
 
     @Override

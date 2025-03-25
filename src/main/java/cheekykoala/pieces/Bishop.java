@@ -8,9 +8,8 @@ import cheekykoala.Position;
 import java.util.ArrayList;
 
 public class Bishop extends Piece {
-    public Bishop(Color c, Position position) {
-        this.valueTable = new int[] {
-                -20, -10, -10, -10, -10, -10, -10, -20,
+    private static final double[] valueTable = new double[] {
+        -20, -10, -10, -10, -10, -10, -10, -20,
                 -10, 0, 0, 0, 0, 0, 0, -10,
                 -10, 0, 5, 10, 10, 5, 0, -10,
                 -10, 5, 5, 10, 10, 5, 5, -10,
@@ -18,7 +17,9 @@ public class Bishop extends Piece {
                 -10, 10, 10, 10, 10, 10, 10, -10,
                 -10, 5, 0, 0, 0, 0, 5, -10,
                 -20, -10, -10, -10, -10, -10, -10, -20,
-        };
+    };
+
+    public Bishop(Color c, Position position) {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -33,6 +34,11 @@ public class Bishop extends Piece {
     @Override
     public boolean isBishop() {
         return true;
+    }
+
+    @Override
+    public double[] getTableValue() {
+        return valueTable;
     }
 
     public ArrayList<Move> getMoves(Board board) {

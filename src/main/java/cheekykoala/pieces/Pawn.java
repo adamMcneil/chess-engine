@@ -9,9 +9,8 @@ import cheekykoala.PromotionMove;
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
-    public Pawn(Color c, Position position) {
-        this.valueTable = new int[] {
-                0, 0, 0, 0, 0, 0, 0, 0,
+        private static final double[] valueTable = new double[] {
+        0, 0, 0, 0, 0, 0, 0, 0,
                 98, 134, 61, 95, 68, 126, 34, -11,
                 -6, 7, 26, 31, 65, 56, 25, -20,
                 -14, 13, 6, 21, 23, 12, 17, -23,
@@ -19,7 +18,8 @@ public class Pawn extends Piece {
                 -26, -4, -4, -10, 3, 3, 33, -12,
                 -35, -1, -20, -23, -15, 24, 38, -22,
                 0, 0, 0, 0, 0, 0, 0, 0,
-        };
+    };
+    public Pawn(Color c, Position position) {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -162,6 +162,11 @@ public class Pawn extends Piece {
             moves.add(moveBishop);
         }
         return moves;
+    }
+
+    @Override
+    public double[] getTableValue() {
+        return valueTable;
     }
 
     public ArrayList<Move> getMoves(Board board) {

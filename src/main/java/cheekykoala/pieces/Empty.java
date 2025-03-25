@@ -4,6 +4,7 @@ import cheekykoala.Board;
 import cheekykoala.Move;
 import cheekykoala.Position;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Empty extends Piece {
@@ -13,6 +14,11 @@ public class Empty extends Piece {
         this.color = color.g;
         this.piece = ' ';
         this.letter = ' ';
+    }
+
+    @Override
+    public double[] getTableValue() {
+        return new double[] {};
     }
 
     @Override

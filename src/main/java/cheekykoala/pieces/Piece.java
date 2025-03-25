@@ -5,16 +5,52 @@ import cheekykoala.*;
 import java.util.ArrayList;
 
 public abstract class Piece {
-    int[] valueTable;
     Position position;
     char piece;
     char letter;
     Color color;
-    boolean hasMoved = false;
 
     public Piece() {
-
     }
+
+    public Piece(Piece other) {
+        this.position = other.position;
+        this.piece = other.piece;
+        this.letter = other.letter;
+        this.color = other.color;
+    }
+
+    public double getValue() {
+        Position piecePosition = getPosition();
+        int x = piecePosition.getX();
+        int y = piecePosition.getY();
+        int index = y * 8 + x;
+        if (color == Color.w) {
+            return getValue(index);
+        } else {
+            return getValue(63 - index);
+        }
+    }
+
+    public double getValue(int index) {
+        return getTableValue()[index];
+    }
+
+    public double getTableValue(int[] table) {
+        Position piecePosition = getPosition();
+        int x = piecePosition.getX();
+        int y = piecePosition.getY();
+        if (color == Color.w) {
+            return table[(y * 8) + x];
+        } else if (color != Color.g) {
+
+            return table[63 - ((y * 8) + x)];
+        }
+        return 0;
+    }
+
+
+    public abstract double[] getTableValue();
 
     public double getPieceEval() {
         this.letter = Character.toUpperCase(this.letter);
@@ -38,14 +74,6 @@ public abstract class Piece {
     public boolean isOppositeColor(Piece piece) {
         return (this.color == Color.w && piece.getColor() == Color.b)
                 || (this.color == Color.b && piece.getColor() == Color.w);
-    }
-
-    public int getValueInt(int index) {
-        return valueTable[index];
-    }
-
-    public int[] getValueTable() {
-        return valueTable;
     }
 
     public boolean isSameColor(Piece piece) {
@@ -138,7 +166,6 @@ public abstract class Piece {
         board.addPiece(move.getBeginning(), new Empty(move.getBeginning()));
         board.addPiece(taken, new Empty(taken));
         board.setCanEnpassant(false);
-        // System.out.println ("We just did a inPassingMove");
     }
 
     public void upTwoMove(Move move, Board board) {
@@ -169,13 +196,13 @@ public abstract class Piece {
             castleMove(move, board);
         } else if (move.isInPassingMove(board)) {
             inPassingMove(move, board);
-            board.increaseCaptures();
+            Board.increaseCaptures();
         } else if (move.isUpTwoMove(board)) {
             upTwoMove(move, board);
         } else {
             normalMove(move, board);
             if (move.isCapture(board)) {
-                board.increaseCaptures();
+                Board.increaseCaptures();
             }
         }
     }

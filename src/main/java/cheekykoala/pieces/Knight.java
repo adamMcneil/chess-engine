@@ -8,9 +8,8 @@ import cheekykoala.Position;
 import java.util.ArrayList;
 
 public class Knight extends Piece {
-    public Knight(Color c, Position position) {
-        this.valueTable = new int[] {
-                -50, -40, -30, -30, -30, -30, -40, -50,
+        private static final double[] valueTable = new double[] {
+        -50, -40, -30, -30, -30, -30, -40, -50,
                 -40, -20, 0, 0, 0, 0, -20, -40,
                 -30, 0, 10, 15, 15, 10, 0, -30,
                 -30, 5, 15, 20, 20, 15, 5, -30,
@@ -18,7 +17,8 @@ public class Knight extends Piece {
                 -30, 5, 10, 15, 15, 10, 5, -30,
                 -40, -20, 0, 5, 5, 0, -20, -40,
                 -50, -40, -30, -30, -30, -30, -40, -50,
-        };
+    };
+    public Knight(Color c, Position position) {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -29,6 +29,11 @@ public class Knight extends Piece {
             piece = (char) 0x2658;
             letter = 'n';
         }
+    }
+
+    @Override
+    public double[] getTableValue() {
+        return valueTable;
     }
 
     public ArrayList<Move> getMoves(Board board) {
