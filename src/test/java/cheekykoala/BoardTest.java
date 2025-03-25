@@ -96,4 +96,45 @@ class BoardTest {
         assertEquals(4, blackMoves);
     }
 
+    @Test
+    void testCastling() {
+        Board board = new Board();
+        board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+        Piece whiteKing = board.get(4, 7);
+        Piece blackKing = board.get(4, 0);
+        assertTrue(whiteKing.isKing());
+        assertTrue(blackKing.isKing());
+        int whiteMoves = whiteKing.getMoves(board).size();
+        int blackMoves = blackKing.getMoves(board).size();
+        assertEquals(4, whiteMoves);
+        assertEquals(4, blackMoves);
+    }
+
+    @Test
+    void testCastlingMoved() {
+        Board board = new Board();
+        board.importBoard("r3k2r/ppppp1Rp/8/8/8/8/PPPPPPPP/R3K2R w - - 0 1");
+        Piece whiteKing = board.get(4, 7);
+        Piece blackKing = board.get(4, 0);
+        assertTrue(whiteKing.isKing());
+        assertTrue(blackKing.isKing());
+        int whiteMoves = whiteKing.getMoves(board).size();
+        int blackMoves = blackKing.getMoves(board).size();
+        assertEquals(2, whiteMoves);
+        assertEquals(2, blackMoves);
+    }
+
+    @Test
+    void testCastlingBlock() {
+        Board board = new Board();
+        board.importBoard("r3k2r/ppRpppRp/8/8/8/8/PPrPPPrP/R3K2R w KQkq - 0 1");
+        Piece whiteKing = board.get(4, 7);
+        Piece blackKing = board.get(4, 0);
+        assertTrue(whiteKing.isKing());
+        assertTrue(blackKing.isKing());
+        int whiteMoves = whiteKing.getMoves(board).size();
+        int blackMoves = blackKing.getMoves(board).size();
+        assertEquals(2, whiteMoves);
+        assertEquals(2, blackMoves);
+    }
 }
