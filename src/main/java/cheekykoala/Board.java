@@ -281,7 +281,7 @@ public class Board {
             }
             System.out.println();
         }
-        System.out.println("  a  b  c  d  e  f  g  h");
+        System.out.println("   a  b  c  d  e  f  g  h");
     }
 
     public Piece getPieceAt(Position position) {
@@ -376,7 +376,7 @@ public class Board {
     }
 
     public void addPiece(Position position, Piece piece) {
-        board[position.getY()][position.getX()] = this.getPiece(piece.getLetter(), position.getX(), position.getY());
+        board[position.getY()][position.getX()] = piece;
     }
 
     private void makeBoard() {

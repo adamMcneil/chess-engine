@@ -2,6 +2,9 @@ package cheekykoala;
 
 import cheekykoala.pieces.*;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
@@ -136,5 +139,16 @@ class BoardTest {
         int blackMoves = blackKing.getMoves(board).size();
         assertEquals(2, whiteMoves);
         assertEquals(2, blackMoves);
+    }
+
+    @Test
+    void testFen() {
+        Board board = new Board();
+        board.importBoard("r1bqkbnr/2pp1ppp/p1n5/1p2p3/B3P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 5");
+        board.printBoard();
+        List<Move> moves = board.getAllMoves(Color.w);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
     }
 }

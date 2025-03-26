@@ -6,7 +6,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
-    public static int index = 0;
     public static Color minimaxColor = Color.w;
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
@@ -39,7 +38,6 @@ public class Main {
 
     public static void onPosition(Board board, String UCIPosition) {
         int startMoves = 3;
-        index = 0;
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
             board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
@@ -59,7 +57,6 @@ public class Main {
             startMoves = i + 1;
         }
         for (int i = startMoves; i < UCIStringArray.length; i++) {
-            index++;
             Move move;
             Position first = new Position(charToInt(UCIStringArray[i].charAt(0)),
                     8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
@@ -74,7 +71,8 @@ public class Main {
                 move = new Move(first, second);
             }
             board.getPieceAt(first).move(board, move);
-            if (index % 2 == 0) {
+            board.printBoard();
+            if (i % 2 == 0) {
                 minimaxColor = Color.w;
             } else {
                 minimaxColor = Color.b;

@@ -32,9 +32,22 @@ public class Position {
     }
 
     public String toString() {
-        return "(" + getX() + ", " + getY() + ")";
+        return intToChar(getX()) + (8 - getY());
     }
 
+    public static String intToChar(int num) {
+        return switch (num) {
+            case 0-> "a" ;
+            case 1-> "b" ;
+            case 2-> "c" ;
+            case 3-> "d" ;
+            case 4-> "e" ;
+            case 5-> "f" ;
+            case 6-> "g" ;
+            case 7-> "h" ;
+            default -> null;
+        };
+    }
     public String convertPosition() {
         return new StringBuilder().append((char) (position[0] + 97)).append((8 - position[1])).toString();
     }

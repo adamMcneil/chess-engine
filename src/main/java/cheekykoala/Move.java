@@ -40,7 +40,7 @@ public class Move {
     }
 
     public String toString() {
-        return beginning + " --> " + end.toString();
+        return beginning.toString() + end.toString();
     }
 
     public boolean isMoveLegal(Board board, Color color) {
