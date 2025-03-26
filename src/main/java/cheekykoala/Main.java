@@ -10,7 +10,7 @@ public class Main {
     public static Color minimaxColor = Color.w;
     public static long startTime = System.currentTimeMillis();
     public static boolean timeout = false;
-    public static int TIMEOUT_TIME = 10000;
+    public static int TIMEOUT_TIME = 5000;
 
     public static void main(String[] args) {
         Board board = new Board();
@@ -21,21 +21,23 @@ public class Main {
         Scanner consoleInput = new Scanner(System.in);
         while (true) {
             String input = consoleInput.nextLine();
+            System.out.println(input);
             if (input.contains("go")) {
+                board.printBoard();
                 System.out.println(onGo(board));
-            } else if (input.contains("uci")) {
+            } else if (input.equals("uci")) {
                 System.out.println("uciok");
             } else if (input.contains("isready")) {
                 System.out.println("readyok");
             } else if (input.contains("position")) {
-                UCIPosition(board, input);
-            } else if (input.contains("quit")) {
+                onPosition(board, input);
+            } else if (input.equals("quit")) {
                 break;
             }
         }
     }
 
-    public static void UCIPosition(Board board, String UCIPosition) {
+    public static void onPosition(Board board, String UCIPosition) {
         int startMoves = 3;
         index = 0;
         String[] UCIStringArray = UCIPosition.split(" ");
@@ -44,15 +46,14 @@ public class Main {
             board.setBoardEval(board.recomputeBoardEval());
         } else {
             int i = 2;
-            String fenString = "";
-            fenString = UCIStringArray[1];
+            StringBuilder fenString = new StringBuilder(UCIStringArray[1]);
             while (!(UCIStringArray[i].equals("moves"))) {
-                fenString += " " + UCIStringArray[i];
+                fenString.append(" ").append(UCIStringArray[i]);
                 i++;
             }
-            fenString.stripLeading();
+            fenString.toString().stripLeading();
             // position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
-            board.importBoard(fenString);
+            board.importBoard(fenString.toString());
             board.setBoardEval(board.recomputeBoardEval());
             board.printBoard();
             startMoves = i + 1;
@@ -72,7 +73,6 @@ public class Main {
             } else {
                 move = new Move(first, second);
             }
-            // System.out.println (board.getBoardEval());
             board.getPieceAt(first).move(board, move);
             if (index % 2 == 0) {
                 minimaxColor = Color.w;
@@ -85,7 +85,7 @@ public class Main {
     public static String onGo(Board board) {
         timeout = false;
         int INITIAL_DEPTH = 3;
-        int CURRENT_DEPTH = 0;
+        int CURRENT_DEPTH;
         startTime = System.currentTimeMillis();
         Move bestMove = moveMinimax(board, 1, minimaxColor);
         for (int i = 0;; i++) {
@@ -93,20 +93,17 @@ public class Main {
                 break;
             }
             CURRENT_DEPTH = INITIAL_DEPTH + i;
-            System.out.println("current depth is " + CURRENT_DEPTH);
+            System.out.println("Current depth: " + CURRENT_DEPTH);
             Move checkMove = moveMinimax(board, CURRENT_DEPTH, minimaxColor);
             if (checkMove != null) {
                 bestMove = checkMove;
             }
         }
-        // System.out.println(System.currentTimeMillis() - startTime);
-        System.out.println(board.getBoardEval());
+        System.out.println("Board Evaluation:" + board.getBoardEval());
         if (bestMove.isPromotionMove(bestMove)) {
-            return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition())
-                    .append(bestMove.getEnd().convertPosition()).append(bestMove.getPiece().getLetter()).toString();
+            return "bestmove " + bestMove.getBeginning().convertPosition() + bestMove.getEnd().convertPosition() + bestMove.getPiece().getLetter();
         }
-        return new StringBuilder().append("bestmove ").append(bestMove.getBeginning().convertPosition())
-                .append(bestMove.getEnd().convertPosition()).toString();
+        return "bestmove " + bestMove.getBeginning().convertPosition() + bestMove.getEnd().convertPosition();
     }
 
     public static Move moveMinimax(Board board, int depth, Color color) {
@@ -153,18 +150,6 @@ public class Main {
         }
         bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
         return bestMove;
-    }
-
-    public static void timeMinimax() {
-        Board board = new Board();
-        board.importBoard("r2q1bnr/pp1p1kpp/1p1pn3/2b2p2/B2P2QP/1PP1NR2/P1N1B1P1/R3KP2 w Q - 0 1");
-        board.setBoardEval(board.recomputeBoardEval());
-        board.printBoard();
-        double start = System.currentTimeMillis();
-        System.out.println(moveMinimax(board, 4, Color.w));
-        double end = System.currentTimeMillis();
-        System.out.println((end - start) / 1000.0);
-        System.out.println(board.getBoardEval());
     }
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
@@ -254,68 +239,6 @@ public class Main {
             return Double.POSITIVE_INFINITY;
     }
 
-    public static void playHuman(Board board, Color color) {
-        Scanner input = new Scanner(System.in);
-        boolean wasLegal = false;
-        while (!wasLegal) {
-            System.out.print("Piece you want to move : ");
-            String beginning = input.nextLine();
-            System.out.println();
-            System.out.print("Where you would so like to move your pieceage to sir : ");
-            String end = input.nextLine();
-            System.out.println();
-            System.out.println(convertLetter(beginning.charAt(0)));
-            System.out.println(8 - Character.getNumericValue(beginning.charAt(1)));
-
-            Position first = new Position(convertLetter(beginning.charAt(0)),
-                    8 - Character.getNumericValue(beginning.charAt(1)));
-            Position last = new Position(convertLetter(end.charAt(0)), 8 - Character.getNumericValue(end.charAt(1)));
-            if (new Move(first, last).isMoveLegal(board, color)) {
-                wasLegal = true;
-                board.getPieceAt(first).move(board, new Move(first, last));
-                System.out.println("mediocre move");
-                return;
-            }
-            System.out.println("GO BACK TO CHECKERS!");
-        }
-    }
-
-    public static void playRandom(Board board, Color color) {
-        ArrayList<Move> moves = new ArrayList();
-        for (Piece[] pieces : board.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    for (Move m : p.getMoves(board)) {
-                        moves.add(m);
-                    }
-                }
-            }
-        }
-        int y = (int) (Math.random() * moves.size());
-        board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
-    }
-
-    public static void playGame(int depth) throws InterruptedException {
-        Board board = new Board();
-        for (int i = 0; i < depth; i++) {
-            board.printBoard();
-            System.out.println();
-            playRandom(board, Color.w);
-            board.printBoard();
-            System.out.println();
-            moveMinimax(board, 3, Color.b);
-        }
-    }
-
-    public static int convertLetter(char x) {
-        return (x - 97);
-    }
-
-    public static char convertNumber(int x) {
-        return ((char) (x + 97));
-    }
-
-
     public static Piece makePiece(Position position, char letter) {
         letter = Character.toUpperCase(letter);
         if (letter == 'Q')
@@ -326,30 +249,20 @@ public class Main {
             return new Bishop(minimaxColor, position);
         if (letter == 'R')
             return new Rook(minimaxColor, position);
-
         return Empty.getInstance();
     }
 
     public static int charToInt(char letter) {
-        switch (letter) {
-            case 'a':
-                return 0;
-            case 'b':
-                return 1;
-            case 'c':
-                return 2;
-            case 'd':
-                return 3;
-            case 'e':
-                return 4;
-            case 'f':
-                return 5;
-            case 'g':
-                return 6;
-            case 'h':
-                return 7;
-        }
-        return 999;
+        return switch (letter) {
+            case 'a' -> 0;
+            case 'b' -> 1;
+            case 'c' -> 2;
+            case 'd' -> 3;
+            case 'e' -> 4;
+            case 'f' -> 5;
+            case 'g' -> 6;
+            case 'h' -> 7;
+            default -> 999;
+        };
     }
-
 }

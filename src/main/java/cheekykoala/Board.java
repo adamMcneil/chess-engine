@@ -82,10 +82,10 @@ public class Board {
             for (Piece piece : pieces) {
                 if (piece.getColor() == Color.w) {
                     eval += piece.getPieceEval();
-                    eval += piece.getValue();
+                    // eval += piece.getValue();
                 } else {
                     eval -= piece.getPieceEval();
-                    eval -= piece.getValue();
+                    // eval -= piece.getValue();
                 }
             }
         }

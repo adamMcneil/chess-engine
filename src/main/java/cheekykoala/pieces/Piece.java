@@ -35,6 +35,9 @@ public abstract class Piece {
     }
 
     public double getValue(int index) {
+        if (this.isEmpty()) {
+            return 0;
+        }
         return getTableValue()[index];
     }
 

@@ -38,6 +38,7 @@ public class DepthTest {
             }
             int totalMoves = board.countNodes(entry.depth, color);
             assertEquals(entry.nodes, totalMoves, "Failed for FEN: " + entry.fen);
+            System.out.println(entry.fen + " : depth " + entry.depth);
         }
     }
 
