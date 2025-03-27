@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class DepthTest {
+public class InputTest {
 
     static class JsonTestEntry {
         public int depth;

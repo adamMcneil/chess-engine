@@ -39,7 +39,6 @@ public class Board {
             { -1, 1 }
     };
 
-    private static int captures = 0;
     Piece[][] board = new Piece[8][8];
     Position inPassingSquare = new Position(8, 8);
     public boolean canEnpassant = false;
@@ -82,10 +81,10 @@ public class Board {
             for (Piece piece : pieces) {
                 if (piece.getColor() == Color.w) {
                     eval += piece.getPieceEval();
-                    // eval += piece.getValue();
+                    eval += piece.getValue();
                 } else {
                     eval -= piece.getPieceEval();
-                    // eval -= piece.getValue();
+                    eval -= piece.getValue();
                 }
             }
         }
@@ -158,38 +157,6 @@ public class Board {
 
     public static void increaseCaptures() {
         captures++;
-    }
-
-    public static int getCaptures() {
-        return captures;
-    }
-
-    public boolean isEndState() {
-        int moves = 0;
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == Color.w) {
-                    moves += p.getMoves(this).size();
-                    if (moves > 0) {
-                        return false;
-                    } else
-                        return true;
-                }
-            }
-        }
-        moves = 0;
-        for (Piece[] pieces : this.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == Color.b) {
-                    moves += p.getMoves(this).size();
-                    if (moves > 0) {
-                        return false;
-                    } else
-                        return true;
-                }
-            }
-        }
-        return false;
     }
 
     public ArrayList<Move> getAllMoves(Color color) {
@@ -451,7 +418,6 @@ public class Board {
     public void importBoard(String fenBoard) {
         int x = 0;
         int y = 0;
-        int end = fenBoard.length();
         String[] splitFen = fenBoard.split(" ");
         fenBoard = splitFen[0];
         this.colorToMove = getColorFromString(splitFen[1]);

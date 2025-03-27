@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BoardTest {
+class PieceMovementTest {
 
     @Test
     void testStartMoves() {
@@ -25,7 +25,7 @@ class BoardTest {
         board.importBoard("8/8/P7/8/R4p2/8/8/8 w - - 0 1");
         Piece rook = board.get(0,4 );
         assertTrue(rook.isRook());
-        assertSame(rook.getColor(), Color.w);
+        assertSame(Color.w, rook.getColor());
         int moves = rook.getMoves(board).size();
         assertEquals(9, moves);
     }
@@ -36,7 +36,7 @@ class BoardTest {
         board.importBoard("8/8/8/3b4/8/8/8/8 b - - 0 1");
         Piece bishop = board.get(3, 3);
         assertTrue(bishop.isBishop());
-        assertSame(bishop.getColor(), Color.b);
+        assertSame(Color.b, bishop.getColor());
         int moves = bishop.getMoves(board).size();
         assertEquals(13, moves);
     }
@@ -47,7 +47,7 @@ class BoardTest {
         board.importBoard("8/8/8/8/3N4/8/8/8 w - - 0 1");
         Piece knight = board.get(3, 4);
         assertTrue(knight.isKnight());
-        assertSame(knight.getColor(), Color.w);
+        assertSame(Color.w, knight.getColor());
         int moves = knight.getMoves(board).size();
         assertEquals(8, moves);
     }
@@ -58,7 +58,7 @@ class BoardTest {
         board.importBoard("8/8/8/8/4Q3/8/8/8 w - - 0 1");
         Piece queen = board.get(4, 4);
         assertTrue(queen.isQueen());
-        assertSame(queen.getColor(), Color.w);
+        assertSame(Color.w, queen.getColor());
         int moves = queen.getMoves(board).size();
         assertEquals(27, moves);
     }
@@ -69,7 +69,7 @@ class BoardTest {
         board.importBoard("8/8/8/8/4K3/8/8/8 w - - 0 1");
         Piece king = board.get(4, 4);
         assertTrue(king.isKing());
-        assertSame(king.getColor(), Color.w);
+        assertSame(Color.w, king.getColor());
         int moves = king.getMoves(board).size();
         assertEquals(8, moves);
     }
@@ -80,7 +80,7 @@ class BoardTest {
         board.importBoard("8/8/8/8/3P4/8/8/8 w - - 0 1");
         Piece pawn = board.get(3, 4);
         assertTrue(pawn.isPawn());
-        assertSame(pawn.getColor(), Color.w);
+        assertSame(Color.w, pawn.getColor());
         int moves = pawn.getMoves(board).size();
         assertEquals(1, moves);
     }
@@ -131,6 +131,7 @@ class BoardTest {
     void testCastlingBlock() {
         Board board = new Board();
         board.importBoard("r3k2r/ppRpppRp/8/8/8/8/PPrPPPrP/R3K2R w KQkq - 0 1");
+        board.printBoard();
         Piece whiteKing = board.get(4, 7);
         Piece blackKing = board.get(4, 0);
         assertTrue(whiteKing.isKing());
