@@ -155,10 +155,6 @@ public class Board {
         }
     }
 
-    public static void increaseCaptures() {
-        captures++;
-    }
-
     public ArrayList<Move> getAllMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Piece[] pieces : board) {

@@ -41,39 +41,19 @@ public abstract class Piece {
         return getTableValue()[index];
     }
 
-    public double getTableValue(int[] table) {
-        Position piecePosition = getPosition();
-        int x = piecePosition.getX();
-        int y = piecePosition.getY();
-        if (color == Color.w) {
-            return table[(y * 8) + x];
-        } else if (color != Color.g) {
-
-            return table[63 - ((y * 8) + x)];
-        }
-        return 0;
-    }
-
-
     public abstract double[] getTableValue();
 
     public double getPieceEval() {
         this.letter = Character.toUpperCase(this.letter);
-        switch (this.letter) {
-            case 'R':
-                return 500;
-            case 'N':
-                return 320;
-            case 'B':
-                return 330;
-            case 'Q':
-                return 900;
-            case 'P':
-                return 100;
-            case 'K':
-                return 20000;
-        }
-        return 0;
+        return switch (this.letter) {
+            case 'R' -> 500;
+            case 'N' -> 320;
+            case 'B' -> 330;
+            case 'Q' -> 900;
+            case 'P' -> 100;
+            case 'K' -> 20000;
+            default -> 0;
+        };
     }
 
     public boolean isOppositeColor(Piece piece) {
@@ -201,14 +181,10 @@ public abstract class Piece {
             castleMove(move, board);
         } else if (move.isInPassingMove(board)) {
             inPassingMove(move, board);
-            Board.increaseCaptures();
         } else if (move.isUpTwoMove(board)) {
             upTwoMove(move, board);
         } else {
             normalMove(move, board);
-            if (move.isCapture(board)) {
-                Board.increaseCaptures();
-            }
         }
     }
 

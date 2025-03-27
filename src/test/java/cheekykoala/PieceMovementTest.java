@@ -131,7 +131,6 @@ class PieceMovementTest {
     void testCastlingBlock() {
         Board board = new Board();
         board.importBoard("r3k2r/ppRpppRp/8/8/8/8/PPrPPPrP/R3K2R w KQkq - 0 1");
-        board.printBoard();
         Piece whiteKing = board.get(4, 7);
         Piece blackKing = board.get(4, 0);
         assertTrue(whiteKing.isKing());
