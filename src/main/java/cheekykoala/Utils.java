@@ -30,12 +30,10 @@ public class Utils {
             System.out.println(convertLetter(beginning.charAt(0)));
             System.out.println(8 - Character.getNumericValue(beginning.charAt(1)));
 
-            Position first = new Position(convertLetter(beginning.charAt(0)),
-                    8 - Character.getNumericValue(beginning.charAt(1)));
-            Position last = new Position(convertLetter(end.charAt(0)), 8 - Character.getNumericValue(end.charAt(1)));
+            int first = (convertLetter(beginning.charAt(0))- 8 - Character.getNumericValue(beginning.charAt(1)));
+            int last = (convertLetter(end.charAt(0))- 8 - Character.getNumericValue(end.charAt(1)));
             if (new Move(first, last).isMoveLegal(board, color)) {
-                wasLegal = true;
-                board.getPieceAt(first).move(board, new Move(first, last));
+                board.doMove(new Move(first, last));
                 System.out.println("mediocre move");
                 return;
             }
@@ -44,18 +42,14 @@ public class Utils {
     }
 
     public static void playRandom(Board board, Color color) {
-        ArrayList<Move> moves = new ArrayList();
-        for (Piece[] pieces : board.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    for (Move m : p.getMoves(board)) {
-                        moves.add(m);
-                    }
-                }
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Piece piece : board.getBoard()) {
+                if (piece.getColor() == color) {
+                    moves.addAll(piece.getMoves(board));
             }
         }
         int y = (int) (Math.random() * moves.size());
-        board.getPieceAt(moves.get(y).getBeginning()).move(board, moves.get(y));
+        board.doMove(moves.get(y));
     }
 
     public static void playGame(int depth) throws InterruptedException {

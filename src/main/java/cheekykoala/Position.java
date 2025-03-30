@@ -1,42 +1,38 @@
 package cheekykoala;
 
 public class Position {
-    int[] position;
 
-    public Position(int x, int y) {
-        position = new int[] { x, y };
+    public static boolean isOnBoard(int position) {
+        return (position < 64 && position > -1 );
     }
 
-    public int getX() {
-        return position[0];
+    public static boolean isSameRow(int p1, int p2) {
+        return getRow(p1) == getRow(p2);
     }
 
-    public int getY() {
-        return position[1];
+    public static boolean isSameColumn(int p1, int p2) {
+        return getColumn(p1) == getColumn(p2);
     }
 
-    public void setX(int x) {
-        position[0] = x;
+    public static boolean isSameDiagonal(int p1, int p2) {
+        int rowDiff = Math.abs(getRow(p1) - getRow(p2));
+        int colDiff = Math.abs(getColumn(p1) - getColumn(p2));
+        return rowDiff == colDiff;
     }
 
-    public void setY(int y) {
-        position[1] = y;
+    public static int getColumn(int position) {
+        return position % 8;
     }
 
-    public boolean comparePositions(Position x) {
-        return (x.getX() == this.getX() && x.getY() == this.getY());
+    public static int getRow(int position) {
+        return position / 8;
+    }
+    public static String toString(int position) {
+        return rowToLetter(getColumn(position)) + (8 - getRow(position));
     }
 
-    public boolean isOnBoard() {
-        return (position[0] < 8 && position[0] > -1 && position[1] < 8 && position[1] > -1);
-    }
-
-    public String toString() {
-        return intToChar(getX()) + (8 - getY());
-    }
-
-    public static String intToChar(int num) {
-        return switch (num) {
+    public static String rowToLetter(int column) {
+        return switch (column) {
             case 0-> "a" ;
             case 1-> "b" ;
             case 2-> "c" ;
@@ -47,8 +43,5 @@ public class Position {
             case 7-> "h" ;
             default -> null;
         };
-    }
-    public String convertPosition() {
-        return new StringBuilder().append((char) (position[0] + 97)).append((8 - position[1])).toString();
     }
 }

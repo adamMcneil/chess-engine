@@ -7,11 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PositionTest {
     @Test
     public void toStringTest() {
-        Position position = new Position(0, 0);
-        assertEquals(position.toString(), "a8");
-        position = new Position(0, 1);
-        assertEquals(position.toString(), "a7");
-        position = new Position(1, 1);
-        assertEquals(position.toString(), "b7");
+        int position = 0;
+        assertEquals("a8", Position.toString(position));
+        position = 8;
+        assertEquals("a7", Position.toString(position));
+        position = 9;
+        assertEquals("b7", Position.toString(position));
+    }
+
+    @Test
+    public void getRowTest() {
+        assertEquals(0, Position.getRow(0));
+        assertEquals(7, Position.getRow(63));
     }
 }

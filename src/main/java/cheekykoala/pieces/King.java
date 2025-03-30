@@ -3,20 +3,19 @@ package cheekykoala.pieces;
 import cheekykoala.Board;
 import cheekykoala.Color;
 import cheekykoala.Move;
-import cheekykoala.Position;
 
 import java.util.ArrayList;
 
 public class King extends Piece {
-        private static final double[] valueTable = new double[] {
-        -30, -40, -40, -50, -50, -40, -40, -30,
-                -30, -40, -40, -50, -50, -40, -40, -30,
-                -30, -40, -40, -50, -50, -40, -40, -30,
-                -30, -40, -40, -50, -50, -40, -40, -30,
-                -20, -30, -30, -40, -40, -30, -30, -20,
-                -10, -20, -20, -20, -20, -20, -20, -10,
-                20, 20, 0, 0, 0, 0, 20, 20,
-                20, 30, 10, 0, 0, 10, 30, 20
+    private static final double[] valueTable = new double[]{
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -20, -30, -30, -40, -40, -30, -30, -20,
+            -10, -20, -20, -20, -20, -20, -20, -10,
+            20, 20, 0, 0, 0, 0, 20, 20,
+            20, 30, 10, 0, 0, 10, 30, 20
     };
 
     public King(King other) {
@@ -28,7 +27,7 @@ public class King extends Piece {
         return new King(this);
     }
 
-    public King(Color c, Position position) {
+    public King(Color c, int position) {
         this.position = position;
         this.color = c;
         if (c == Color.w) {
@@ -50,57 +49,57 @@ public class King extends Piece {
         return true;
     }
 
-    public ArrayList<Move> castleMoves(Board board) {
+    public ArrayList<Move> getCastleMoves(Board board) {
         ArrayList<Move> castleMoves = new ArrayList<>();
         int moveState;
         if (color == Color.w) {
             moveState = board.getWhiteCastleMoveState();
             if ((moveState == 0 || moveState == 2) && !board.isColorInCheck(color)) {
-                Position right1 = new Position(5, 7);
-                Position right2 = new Position(6, 7);
+                int right1 = 61;
+                int right2 = 62;
                 Move move1 = new Move(position, right1);
                 Move move2 = new Move(position, right2);
                 if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
                         && board.getPieceAt(move1.getEnd()).getColor() != Color.b
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.b) {
-                    castleMoves.add(new Move(this.position, new Position(6, 7)));
+                    castleMoves.add(new Move(position, 62));
                 }
             }
             if ((moveState == 0 || moveState == 1) && !board.isColorInCheck(color)) {
-                Position left1 = new Position(3, 7);
-                Position left2 = new Position(2, 7);
-                Position left3 = new Position(1, 7);
+                int left1 = 59;
+                int left2 = 58;
+                int left3 = 57;
                 Move move1 = new Move(position, left1);
                 Move move2 = new Move(position, left2);
                 if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
                         && board.getPieceAt(left3).isEmpty() && board.getPieceAt(move1.getEnd()).getColor() != Color.b
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.b) {
-                    castleMoves.add(new Move(this.position, new Position(2, 7)));
+                    castleMoves.add(new Move(position, 58));
                 }
             }
         } else {
             moveState = board.getBlackCastleMoveState();
             if ((moveState == 0 || moveState == 2) && !board.isColorInCheck(color)) {
-                Position right1 = new Position(5, 0);
-                Position right2 = new Position(6, 0);
+                int right1 = 5;
+                int right2 = 6;
                 Move move1 = new Move(position, right1);
                 Move move2 = new Move(position, right2);
                 if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
                         && board.getPieceAt(move1.getEnd()).getColor() != Color.w
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.w) {
-                    castleMoves.add(new Move(this.position, new Position(6, 0)));
+                    castleMoves.add(new Move(position, 6));
                 }
             }
             if ((moveState == 0 || moveState == 1) && !board.isColorInCheck(color)) {
-                Position left1 = new Position(3, 0);
-                Position left2 = new Position(2, 0);
-                Position left3 = new Position(1, 0);
+                int left1 = 3;
+                int left2 = 2;
+                int left3 = 1;
                 Move move1 = new Move(position, left1);
                 Move move2 = new Move(position, left2);
                 if (move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
                         && board.getPieceAt(left3).isEmpty() && board.getPieceAt(move1.getEnd()).getColor() != Color.w
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.w) {
-                    castleMoves.add(new Move(this.position, new Position(2, 0)));
+                    castleMoves.add(new Move(this.position, 2));
                 }
             }
         }
@@ -109,25 +108,14 @@ public class King extends Piece {
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        int[][] baseMoves = {
-                { 1, 1 },
-                { 1, 0 },
-                { 1, -1 },
-                { 0, -1 },
-                { -1, -1 },
-                { -1, 0 },
-                { -1, 1 },
-                { 0, 1 },
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
+        for (int change : Directions.all) {
+            int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
             if (move.isMoveLegal(board, color)) {
                 moves.add(move);
             }
         }
-        moves.addAll(castleMoves(board));
-
+        moves.addAll(getCastleMoves(board));
         return moves;
     }
 

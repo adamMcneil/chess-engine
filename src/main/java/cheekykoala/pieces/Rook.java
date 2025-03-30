@@ -5,15 +5,15 @@ import cheekykoala.*;
 import java.util.ArrayList;
 
 public class Rook extends Piece {
-        private static final double[] valueTable = new double[] {
-        0, 0, 0, 0, 0, 0, 0, 0,
-                5, 10, 10, 10, 10, 10, 10, 5,
-                -5, 0, 0, 0, 0, 0, 0, -5,
-                -5, 0, 0, 0, 0, 0, 0, -5,
-                -5, 0, 0, 0, 0, 0, 0, -5,
-                -5, 0, 0, 0, 0, 0, 0, -5,
-                -5, 0, 0, 0, 0, 0, 0, -5,
-                0, 0, 0, 5, 5, 0, 0, 0
+    private static final double[] valueTable = new double[]{
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, 10, 10, 10, 10, 5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            0, 0, 0, 5, 5, 0, 0, 0
     };
 
     public Rook(Rook other) {
@@ -25,7 +25,7 @@ public class Rook extends Piece {
         return new Rook(this);
     }
 
-    public Rook(Color c, Position position) {
+    public Rook(Color c, int position) {
         super();
         this.position = position;
         this.color = c;
@@ -50,26 +50,21 @@ public class Rook extends Piece {
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        int[][] baseMoves = {
-                { 1, 0 },
-                { 0, 1 },
-                { -1, 0 },
-                { 0, -1 },
-        };
-        for (int[] arr : baseMoves) {
-            Position checkPosition = new Position(position.getX() + arr[0], position.getY() + arr[1]);
-            Move move = new Move(position, checkPosition);
-            while (move.getEnd().isOnBoard()) {
-                if (this.isSameColor(board.getPieceAt(move.getEnd())))
+        int[] directions = Directions.orthogonal;
+        int home = position;
+        for (int change : directions) {
+            int checkPosition = home + change;
+            Move move = new Move(home, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(home, checkPosition) || Position.isSameRow(home, checkPosition))) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (move.isMoveLegal(board, color)) {
-                    move = new Move(position, checkPosition);
                     moves.add(move);
                 }
-                if (this.isOppositeColor(board.getPieceAt(move.getEnd())))
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
-                checkPosition = new Position(checkPosition.getX() + arr[0], checkPosition.getY() + arr[1]);
-                move = new Move(position, checkPosition);
+                checkPosition += change;
+                move = new Move(home, checkPosition);
             }
         }
         return moves;

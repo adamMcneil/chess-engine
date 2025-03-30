@@ -5,7 +5,7 @@ import cheekykoala.*;
 import java.util.ArrayList;
 
 public abstract class Piece {
-    Position position;
+    int position;
     char piece;
     char letter;
     Color color;
@@ -23,14 +23,10 @@ public abstract class Piece {
     public abstract Piece copy();
 
     public double getValue() {
-        Position piecePosition = getPosition();
-        int x = piecePosition.getX();
-        int y = piecePosition.getY();
-        int index = y * 8 + x;
         if (color == Color.w) {
-            return getValue(index);
+            return getValue(position);
         } else {
-            return getValue(63 - index);
+            return getValue(63 - position);
         }
     }
 
@@ -107,88 +103,70 @@ public abstract class Piece {
         return color;
     }
 
-    public Position getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(int position) {
         this.position = position;
-    }
-
-    public void promotionMove(Move move, Board board) {
-        board.addPiece(move.getEnd(), move.getPiece());
-        board.addPiece(move.getBeginning(), Empty.getInstance());
-        board.setCanEnpassant(false);
-    }
-
-    public void castleMove(Move move, Board board) {
-        int x;
-        int x1;
-        int x2;
-        int y = move.getBeginning().getY();
-        if (move.getEnd().getX() < 4) {
-            x = 3;
-            x1 = 2;
-            x2 = 0;
-        } else {
-            x = 5;
-            x1 = 6;
-            x2 = 7;
-        }
-        Position movedTo = new Position(x1, y);
-        board.addPiece(movedTo, this);
-        board.addPiece(move.getBeginning(), Empty.getInstance());
-        movedTo = new Position(x, y);
-        board.addPiece(movedTo, board.get(x2, y));
-        Position movedFrom = new Position(x2, y);
-        board.addPiece(movedFrom, Empty.getInstance());
-        board.setCanEnpassant(false);
-    }
-
-    public void inPassingMove(Move move, Board board) {
-        Position taken = new Position(move.getEnd().getX(), move.getBeginning().getY());
-        board.addPiece(move.getEnd(), new Pawn(color, move.getEnd()));
-        board.addPiece(move.getBeginning(), Empty.getInstance());
-        board.addPiece(taken, new Empty(taken));
-        board.setCanEnpassant(false);
-    }
-
-    public void upTwoMove(Move move, Board board) {
-        normalMove(move, board);
-        int direction;
-        if (color == Color.w)
-            direction = -1;
-        else
-            direction = 1;
-        Position inPassingSquare = new Position(move.getBeginning().getX(), move.getBeginning().getY() + direction);
-        board.setInPassingSquare(inPassingSquare);
-        board.setCanEnpassant(true);
-    }
-
-    public void normalMove(Move move, Board board) {
-        board.addPiece(move.getEnd(), this);
-        this.setPosition(move.getEnd());
-        board.addPiece(move.getBeginning(), Empty.getInstance());
-        board.setCanEnpassant(false);
-    }
-
-    public void move(Board board, Move move) {
-        board.changeEval(move, this);
-        board.setMoveState(this, move);
-        if (move.isPromotionMove(move)) {
-            promotionMove(move, board);
-        } else if (move.isCastleMove(board)) {
-            castleMove(move, board);
-        } else if (move.isInPassingMove(board)) {
-            inPassingMove(move, board);
-        } else if (move.isUpTwoMove(board)) {
-            upTwoMove(move, board);
-        } else {
-            normalMove(move, board);
-        }
     }
 
     public char getLetter() {
         return this.letter;
+    }
+
+    public static Piece makePiece(char letter, int i) {
+        Piece piece = null;
+        return switch (letter) {
+            case 'r' -> {
+                piece = new Rook(Color.b, i);
+                yield piece;
+            }
+            case 'R' -> {
+                piece = new Rook(Color.w, i);
+                yield piece;
+            }
+            case 'n' -> {
+                piece = new Knight(Color.b, i);
+                yield piece;
+            }
+            case 'N' -> {
+                piece = new Knight(Color.w, i);
+                yield piece;
+            }
+            case 'b' -> {
+                piece = new Bishop(Color.b, i);
+                yield piece;
+            }
+            case 'B' -> {
+                piece = new Bishop(Color.w, i);
+                yield piece;
+            }
+            case 'q' -> {
+                piece = new Queen(Color.b, i);
+                yield piece;
+            }
+            case 'Q' -> {
+                piece = new Queen(Color.w, i);
+                yield piece;
+            }
+            case 'k' -> {
+                piece = new King(Color.b, i);
+                yield piece;
+            }
+            case 'K' -> {
+                piece = new King(Color.w, i);
+                yield piece;
+            }
+            case 'p' -> {
+                piece = new Pawn(Color.b, i);
+                yield piece;
+            }
+            case 'P' -> {
+                piece = new Pawn(Color.w, i);
+                yield piece;
+            }
+            default -> piece;
+        };
     }
 }

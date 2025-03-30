@@ -3,10 +3,10 @@ package cheekykoala;
 import cheekykoala.pieces.Piece;
 
 public class Move {
-    Position beginning;
-    Position end;
+    int beginning;
+    int end;
 
-    public Move(Position beginning, Position end) {
+    public Move(int beginning, int end) {
         this.beginning = beginning;
         this.end = end;
     }
@@ -20,9 +20,9 @@ public class Move {
     }
 
     public boolean isCastleMove(Board board) {
-        return (board.getPieceAt(this.getBeginning()).isKing()
-                && (this.getEnd().getX() - this.getBeginning().getX() == 2
-                || this.getEnd().getX() - this.getBeginning().getX() == -2));
+        return (board.getPieceAt(getBeginning()).isKing()
+                && (this.getEnd() - this.getBeginning() == 2
+                || this.getEnd() - this.getBeginning() == -2));
     }
 
     public boolean isCapture(Board board) {
@@ -31,20 +31,20 @@ public class Move {
 
     public boolean isInPassingMove(Board board) {
         return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty()
-                && this.getBeginning().getX() != this.getEnd().getX());
+                && this.getBeginning() != getEnd());
     }
 
     public boolean isUpTwoMove(Board board) {
         return (board.getPieceAt(this.getBeginning()).isPawn()
-                && Math.abs(this.getBeginning().getY() - this.getEnd().getY()) == 2);
+                && Math.abs(this.getBeginning() - this.getEnd()) == 2);
     }
 
     public String toString() {
-        return beginning.toString() + end.toString();
+        return Position.toString(beginning) + Position.toString(end);
     }
 
     public boolean isMoveLegal(Board board, Color color) {
-        if (!end.isOnBoard()) {
+        if (!Position.isOnBoard(end)) {
             return false;
         }
         Piece moved = board.getPieceAt(beginning);
@@ -59,11 +59,11 @@ public class Move {
         return true;
     }
 
-    public Position getBeginning() {
+    public int getBeginning() {
         return beginning;
     }
 
-    public Position getEnd() {
+    public int getEnd() {
         return end;
     }
 }

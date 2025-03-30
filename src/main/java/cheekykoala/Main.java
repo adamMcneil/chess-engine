@@ -58,19 +58,17 @@ public class Main {
         }
         for (int i = startMoves; i < UCIStringArray.length; i++) {
             Move move;
-            Position first = new Position(charToInt(UCIStringArray[i].charAt(0)),
-                    8 - Character.getNumericValue(UCIStringArray[i].charAt(1)));
-            Position second = new Position(charToInt(UCIStringArray[i].charAt(2)),
-                    8 - Character.getNumericValue(UCIStringArray[i].charAt(3)));
+            int start = ((charToInt(UCIStringArray[i].charAt(0)) * 8) + (8 - Character.getNumericValue(UCIStringArray[i].charAt(1))));
+            int end = ((charToInt(UCIStringArray[i].charAt(2)) * 8) + (8 - Character.getNumericValue(UCIStringArray[i].charAt(3))));
 
             if (UCIStringArray[i].length() == 5) {
                 char letter = UCIStringArray[i].charAt(4);
-                move = new PromotionMove(first, second, makePiece(second, letter));
+                move = new PromotionMove(start, end, Piece.makePiece(letter, end));
 
             } else {
-                move = new Move(first, second);
+                move = new Move(start, end);
             }
-            board.getPieceAt(first).move(board, move);
+            board.doMove(move);
             board.printBoard();
             if (i % 2 == 0) {
                 minimaxColor = Color.w;
@@ -86,7 +84,7 @@ public class Main {
         int CURRENT_DEPTH;
         startTime = System.currentTimeMillis();
         Move bestMove = moveMinimax(board, 1, minimaxColor);
-        for (int i = 0;; i++) {
+        for (int i = 0; ; i++) {
             if (timeout) {
                 break;
             }
@@ -98,10 +96,7 @@ public class Main {
             }
         }
         System.out.println("Board Evaluation:" + board.getBoardEval());
-        if (bestMove.isPromotionMove(bestMove)) {
-            return "bestmove " + bestMove.getBeginning().convertPosition() + bestMove.getEnd().convertPosition() + bestMove.getPiece().getLetter();
-        }
-        return "bestmove " + bestMove.getBeginning().convertPosition() + bestMove.getEnd().convertPosition();
+        return "bestmove " + bestMove;
     }
 
     public static Move moveMinimax(Board board, int depth, Color color) {
@@ -117,30 +112,28 @@ public class Main {
         ArrayList<Move> bestMoves = new ArrayList<>();
         Move bestMove;
         Board child;
-        for (Piece[] pieces : board.getBoard()) {
-            for (Piece p : pieces) {
-                if (p.getColor() == color) {
-                    for (Move m : p.getMoves(board)) {
-                        child = board.getChild(m);
-                        double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
-                                isMaxPlayer);
-                        if (mx == 123456)
-                            return null;
-                        if (bestMoveValue == mx) {
+        for (Piece piece : board.getBoard()) {
+            if (piece.getColor() == color) {
+                for (Move m : piece.getMoves(board)) {
+                    child = board.getChild(m);
+                    double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
+                            isMaxPlayer);
+                    if (mx == 123456)
+                        return null;
+                    if (bestMoveValue == mx) {
+                        bestMoves.add(m);
+                    }
+                    if (color == Color.w) {
+                        if (mx > bestMoveValue) {
+                            bestMoveValue = mx;
+                            bestMoves.clear();
                             bestMoves.add(m);
                         }
-                        if (color == Color.w) {
-                            if (mx > bestMoveValue) {
-                                bestMoveValue = mx;
-                                bestMoves.clear();
-                                bestMoves.add(m);
-                            }
-                        } else {
-                            if (mx < bestMoveValue) {
-                                bestMoveValue = mx;
-                                bestMoves.clear();
-                                bestMoves.add(m);
-                            }
+                    } else {
+                        if (mx < bestMoveValue) {
+                            bestMoveValue = mx;
+                            bestMoves.clear();
+                            bestMoves.add(m);
                         }
                     }
                 }
@@ -167,24 +160,19 @@ public class Main {
                 timeout = true;
                 return 123456;
             }
-            for (Piece[] pieces : board.getBoard()) {
-                for (Piece piece : pieces) {
-                    if (piece.getColor() == Color.w) {
-                        for (Move move : piece.getMoves(board)) {
-                            if (move.isCapture(board))
-                                captureMoveList.add(move);
-                            else
-                                moveList.add(move);
-                        }
+            for (Piece piece : board.getBoard()) {
+                if (piece.getColor() == Color.w) {
+                    for (Move move : piece.getMoves(board)) {
+                        if (move.isCapture(board))
+                            captureMoveList.add(move);
+                        else
+                            moveList.add(move);
                     }
                 }
             }
             moveList.addAll(0, captureMoveList);
             if (moveList.isEmpty()) {
-                if (board.isColorInCheck(color))
-                    return checkmateEval(color);
-                else
-                    return 0; // <--- this is most likely not right
+                return checkmateEval(color); // this does not handle stalemate
             }
             for (Move m : moveList) {
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
@@ -199,24 +187,19 @@ public class Main {
         } else {
             color = Color.b;
             minEval = Double.POSITIVE_INFINITY;
-            for (Piece[] pieces : board.getBoard()) {
-                for (Piece piece : pieces) {
-                    if (piece.getColor() == Color.b) {
-                        for (Move move : piece.getMoves(board)) {
-                            if (move.isCapture(board))
-                                captureMoveList.add(move);
-                            else
-                                moveList.add(move);
-                        }
+            for (Piece piece : board.getBoard()) {
+                if (piece.getColor() == Color.b) {
+                    for (Move move : piece.getMoves(board)) {
+                        if (move.isCapture(board))
+                            captureMoveList.add(move);
+                        else
+                            moveList.add(move);
                     }
                 }
             }
             moveList.addAll(0, captureMoveList);
             if (moveList.isEmpty()) {
-                if (board.isColorInCheck(color))
-                    return checkmateEval(color);
-                else
-                    return 0; // <--- this is most likely not right
+                return checkmateEval(color); // this does not handle stalemate
             }
             for (Move m : moveList) {
                 eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
@@ -235,19 +218,6 @@ public class Main {
             return Double.NEGATIVE_INFINITY;
         else
             return Double.POSITIVE_INFINITY;
-    }
-
-    public static Piece makePiece(Position position, char letter) {
-        letter = Character.toUpperCase(letter);
-        if (letter == 'Q')
-            return new Queen(minimaxColor, position);
-        if (letter == 'N')
-            return new Knight(minimaxColor, position);
-        if (letter == 'B')
-            return new Bishop(minimaxColor, position);
-        if (letter == 'R')
-            return new Rook(minimaxColor, position);
-        return Empty.getInstance();
     }
 
     public static int charToInt(char letter) {

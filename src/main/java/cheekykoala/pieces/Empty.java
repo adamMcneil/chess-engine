@@ -3,19 +3,17 @@ package cheekykoala.pieces;
 import cheekykoala.Board;
 import cheekykoala.Color;
 import cheekykoala.Move;
-import cheekykoala.Position;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Empty extends Piece {
-    private static final Empty INSTANCE = new Empty(new Position(0, 0));
+    private static final Empty INSTANCE = new Empty(0);
 
     public static Empty getInstance() {
         return INSTANCE;
     }
 
-    public Empty(Position position) {
+    public Empty(int position) {
         this.position = position;
         this.color = Color.g;
         this.piece = ' ';
@@ -29,7 +27,7 @@ public class Empty extends Piece {
 
     @Override
     public double[] getTableValue() {
-        return new double[] {};
+        return new double[]{};
     }
 
     @Override
