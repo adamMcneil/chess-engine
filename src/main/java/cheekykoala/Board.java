@@ -41,8 +41,8 @@ public class Board {
             moveCounter.nodes = 1;
             return moveCounter;
         }
-        Board child;
-        for (Move move : getAllMoves(color)) {
+        getAllMoves(color).parallelStream().forEach(move -> {
+            Board child;
             if (getPieceAt(move.getBeginning()).isEmpty()) {
                 System.out.println("This is bad");
                 printBoard();
@@ -63,7 +63,7 @@ public class Board {
             }
             MoveCounter i = child.countNodes(depth - 1, color.getOppositeColor());
             moveCounter.Add(i);
-        }
+        });
         return moveCounter;
     }
 

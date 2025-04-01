@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import static cheekykoala.Main.onGo;
 import static cheekykoala.Main.onPosition;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MainTest {
     @Test
@@ -14,5 +13,11 @@ public class MainTest {
         onPosition(board, input);
         board.printBoard();
         onGo(board);
+    }
+
+    @Test
+    public void timeMinimax() {
+        Board board = new Board();
+        Main.moveMinimax(board, 5, Color.w);
     }
 }
