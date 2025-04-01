@@ -30,22 +30,41 @@ public class Board {
 
     }
 
-    public int countNodes(int depth, Color color) {
+    public MoveCounter countNodes(int depth, Color color) {
+        MoveCounter moveCounter = new MoveCounter();
+        if (isColorInMate(color)) {
+            moveCounter.checkMates = 1;
+            moveCounter.nodes = 1;
+            return moveCounter;
+        }
         if (depth == 0) {
-            return 1;
+            moveCounter.nodes = 1;
+            return moveCounter;
         }
         Board child;
-        int count = 0;
         for (Move move : getAllMoves(color)) {
-            child = getChild(move);
-            int i = child.countNodes(depth - 1, color.getOppositeColor());
-            if (i == 18) {
-                //child.printBoard();
+            if (getPieceAt(move.getBeginning()).isEmpty()) {
+                System.out.println("This is bad");
+                printBoard();
             }
-            //System.out.println(i);
-            count += i;
+            child = getChild(move);
+            if (move.isPromotionMove()) {
+                moveCounter.promotions++;
+            } else if (move.isCastleMove(this)) {
+                moveCounter.castles++;
+            } else if (move.isInPassingMove(this)) {
+                moveCounter.inPassing++;
+            }
+            if (!this.getPieceAt(move.getEnd()).isEmpty()) {
+                moveCounter.captures++;
+            }
+            if (child.isColorInCheck(color.getOppositeColor())) {
+                moveCounter.check++;
+            }
+            MoveCounter i = child.countNodes(depth - 1, color.getOppositeColor());
+            moveCounter.Add(i);
         }
-        return count;
+        return moveCounter;
     }
 
     public double recomputeBoardEval() {
@@ -90,7 +109,7 @@ public class Board {
             }
         }
 
-        if (move.isPromotionMove(move)) {
+        if (move.isPromotionMove()) {
             if (takenPiece.getColor() == Color.w) {
                 boardEval = boardEval + move.getPiece().getPieceEval();
             } else {
@@ -212,7 +231,7 @@ public class Board {
             }
             boolean canMoveHere = false;
             for (Move move : moves) {
-                if (move.getEnd() == i && (!move.isPromotionMove(move) || (move.isPromotionMove(move) && move.getPiece().isKnight()))) {
+                if (move.getEnd() == i && (!move.isPromotionMove() || (move.isPromotionMove() && move.getPiece().isKnight()))) {
                     System.out.print(" x ");
                     canMoveHere = true;
                 }
@@ -254,6 +273,13 @@ public class Board {
 
     public Piece getPieceAt(int position) {
         return board[position];
+    }
+
+    public boolean isColorInMate(Color color) {
+        if (!isColorInCheck(color)) {
+            return false;
+        }
+        return getAllMoves(color).isEmpty();
     }
 
     public boolean isColorInCheck(Color color) {
@@ -455,6 +481,7 @@ public class Board {
 
     public void doPromotionMove(Move move) {
         board[move.getEnd()] = move.getPiece();
+        move.getPiece().setPosition(move.getEnd());
         board[move.getBeginning()] = Empty.getInstance();
         setCanEnpassant(false);
     }
@@ -486,6 +513,7 @@ public class Board {
     public void doInPassingMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
+        movedPiece.setPosition(move.getEnd());
         board[move.getBeginning()] = Empty.getInstance();
         board[Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()))] = Empty.getInstance();
         setCanEnpassant(false);
@@ -499,7 +527,7 @@ public class Board {
             direction = -8;
         else
             direction = 8;
-        int inPassingSquare = movedPiece.getPosition() + direction;
+        int inPassingSquare = move.getBeginning() + direction;
         setInPassingSquare(inPassingSquare);
         setCanEnpassant(true);
     }
@@ -516,7 +544,7 @@ public class Board {
         Piece movedPiece = getPieceAt(move.getBeginning());
         changeEval(move, movedPiece);
         updateCastleState(movedPiece, move);
-        if (move.isPromotionMove(move)) {
+        if (move.isPromotionMove()) {
             doPromotionMove(move);
         } else if (move.isCastleMove(this)) {
             doCastleMove(move);

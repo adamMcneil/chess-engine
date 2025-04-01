@@ -16,7 +16,7 @@ public class PromotionMove extends Move {
     }
 
     @Override
-    public boolean isPromotionMove(Move move) {
+    public boolean isPromotionMove() {
         return true;
     }
 }

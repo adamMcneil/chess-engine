@@ -15,7 +15,7 @@ public class Move {
         return null;
     }
 
-    public boolean isPromotionMove(Move move) {
+    public boolean isPromotionMove() {
         return false;
     }
 
@@ -30,8 +30,8 @@ public class Move {
     }
 
     public boolean isInPassingMove(Board board) {
-        return (board.getPieceAt(this.getBeginning()).isPawn() && board.getPieceAt(this.getEnd()).isEmpty()
-                && this.getBeginning() != getEnd());
+        return (board.getPieceAt(getBeginning()).isPawn() && board.getPieceAt(getEnd()).isEmpty()
+                && Position.getColumn(getEnd()) != Position.getColumn(getBeginning()));
     }
 
     public boolean isUpTwoMove(Board board) {

@@ -39,7 +39,7 @@ public class InputTest {
             } else {
                 color = Color.b;
             }
-            int totalMoves = board.countNodes(entry.depth, color);
+            int totalMoves = board.countNodes(entry.depth, color).nodes;
             assertEquals(entry.nodes, totalMoves, "Failed for FEN: " + entry.fen);
             System.out.println(entry.fen + " : depth " + entry.depth);
         }
@@ -71,18 +71,40 @@ public class InputTest {
     }
 
     @Test
+    void testMate() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("mate-fens.json");
+        if (inputStream == null) {
+            throw new FileNotFoundException("Resource file test-fens.json not found");
+        }
+        List<CheckEntry> testEntries = objectMapper.readValue(inputStream, new TypeReference<>() {
+        });
+
+        for (CheckEntry entry : testEntries) {
+            Board board = new Board();
+            board.importBoard(entry.fen);
+            System.out.println(entry.fen);
+            System.out.println(entry.white);
+            assertEquals(entry.white, board.isColorInMate(Color.w));
+            assertEquals(board.isColorInMate(Color.b), entry.black);
+        }
+    }
+
+    @Test
     public void testStartPosition() {
         Board board = new Board();
-        assertEquals(20, board.countNodes(1, Color.w));
-        assertEquals(400, board.countNodes(2, Color.w));
-        assertEquals(8902, board.countNodes(3, Color.w));
-        assertEquals(197281, board.countNodes(4, Color.w));
-        // assertEquals(4865609, board.countNodes(5, Color.w));
+        int[] expectedNodes = {20, 400, 8902, 197281, 4865609}; // Expected values for depths 1 to 4
+
+        for (int depth = 1; depth <= expectedNodes.length; depth++) {
+            MoveCounter counter = board.countNodes(depth, Color.w);
+            System.out.println("Depth " + depth + ": " + counter);
+            assertEquals(expectedNodes[depth - 1], counter.nodes);
+        }
     }
 
     @Test
     public void testPerformanceStartPosition() {
         Board board = new Board();
-        assertEquals(4865609, board.countNodes(5, Color.w));
+        assertEquals(4865609, board.countNodes(5, Color.w).nodes);
     }
 }

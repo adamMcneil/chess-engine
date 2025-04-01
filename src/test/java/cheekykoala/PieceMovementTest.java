@@ -23,7 +23,7 @@ class PieceMovementTest {
     void testRookMoves() {
         Board board = new Board();
         board.importBoard("8/8/P7/8/R4p2/8/8/8 w - - 0 1");
-        Piece rook = board.getPieceAt(32 );
+        Piece rook = board.getPieceAt(32);
         assertTrue(rook.isRook());
         assertSame(Color.w, rook.getColor());
         List<Move> moves = rook.getMoves(board);
@@ -63,6 +63,7 @@ class PieceMovementTest {
         int moves = knight.getMoves(board).size();
         assertEquals(4, moves);
     }
+
     @Test
     void testQueenMoves() {
         Board board = new Board();
@@ -78,7 +79,7 @@ class PieceMovementTest {
     void testKingMoves() {
         Board board = new Board();
         board.importBoard("8/8/8/8/4K3/8/8/8 w - - 0 1");
-        Piece king = board.getPieceAt( 36);
+        Piece king = board.getPieceAt(36);
         assertTrue(king.isKing());
         assertSame(Color.w, king.getColor());
         int moves = king.getMoves(board).size();
@@ -177,9 +178,23 @@ class PieceMovementTest {
     }
 
     @Test
+    void inPassingPin() {
+        Board board = new Board();
+        board.importBoard("3k4/8/8/K1Pp3r/8/8/8/8 w - - 0 1");
+        Piece pawn = board.getPieceAt(26);
+        List<Move> moves = pawn.getMoves(board);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
+        assertEquals(1, moves.size());
+    }
+
+    @Test
     void testFen() {
         Board board = new Board();
-        board.importBoard("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
+        board.importBoard("5rk1/4Np2/pp4pp/4P3/2r2P2/4K3/P2R1PPP/8 b - - 3 33");
+        MoveCounter counter = board.countNodes(1, Color.b);
+        System.out.println(counter);
         int position = 11;
         board.printBoard(position);
         List<Move> moves = board.getPieceAt(position).getMoves(board);
