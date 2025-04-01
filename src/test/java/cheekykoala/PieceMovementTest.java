@@ -192,7 +192,8 @@ class PieceMovementTest {
     @Test
     void testFen() {
         Board board = new Board();
-        board.importBoard("5rk1/4Np2/pp4pp/4P3/2r2P2/4K3/P2R1PPP/8 b - - 3 33");
+        board.importBoard("8/p4k1p/2p5/8/7P/2K1r3/P4PP1/R5NR w - - 0 27");
+        board.printBoard(42);
         MoveCounter counter = board.countNodes(1, Color.b);
         System.out.println(counter);
         int position = 11;

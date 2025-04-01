@@ -30,6 +30,7 @@ public class Main {
                 System.out.println("readyok");
             } else if (input.contains("position")) {
                 onPosition(board, input);
+                board.printBoard();
             } else if (input.equals("quit")) {
                 break;
             }
@@ -53,13 +54,12 @@ public class Main {
             // position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
             board.importBoard(fenString.toString());
             board.setBoardEval(board.recomputeBoardEval());
-            board.printBoard();
             startMoves = i + 1;
         }
         for (int i = startMoves; i < UCIStringArray.length; i++) {
             Move move;
-            int start = ((charToInt(UCIStringArray[i].charAt(0)) * 8) + (8 - Character.getNumericValue(UCIStringArray[i].charAt(1))));
-            int end = ((charToInt(UCIStringArray[i].charAt(2)) * 8) + (8 - Character.getNumericValue(UCIStringArray[i].charAt(3))));
+            int start = (charToInt(UCIStringArray[i].charAt(0)) + 8 * (8 - Character.getNumericValue(UCIStringArray[i].charAt(1))));
+            int end = (charToInt(UCIStringArray[i].charAt(2)) + 8 * (8 - Character.getNumericValue(UCIStringArray[i].charAt(3))));
 
             if (UCIStringArray[i].length() == 5) {
                 char letter = UCIStringArray[i].charAt(4);

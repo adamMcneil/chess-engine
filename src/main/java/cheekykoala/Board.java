@@ -493,19 +493,20 @@ public class Board {
         int rookPosition = (move.getBeginning() + move.getEnd()) / 2;
         int rookStartPosition;
         if (king.getColor() == Color.w) {
-            if (direction > 0) {
-                rookStartPosition = 63;
-            } else {
+            if (direction < 0) {
                 rookStartPosition = 56;
+            } else {
+                rookStartPosition = 63;
             }
         } else {
-            if (direction > 0) {
+            if (direction < 0) {
                 rookStartPosition = 0;
             } else {
                 rookStartPosition = 7;
             }
         }
         Piece rookPiece = getPieceAt(rookStartPosition);
+        rookPiece.setPosition(rookPosition);
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
     }
