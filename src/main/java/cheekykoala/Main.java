@@ -2,15 +2,11 @@ package cheekykoala;
 
 import cheekykoala.pieces.*;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
-    public static Color minimaxColor = Color.w;
-    public static long startTime = System.currentTimeMillis();
-    public static boolean timeout = false;
-    public static int TIMEOUT_TIME = 5000;
-
     public static void main(String[] args) {
         Board board = new Board();
         apiConnect(board);
@@ -70,31 +66,11 @@ public class Main {
             }
             board.doMove(move);
             board.printBoard();
-            if (i % 2 == 0) {
-                minimaxColor = Color.w;
-            } else {
-                minimaxColor = Color.b;
-            }
         }
     }
 
     public static String onGo(Board board) {
-        timeout = false;
-        int INITIAL_DEPTH = 3;
-        int CURRENT_DEPTH;
-        startTime = System.currentTimeMillis();
-        Move bestMove = moveMinimax(board, 1, minimaxColor);
-        for (int i = 0; ; i++) {
-            if (timeout) {
-                break;
-            }
-            CURRENT_DEPTH = INITIAL_DEPTH + i;
-            System.out.println("Current depth: " + CURRENT_DEPTH);
-            Move checkMove = moveMinimax(board, CURRENT_DEPTH, minimaxColor);
-            if (checkMove != null) {
-                bestMove = checkMove;
-            }
-        }
+        Move bestMove = moveMinimax(board, 5, board.colorToMove);
         System.out.println("Board Evaluation:" + board.getBoardEval());
         return "bestmove " + bestMove;
     }
@@ -112,30 +88,25 @@ public class Main {
         ArrayList<Move> bestMoves = new ArrayList<>();
         Move bestMove;
         Board child;
-        for (Piece piece : board.getBoard()) {
-            if (piece.getColor() == color) {
-                for (Move m : piece.getMoves(board)) {
-                    child = board.getChild(m);
-                    double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
-                            isMaxPlayer);
-                    if (mx == 123456)
-                        return null;
-                    if (bestMoveValue == mx) {
-                        bestMoves.add(m);
-                    }
-                    if (color == Color.w) {
-                        if (mx > bestMoveValue) {
-                            bestMoveValue = mx;
-                            bestMoves.clear();
-                            bestMoves.add(m);
-                        }
-                    } else {
-                        if (mx < bestMoveValue) {
-                            bestMoveValue = mx;
-                            bestMoves.clear();
-                            bestMoves.add(m);
-                        }
-                    }
+        List<Move> moves = board.getAllMoves(color);
+        for (Move move : moves) {
+            child = board.getChild(move);
+            double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
+                    isMaxPlayer);
+            if (bestMoveValue == mx) {
+                bestMoves.add(move);
+            }
+            if (color == Color.w) {
+                if (mx > bestMoveValue) {
+                    bestMoveValue = mx;
+                    bestMoves.clear();
+                    bestMoves.add(move);
+                }
+            } else {
+                if (mx < bestMoveValue) {
+                    bestMoveValue = mx;
+                    bestMoves.clear();
+                    bestMoves.add(move);
                 }
             }
         }
@@ -143,73 +114,23 @@ public class Main {
         return bestMove;
     }
 
-    public static double minimax(Board board, int depth, double alpha, double beta, boolean isMaxPlayer) {
-        ArrayList<Move> moveList = new ArrayList<>();
-        ArrayList<Move> captureMoveList = new ArrayList<>();
-        double eval;
-        double minEval;
-        double maxEval;
-        Color color;
+    public static double minimax(Board board, int depth, double alpha, double beta, boolean isWhite) {
         if (depth == 0) {
-            return (board.getBoardEval());
+            return board.getBoardEval();
         }
-        if (isMaxPlayer) {
-            color = Color.w;
-            maxEval = Double.NEGATIVE_INFINITY;
-            if (System.currentTimeMillis() - startTime > TIMEOUT_TIME) {
-                timeout = true;
-                return 123456;
-            }
-            for (Piece piece : board.getBoard()) {
-                if (piece.getColor() == Color.w) {
-                    for (Move move : piece.getMoves(board)) {
-                        if (move.isCapture(board))
-                            captureMoveList.add(move);
-                        else
-                            moveList.add(move);
-                    }
-                }
-            }
-            moveList.addAll(0, captureMoveList);
-            if (moveList.isEmpty()) {
-                return checkmateEval(color); // this does not handle stalemate
-            }
-            for (Move m : moveList) {
-                eval = minimax(board.getChild(m), depth - 1, alpha, beta, false);
-                maxEval = Math.max(alpha, eval);
-                alpha = Math.max(alpha, eval);
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            // sortArray(moveList);
-            return maxEval;
+        Color color = isWhite ? Color.w : Color.b;
+        List<Move> moveList = board.getAllMoves(color);
+        if (moveList.isEmpty()) {
+            return checkmateEval(color);
+        }
+        if (isWhite) {
+            return moveList.parallelStream()
+                    .mapToDouble(move -> minimax(board.getChild(move), depth - 1, alpha, beta, false))
+                    .reduce(Double.NEGATIVE_INFINITY, Math::max);
         } else {
-            color = Color.b;
-            minEval = Double.POSITIVE_INFINITY;
-            for (Piece piece : board.getBoard()) {
-                if (piece.getColor() == Color.b) {
-                    for (Move move : piece.getMoves(board)) {
-                        if (move.isCapture(board))
-                            captureMoveList.add(move);
-                        else
-                            moveList.add(move);
-                    }
-                }
-            }
-            moveList.addAll(0, captureMoveList);
-            if (moveList.isEmpty()) {
-                return checkmateEval(color); // this does not handle stalemate
-            }
-            for (Move m : moveList) {
-                eval = minimax(board.getChild(m), depth - 1, alpha, beta, true);
-                minEval = Math.min(minEval, eval);
-                beta = Math.min(beta, eval);
-                if (beta <= alpha) {
-                    break;
-                }
-            }
-            return minEval;
+            return moveList.parallelStream()
+                    .mapToDouble(move -> minimax(board.getChild(move), depth - 1, alpha, beta, true))
+                    .reduce(Double.POSITIVE_INFINITY, Math::min);
         }
     }
 
