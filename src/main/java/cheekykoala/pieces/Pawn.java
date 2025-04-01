@@ -96,11 +96,11 @@ public class Pawn extends Piece {
         Move moveLeft = new Move(position, left);
         Move moveRight = new Move(position, right);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && moveLeft.isMoveLegal(board, color)
-                && ((isOppositeColor(board.getPieceAt(left)) && Position.isSameDiagonal(position, left)) || (board.getCanEnpassant() && left == board.getInPassingSquare()))) {
+                && ((isOppositeColor(board.getPieceAt(left)) && Position.isDiagonal(position, left)) || (board.getCanEnpassant() && left == board.getInPassingSquare()))) {
             moves.add(moveLeft);
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && moveRight.isMoveLegal(board, color)
-                && ((isOppositeColor(board.getPieceAt(right)) && Position.isSameDiagonal(position, right)) || (board.getCanEnpassant() && right == board.getInPassingSquare()))) {
+                && ((isOppositeColor(board.getPieceAt(right)) && Position.isDiagonal(position, right)) || (board.getCanEnpassant() && right == board.getInPassingSquare()))) {
             moves.add(moveRight);
         }
         return moves;
@@ -116,7 +116,7 @@ public class Pawn extends Piece {
 
     public ArrayList<Move> getPromotionMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        int direction = this.getDirection(color);
+        int direction = getDirection(color);
         int checkPosition = position + direction;
         Move move = new Move(position, checkPosition);
         if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g
@@ -130,11 +130,11 @@ public class Pawn extends Piece {
         Move moveRight = new Move(position, right);
         if ((Position.getRow(left) == 0 || Position.getRow(left) == 7)
                 && (moveLeft.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(left)))) {
-            moves.addAll(makePromotionMoves(color, position, checkPosition));
+            moves.addAll(makePromotionMoves(color, position, left));
         }
         if ((Position.getRow(right) == 0 || Position.getRow(right) == 7)
                 && (moveRight.isMoveLegal(board, color) && this.isOppositeColor(board.getPieceAt(right)))) {
-            moves.addAll(makePromotionMoves(color, position, checkPosition));
+            moves.addAll(makePromotionMoves(color, position, right));
         }
         return moves;
     }

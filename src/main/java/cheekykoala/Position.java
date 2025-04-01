@@ -14,7 +14,7 @@ public class Position {
         return getColumn(p1) == getColumn(p2);
     }
 
-    public static boolean isSameDiagonal(int p1, int p2) {
+    public static boolean isDiagonal(int p1, int p2) {
         int rowDiff = Math.abs(getRow(p1) - getRow(p2));
         int colDiff = Math.abs(getColumn(p1) - getColumn(p2));
         return rowDiff == colDiff;

@@ -56,4 +56,16 @@ public class BoardTest {
         assertFalse(Position.isOnBoard(-100), "Position -100 should not be on the board");
         assertFalse(Position.isOnBoard(100), "Position 100 should not be on the board");
     }
+
+    @Test
+    public void testInCheckPosition() {
+        Board board = new Board();
+        assertFalse(board.isColorInCheck(Color.w));
+
+        board.importBoard("rnbqkbnr/pppp1ppp/8/8/4Q3/8/PPPPPPPP/RNB1KBNR w KQkq - 0 1");
+        assertTrue(board.isColorInCheck(Color.b));
+
+
+
+    }
 }

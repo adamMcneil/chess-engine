@@ -164,15 +164,31 @@ class PieceMovementTest {
     }
 
     @Test
+    void inPassingBoard() {
+        Board board = new Board();
+        board.importBoard("8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3");
+        assertTrue(board.isColorInCheck(Color.b));
+        Piece pawn = board.getPieceAt(34);
+        List<Move> moves = pawn.getMoves(board);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
+        assertEquals(1, moves.size());
+    }
+
+    @Test
     void testFen() {
         Board board = new Board();
-        board.importBoard("rnbqkbnr/pppppppp/8/8/1P6/8/P1PPPPPP/RNBQKBNR w KQkq - 0 1");
-        board.printBoard(13);
+        board.importBoard("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8");
+        int position = 11;
+        board.printBoard(position);
+        List<Move> moves = board.getPieceAt(position).getMoves(board);
+        List<Move> allmoves = board.getAllMoves(Color.w);
 
-        List<Move> moves = board.getPieceAt(13).getMoves(board);
         for (Move move : moves) {
             System.out.println(move);
         }
         System.out.println(moves.size());
+        assertEquals(4, moves.size());
     }
 }

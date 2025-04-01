@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 public class InputTest {
 
     static class JsonTestEntry {
@@ -25,7 +27,8 @@ public class InputTest {
         if (inputStream == null) {
             throw new FileNotFoundException("Resource file test-fens.json not found");
         }
-        List<JsonTestEntry> testEntries = objectMapper.readValue(inputStream, new TypeReference<>() {});
+        List<JsonTestEntry> testEntries = objectMapper.readValue(inputStream, new TypeReference<>() {
+        });
 
         for (JsonTestEntry entry : testEntries) {
             Board board = new Board();
@@ -39,6 +42,31 @@ public class InputTest {
             int totalMoves = board.countNodes(entry.depth, color);
             assertEquals(entry.nodes, totalMoves, "Failed for FEN: " + entry.fen);
             System.out.println(entry.fen + " : depth " + entry.depth);
+        }
+    }
+
+    static class CheckEntry {
+        public boolean white;
+        public boolean black;
+        public String fen;
+    }
+
+    @Test
+    void testCheckInput() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("check-fens.json");
+        if (inputStream == null) {
+            throw new FileNotFoundException("Resource file test-fens.json not found");
+        }
+        List<CheckEntry> testEntries = objectMapper.readValue(inputStream, new TypeReference<>() {
+        });
+
+        for (CheckEntry entry : testEntries) {
+            Board board = new Board();
+            board.importBoard(entry.fen);
+            System.out.println(entry.fen);
+            assertEquals(board.isColorInCheck(Color.w), entry.white);
+            assertEquals(board.isColorInCheck(Color.b), entry.black);
         }
     }
 

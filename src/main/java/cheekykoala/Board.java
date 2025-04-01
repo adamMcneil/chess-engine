@@ -7,39 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class Board {
-    private static final int[][] knightMoves = {
-            {2, 1},
-            {2, -1},
-            {1, 2},
-            {1, -2},
-            {-1, 2},
-            {-1, -2},
-            {-2, 1},
-            {-2, -1}
-    };
-    private static final int[][] straightMoves = {
-            {1, 0},
-            {0, -1},
-            {-1, 0},
-            {0, 1}
-    };
-    private static final int[][] diagonalMoves = {
-            {1, 1},
-            {1, -1},
-            {-1, -1},
-            {-1, 1}
-    };
-    private static final int[][] kingMoves = {
-            {1, 0},
-            {0, -1},
-            {-1, 0},
-            {0, 1},
-            {1, -1},
-            {1, 1},
-            {-1, -1},
-            {-1, 1}
-    };
-
     Piece[] board = new Piece[64];
     int inPassingSquare = 63;
     public boolean canEnpassant = false;
@@ -245,7 +212,7 @@ public class Board {
             }
             boolean canMoveHere = false;
             for (Move move : moves) {
-                if (move.getEnd() == i) {
+                if (move.getEnd() == i && (!move.isPromotionMove(move) || (move.isPromotionMove(move) && move.getPiece().isKnight()))) {
                     System.out.print(" x ");
                     canMoveHere = true;
                 }
@@ -298,23 +265,25 @@ public class Board {
 
             }
         }
-        if (home == -1) { return false; }
+        if (home == -1) {
+            return false;
+        }
 
         int checkPosition = 0;
         for (int change : Directions.knights) {
             checkPosition = home + change;
             if (Position.isOnBoard(checkPosition)
                     && Math.abs(Position.getRow(checkPosition) - Position.getRow(home)) < 3
-                        && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(home)) < 3) {
+                    && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(home)) < 3) {
                 if (getPieceAt(checkPosition).isKnight() && getPieceAt(checkPosition).getColor() != color) {
                     return true;
                 }
             }
         }
 
-        for (int change: Directions.orthogonal) {
+        for (int change : Directions.orthogonal) {
             checkPosition = home + change;
-            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(home, checkPosition) && Position.isSameColumn(home, checkPosition))) {
+            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(home, checkPosition) || Position.isSameColumn(home, checkPosition))) {
                 if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isRook())
                         && getPieceAt(checkPosition).getColor() != color) {
                     return true;
@@ -326,12 +295,11 @@ public class Board {
             }
         }
 
-        for (int change: Directions.diagonal) {
+        for (int change : Directions.diagonal) {
             checkPosition = home + change;
-            while (Position.isOnBoard(checkPosition) && Position.isSameDiagonal(home, checkPosition)) {
+            while (Position.isOnBoard(checkPosition) && Position.isDiagonal(home, checkPosition)) {
                 if ((getPieceAt(checkPosition).isQueen() || getPieceAt(checkPosition).isBishop())
                         && getPieceAt(checkPosition).getColor() != color) {
-                    // System.out.println ("in check");
                     return true;
                 }
                 if (getPieceAt(checkPosition).getColor() != Color.g) {
@@ -343,23 +311,23 @@ public class Board {
 
         int direction;
         if (color == Color.w)
-            direction = -1;
+            direction = -8;
         else
-            direction = 1;
+            direction = 8;
         int leftCheckPosition = home - 1 + direction;
         int rightCheckPosition = home + 1 + direction;
-        if (Position.isOnBoard(leftCheckPosition) && getPieceAt(leftCheckPosition).isPawn()
+        if (Position.isOnBoard(leftCheckPosition) && Position.isDiagonal(home, leftCheckPosition) && getPieceAt(leftCheckPosition).isPawn()
                 && getPieceAt(leftCheckPosition).getColor() != color) {
             return true;
         }
-        if (Position.isOnBoard(rightCheckPosition) && getPieceAt(rightCheckPosition).isPawn()
+        if (Position.isOnBoard(rightCheckPosition) && Position.isDiagonal(home, rightCheckPosition) && getPieceAt(rightCheckPosition).isPawn()
                 && getPieceAt(rightCheckPosition).getColor() != color) {
             return true;
         }
 
         for (int change : Directions.all) {
             checkPosition = home + change;
-            if (Position.isOnBoard(checkPosition)) {
+            if (Position.isOnBoard(checkPosition) && Math.abs(Position.getColumn(home) - Position.getColumn(checkPosition)) < 2) {
                 if (getPieceAt(checkPosition).isKing()) {
                     return true;
                 }
@@ -519,6 +487,7 @@ public class Board {
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
+        board[Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()))] = Empty.getInstance();
         setCanEnpassant(false);
     }
 

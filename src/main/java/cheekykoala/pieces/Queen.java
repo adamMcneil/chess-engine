@@ -54,7 +54,7 @@ public class Queen extends Piece {
         for (int change : directions) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameDiagonal(position, checkPosition) || Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
+            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition) || Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (move.isMoveLegal(board, color)) {

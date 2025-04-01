@@ -56,7 +56,7 @@ public class Bishop extends Piece {
         for (int change : directions) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && Position.isSameDiagonal(position, checkPosition)) {
+            while (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (move.isMoveLegal(board, color)) {
