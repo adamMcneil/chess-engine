@@ -3,8 +3,10 @@ package cheekykoala;
 import cheekykoala.pieces.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Board {
     Piece[] board = new Piece[64];
@@ -154,6 +156,14 @@ public class Board {
             }
         }
         return moves;
+    }
+
+    public List<Move> getAllMovesStream(Color color) {
+        return Arrays.stream(board) // Uses regular stream for flexibility
+                .parallel() // Enables parallel execution
+                .filter(piece -> piece.getColor() == color) // Filter pieces by color
+                .flatMap(piece -> piece.getMoves(this).parallelStream()) // Flatten and parallelize move extraction
+                .collect(Collectors.toList()); // Uses L
     }
 
     public void updateCastleState(Piece piece, Move move) {
