@@ -4,7 +4,6 @@ import cheekykoala.pieces.*;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +17,6 @@ public class Main {
             String input = consoleInput.nextLine();
             System.out.println(input);
             if (input.contains("go")) {
-                board.printBoard();
                 System.out.println(onGo(board));
             } else if (input.equals("uci")) {
                 System.out.println("uciok");
@@ -26,7 +24,7 @@ public class Main {
                 System.out.println("readyok");
             } else if (input.contains("position")) {
                 onPosition(board, input);
-                board.printBoard();
+                board.printBoardSimple();
             } else if (input.equals("quit")) {
                 break;
             }
@@ -65,12 +63,11 @@ public class Main {
                 move = new Move(start, end);
             }
             board.doMove(move);
-            board.printBoard();
         }
     }
 
     public static String onGo(Board board) {
-        Move bestMove = moveMinimax(board, 5, board.colorToMove);
+        Move bestMove = moveMinimax(board, 4, board.colorToMove);
         System.out.println("Board Evaluation:" + board.getBoardEval());
         return "bestmove " + bestMove;
     }
@@ -85,32 +82,25 @@ public class Main {
             bestMoveValue = Double.POSITIVE_INFINITY;
             isMaxPlayer = true;
         }
-        ArrayList<Move> bestMoves = new ArrayList<>();
-        Move bestMove;
         Board child;
         List<Move> moves = board.getAllMoves(color);
+        Move bestMove = moves.get(0);
         for (Move move : moves) {
             child = board.getChild(move);
             double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
                     isMaxPlayer);
-            if (bestMoveValue == mx) {
-                bestMoves.add(move);
-            }
             if (color == Color.w) {
                 if (mx > bestMoveValue) {
                     bestMoveValue = mx;
-                    bestMoves.clear();
-                    bestMoves.add(move);
+                    bestMove = move;
                 }
             } else {
                 if (mx < bestMoveValue) {
                     bestMoveValue = mx;
-                    bestMoves.clear();
-                    bestMoves.add(move);
+                    bestMove = move;
                 }
             }
         }
-        bestMove = bestMoves.get((int) (Math.random() * bestMoves.size()));
         return bestMove;
     }
 

@@ -148,7 +148,7 @@ public class Board {
         }
     }
 
-    public ArrayList<Move> getAllMoves(Color color) {
+    public List<Move> getAllMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
         for (Piece piece : board) {
             if (piece.getColor() == color) {
@@ -281,6 +281,20 @@ public class Board {
         System.out.println("   a  b  c  d  e  f  g  h");
     }
 
+    public void printBoardSimple() {
+        int flip = 1;
+        for (int i = 0; i < 64; i++) {
+            if (i % 8 == 0) {
+                System.out.print(8 - (i / 8) + " ");
+            }
+            System.out.print(" " + board[i].getPiece() + " ");
+            if (i % 8 == 7) {
+                System.out.println();
+                flip++;
+            }
+        }
+        System.out.println("   a  b  c  d  e  f  g  h");
+    }
     public Piece getPieceAt(int position) {
         return board[position];
     }
@@ -566,6 +580,7 @@ public class Board {
         } else {
             doNormalMove(move);
         }
+        colorToMove = colorToMove.getOppositeColor();
     }
 
 }

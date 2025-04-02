@@ -20,4 +20,12 @@ public class MainTest {
         Board board = new Board();
         Main.moveMinimax(board, 5, Color.w);
     }
+
+    @Test
+    public void test1() {
+        Board board = new Board();
+        board.importBoard("2kr3r/p1ppqpb1/bn2Qnp1/3PN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQ - 3 2");
+        Main.moveMinimax(board, 5, Color.b);
+    }
+
 }
