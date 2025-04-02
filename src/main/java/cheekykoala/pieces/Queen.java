@@ -50,11 +50,25 @@ public class Queen extends Piece {
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        int[] directions = Directions.all;
-        for (int change : directions) {
+        for (int change : Directions.orthogonal) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition) || Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
+            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
+                    break;
+                if (move.isMoveLegal(board, color)) {
+                    moves.add(move);
+                }
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                    break;
+                checkPosition += change;
+                move = new Move(position, checkPosition);
+            }
+        }
+        for (int change : Directions.diagonal) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition))) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (move.isMoveLegal(board, color)) {

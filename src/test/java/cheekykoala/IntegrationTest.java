@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class InputTest {
+public class IntegrationTest {
 
     static class JsonTestEntry {
         public int depth;

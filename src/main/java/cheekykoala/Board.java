@@ -43,8 +43,8 @@ public class Board {
             moveCounter.nodes = 1;
             return moveCounter;
         }
-        getAllMoves(color).parallelStream().forEach(move -> {
-            Board child;
+        Board child;
+        for (Move move : getAllMoves(color)) {
             if (getPieceAt(move.getBeginning()).isEmpty()) {
                 System.out.println("This is bad");
                 printBoard();
@@ -65,7 +65,7 @@ public class Board {
             }
             MoveCounter i = child.countNodes(depth - 1, color.getOppositeColor());
             moveCounter.Add(i);
-        });
+        }
         return moveCounter;
     }
 
@@ -282,7 +282,6 @@ public class Board {
     }
 
     public void printBoardSimple() {
-        int flip = 1;
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
                 System.out.print(8 - (i / 8) + " ");
@@ -290,7 +289,6 @@ public class Board {
             System.out.print(" " + board[i].getPiece() + " ");
             if (i % 8 == 7) {
                 System.out.println();
-                flip++;
             }
         }
         System.out.println("   a  b  c  d  e  f  g  h");

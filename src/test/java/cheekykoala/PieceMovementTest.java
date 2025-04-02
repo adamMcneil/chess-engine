@@ -190,10 +190,38 @@ class PieceMovementTest {
     }
 
     @Test
+    void queenInCorner() {
+        Board board = new Board();
+        board.importBoard("rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNq w Qkq - 0 1");
+        Piece queen = board.getPieceAt(63);
+        assertTrue(queen.isQueen());
+        List<Move> moves = queen.getMoves(board);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
+        assertEquals(3, moves.size());
+
+    }
+
+    @Test
+    void kingInCorner() {
+        Board board = new Board();
+        board.importBoard("rnb2bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNk w Q - 0 1");
+        Piece king = board.getPieceAt(63);
+        assertTrue(king.isKing());
+        List<Move> moves = king.getMoves(board);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
+        assertEquals(3, moves.size());
+
+    }
+    @Test
     void testFen() {
         Board board = new Board();
-        board.importBoard("8/p4k1p/2p5/8/7P/2K1r3/P4PP1/R5NR w - - 0 27");
-        board.printBoard(42);
+        board.importBoard("2kr3r/p1ppqpb1/bn2Qnp1/3PN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQ - 3 2");
+        board.printBoard(22);
+        board.printBoard();
         MoveCounter counter = board.countNodes(1, Color.b);
         System.out.println(counter);
         int position = 11;
