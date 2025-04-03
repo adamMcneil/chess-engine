@@ -52,7 +52,7 @@ public class Move {
         if (moved.isSameColor(taken)) {
             return false;
         }
-        Board checkBoard = board.getChild(this);
+        Board checkBoard = board.getChild(this); // TODO: we could just undo the move here
         if (checkBoard.isColorInCheck(color)) {
             return false;
         }
