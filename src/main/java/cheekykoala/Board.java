@@ -69,6 +69,22 @@ public class Board {
         return moveCounter;
     }
 
+    public int countOnlyNodes(int depth, Color color) {
+        if (depth == 0) {
+            return 1;
+        }
+        Board child;
+        int i = 0;
+        for (Move move : getAllMoves(color)) {
+            if (getPieceAt(move.getBeginning()).isEmpty()) {
+                System.out.println("This is bad");
+                printBoard();
+            }
+            child = getChild(move);
+            i += child.countOnlyNodes(depth - 1, color.getOppositeColor());
+        }
+        return i;
+    }
     public double recomputeBoardEval() {
         double eval = 0;
         for (Piece piece : getBoard()) {

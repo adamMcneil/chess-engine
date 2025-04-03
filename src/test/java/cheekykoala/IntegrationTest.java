@@ -107,4 +107,11 @@ public class IntegrationTest {
         Board board = new Board();
         assertEquals(4865609, board.countNodes(5, Color.w).nodes);
     }
+
+    @Test
+    public void testPerformanceStartPosition1() {
+        Board board = new Board();
+        assertEquals(4865609, board.countOnlyNodes(5, Color.w));
+    }
+
 }
