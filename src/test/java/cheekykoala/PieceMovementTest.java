@@ -216,6 +216,17 @@ class PieceMovementTest {
         assertEquals(3, moves.size());
 
     }
+
+    @Test
+    void pawnEdgeCapture() {
+        Board board = new Board();
+        board.importBoard("rnbqkbnr/pppppppp/P7/8/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1");
+        Piece pawn = board.getPieceAt(16);
+        assertTrue(pawn.isPawn());
+        List<Move> moves = pawn.getMoves(board);
+        assertEquals(1, moves.size());
+    }
+
     @Test
     void testFen() {
         Board board = new Board();
