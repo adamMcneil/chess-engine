@@ -22,7 +22,7 @@ public abstract class Piece {
 
     public abstract Piece copy();
 
-    public double getValue() {
+    public double getSquareEval() {
         if (color == Color.w) {
             return getValue(position);
         } else {
@@ -40,8 +40,14 @@ public abstract class Piece {
     public abstract double[] getTableValue();
 
     public double getPieceEval() {
-        this.letter = Character.toUpperCase(this.letter);
-        return switch (this.letter) {
+        return switch (letter) {
+            case 'r' -> -500;
+            case 'n' -> -320;
+            case 'b' -> -330;
+            case 'q' -> -900;
+            case 'p' -> -100;
+            case 'k' -> -20000;
+
             case 'R' -> 500;
             case 'N' -> 320;
             case 'B' -> 330;

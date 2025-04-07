@@ -36,7 +36,6 @@ public class Main {
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
             board.importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-            board.setBoardEval(board.recomputeBoardEval());
         } else {
             int i = 2;
             StringBuilder fenString = new StringBuilder(UCIStringArray[1]);
@@ -47,7 +46,6 @@ public class Main {
             fenString.toString().stripLeading();
             // position k7/5P2/8/8/8/8/8/K7 w - - 0 1 moves f7f8
             board.importBoard(fenString.toString());
-            board.setBoardEval(board.recomputeBoardEval());
             startMoves = i + 1;
         }
         for (int i = startMoves; i < UCIStringArray.length; i++) {
@@ -57,6 +55,10 @@ public class Main {
 
             if (UCIStringArray[i].length() == 5) {
                 char letter = UCIStringArray[i].charAt(4);
+                Color color = board.getPieceAt(start).getColor();
+                if (color == Color.w) {
+                    letter = Character.toUpperCase(letter);
+                }
                 move = new PromotionMove(start, end, Piece.makePiece(letter, end));
 
             } else {
@@ -68,7 +70,7 @@ public class Main {
 
     public static String onGo(Board board) {
         Move bestMove = moveMinimax(board, 4, board.colorToMove);
-        System.out.println("Board Evaluation:" + board.getBoardEval());
+        System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
 
@@ -106,7 +108,7 @@ public class Main {
 
     public static double minimax(Board board, int depth, double alpha, double beta, boolean isWhite) {
         if (depth == 0) {
-            return board.getBoardEval();
+            return board.getEval();
         }
         Color color = isWhite ? Color.w : Color.b;
         List<Move> moveList = board.getAllMoves(color);
