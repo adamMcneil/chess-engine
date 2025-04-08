@@ -3,6 +3,7 @@ package cheekykoala.pieces;
 import cheekykoala.Board;
 import cheekykoala.Color;
 import cheekykoala.Move;
+import cheekykoala.Position;
 
 import java.util.ArrayList;
 
@@ -108,10 +109,19 @@ public class King extends Piece {
 
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int change : Directions.all) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            if (move.isMoveLegal(board, color)) {
+        Move move;
+        int checkPosition;
+        for (int change : Directions.orthogonal) {
+            checkPosition = position + change;
+            move = new Move(position, checkPosition);
+            if (move.isMoveLegal(board, color) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition))) {
+                moves.add(move);
+            }
+        }
+        for (int change : Directions.diagonal) {
+            checkPosition = position + change;
+            move = new Move(position, checkPosition);
+            if (move.isMoveLegal(board, color) && Position.isDiagonal(position, checkPosition)) {
                 moves.add(move);
             }
         }

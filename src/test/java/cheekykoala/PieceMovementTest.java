@@ -123,6 +123,21 @@ class PieceMovementTest {
     }
 
     @Test
+    void testPromotionMovesBlock() {
+        Board board = new Board();
+        board.importBoard("k7/P7/8/8/8/8/p7/K7 w - - 0 1");
+        board.printBoard();
+        Piece whitePawn = board.getPieceAt(8);
+        Piece blackPawn = board.getPieceAt(48);
+        assertTrue(whitePawn.isPawn());
+        assertTrue(blackPawn.isPawn());
+        List<Move> whiteMoves = whitePawn.getMoves(board);
+        int blackMoves = blackPawn.getMoves(board).size();
+        assertEquals(0, whiteMoves.size());
+        assertEquals(0, blackMoves);
+    }
+
+    @Test
     void testCastling() {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
@@ -224,6 +239,17 @@ class PieceMovementTest {
         Piece pawn = board.getPieceAt(16);
         assertTrue(pawn.isPawn());
         List<Move> moves = pawn.getMoves(board);
+        assertEquals(1, moves.size());
+    }
+
+    @Test
+    void kingEdgesMoves() {
+        Board board = new Board();
+        board.importBoard("8/4Q3/7k/8/3K2P1/P3R2P/2P5/8 b - - 2 58");
+        Piece king = board.getPieceAt(23);
+        board.printBoard(23);
+        assertTrue(king.isKing());
+        List<Move> moves = king.getMoves(board);
         assertEquals(1, moves.size());
     }
 
