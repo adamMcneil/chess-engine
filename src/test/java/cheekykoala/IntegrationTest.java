@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +113,22 @@ public class IntegrationTest {
     public void testPerformanceStartPosition1() {
         Board board = new Board();
         assertEquals(4865609, board.countOnlyNodes(5, Color.w));
+    }
+
+    @Test
+    public void testDivide() {
+        List<String> moves = new ArrayList<>(List.of());
+        Color color = Color.w;
+        if (moves.size() % 2 == 1) {
+            color = Color.b;
+        }
+        Board board = new Board();
+        board.importBoard("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
+        for (String move : moves) {
+            board.doMove(Move.moveFromString(move, board));
+        }
+        board.printBoard();
+        board.divideOne(color, 2);
     }
 
 }

@@ -26,7 +26,7 @@ public abstract class Piece {
         if (color == Color.w) {
             return getValue(position);
         } else {
-            return getValue(63 - position);
+            return -getValue(63 - position);
         }
     }
 
@@ -46,14 +46,14 @@ public abstract class Piece {
             case 'b' -> -330;
             case 'q' -> -900;
             case 'p' -> -100;
-            case 'k' -> -20000;
+            case 'k' -> -100000;
 
             case 'R' -> 500;
             case 'N' -> 320;
             case 'B' -> 330;
             case 'Q' -> 900;
             case 'P' -> 100;
-            case 'K' -> 20000;
+            case 'K' -> 100000;
             default -> 0;
         };
     }

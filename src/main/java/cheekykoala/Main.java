@@ -1,7 +1,5 @@
 package cheekykoala;
 
-import cheekykoala.pieces.*;
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -49,21 +47,7 @@ public class Main {
             startMoves = i + 1;
         }
         for (int i = startMoves; i < UCIStringArray.length; i++) {
-            Move move;
-            int start = (charToInt(UCIStringArray[i].charAt(0)) + 8 * (8 - Character.getNumericValue(UCIStringArray[i].charAt(1))));
-            int end = (charToInt(UCIStringArray[i].charAt(2)) + 8 * (8 - Character.getNumericValue(UCIStringArray[i].charAt(3))));
-
-            if (UCIStringArray[i].length() == 5) {
-                char letter = UCIStringArray[i].charAt(4);
-                Color color = board.getPieceAt(start).getColor();
-                if (color == Color.w) {
-                    letter = Character.toUpperCase(letter);
-                }
-                move = new PromotionMove(start, end, Piece.makePiece(letter, end));
-
-            } else {
-                move = new Move(start, end);
-            }
+            Move move = Move.moveFromString(UCIStringArray[i], board);
             board.doMove(move);
         }
     }
@@ -133,17 +117,4 @@ public class Main {
             return Double.POSITIVE_INFINITY;
     }
 
-    public static int charToInt(char letter) {
-        return switch (letter) {
-            case 'a' -> 0;
-            case 'b' -> 1;
-            case 'c' -> 2;
-            case 'd' -> 3;
-            case 'e' -> 4;
-            case 'f' -> 5;
-            case 'g' -> 6;
-            case 'h' -> 7;
-            default -> 999;
-        };
-    }
 }

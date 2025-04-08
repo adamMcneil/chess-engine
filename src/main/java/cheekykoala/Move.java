@@ -11,6 +11,25 @@ public class Move {
         this.end = end;
     }
 
+    public static Move moveFromString(String string, Board board) {
+        Move move;
+        int start = (Position.charToInt(string.charAt(0)) + 8 * (8 - Character.getNumericValue(string.charAt(1))));
+        int end = (Position.charToInt(string.charAt(2)) + 8 * (8 - Character.getNumericValue(string.charAt(3))));
+
+        if (string.length() == 5) {
+            char letter = string.charAt(4);
+            Color color = board.getPieceAt(start).getColor();
+            if (color == Color.w) {
+                letter = Character.toUpperCase(letter);
+            }
+            move = new PromotionMove(start, end, Piece.makePiece(letter, end));
+
+        } else {
+            move = new Move(start, end);
+        }
+        return move;
+    }
+
     public Piece getPiece() {
         return null;
     }
@@ -36,7 +55,7 @@ public class Move {
 
     public boolean isUpTwoMove(Board board) {
         return (board.getPieceAt(this.getBeginning()).isPawn()
-                && Math.abs(this.getBeginning() - this.getEnd()) == 2);
+                && Math.abs(getBeginning() - getEnd()) == 16);
     }
 
     public String toString() {

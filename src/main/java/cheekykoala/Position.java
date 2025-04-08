@@ -31,6 +31,20 @@ public class Position {
         return rowToLetter(getColumn(position)) + (8 - getRow(position));
     }
 
+    public static int charToInt(char letter) {
+        return switch (letter) {
+            case 'a' -> 0;
+            case 'b' -> 1;
+            case 'c' -> 2;
+            case 'd' -> 3;
+            case 'e' -> 4;
+            case 'f' -> 5;
+            case 'g' -> 6;
+            case 'h' -> 7;
+            default -> 999;
+        };
+    }
+
     public static String rowToLetter(int column) {
         return switch (column) {
             case 0-> "a" ;

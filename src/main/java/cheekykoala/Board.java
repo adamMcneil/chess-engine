@@ -30,6 +30,16 @@ public class Board {
 
     }
 
+    public void divideOne(Color color, int depth) {
+        List<Move> moves = getAllMoves(color);
+        for (Move move : moves) {
+            Board child = getChild(move);
+            int nodes = child.countOnlyNodes(depth, color.getOppositeColor());
+            System.out.println(move + String.format(" %d", nodes));
+
+        }
+    }
+
     public MoveCounter countNodes(int depth, Color color) {
         MoveCounter moveCounter = new MoveCounter();
         if (isColorInMate(color)) {
