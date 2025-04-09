@@ -111,7 +111,7 @@ public class Board {
         double eval = 0;
         for (Piece piece : getBoard()) {
             eval += piece.getPieceEval();
-            eval += piece.getSquareEval();
+            // eval += piece.getSquareEval();
         }
         return eval;
     }
@@ -121,6 +121,16 @@ public class Board {
         for (Piece piece : board) {
             if (piece.getColor() == color) {
                 moves.addAll(piece.getMoves(this));
+            }
+        }
+        return moves;
+    }
+
+    public List<Move> getPseudoMoves(Color color) {
+        ArrayList<Move> moves = new ArrayList<>();
+        for (Piece piece : board) {
+            if (piece.getColor() == color) {
+                moves.addAll(piece.getPseudoMoves(this));
             }
         }
         return moves;

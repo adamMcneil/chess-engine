@@ -6,6 +6,7 @@ import cheekykoala.Move;
 import cheekykoala.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Knight extends Piece {
     private static final double[] valueTable = new double[]{
@@ -46,6 +47,7 @@ public class Knight extends Piece {
         return valueTable;
     }
 
+    @Override
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.knights;
@@ -53,6 +55,23 @@ public class Knight extends Piece {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
             if (move.isMoveLegal(board, color)
+                    && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
+                    && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
+                moves.add(move);
+            }
+        }
+        return moves;
+    }
+
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int[] directions = Directions.knights;
+        for (int change : directions) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            if (Position.isOnBoard(checkPosition)
+                    && board.getPieceAt(checkPosition).color != color
                     && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
                     && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
                 moves.add(move);

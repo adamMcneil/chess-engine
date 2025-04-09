@@ -6,6 +6,7 @@ import cheekykoala.Move;
 import cheekykoala.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class King extends Piece {
     private static final double[] valueTable = new double[]{
@@ -107,6 +108,7 @@ public class King extends Piece {
         return castleMoves;
     }
 
+    @Override
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         Move move;
@@ -122,6 +124,33 @@ public class King extends Piece {
             checkPosition = position + change;
             move = new Move(position, checkPosition);
             if (move.isMoveLegal(board, color) && Position.isDiagonal(position, checkPosition)) {
+                moves.add(move);
+            }
+        }
+        moves.addAll(getCastleMoves(board));
+        return moves;
+    }
+
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        Move move;
+        int checkPosition;
+        for (int change : Directions.orthogonal) {
+            checkPosition = position + change;
+            move = new Move(position, checkPosition);
+            if (Position.isOnBoard(checkPosition)
+                    && board.getPieceAt(checkPosition).color != color
+                    && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition))) {
+                moves.add(move);
+            }
+        }
+        for (int change : Directions.diagonal) {
+            checkPosition = position + change;
+            move = new Move(position, checkPosition);
+            if (Position.isOnBoard(checkPosition)
+                    && board.getPieceAt(checkPosition).color != color
+                    && Position.isDiagonal(position, checkPosition)) {
                 moves.add(move);
             }
         }

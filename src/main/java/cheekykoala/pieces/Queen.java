@@ -3,6 +3,7 @@ package cheekykoala.pieces;
 import cheekykoala.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Queen extends Piece {
     private static final double[] valueTable = new double[]{
@@ -48,7 +49,8 @@ public class Queen extends Piece {
         return true;
     }
 
-    public ArrayList<Move> getMoves(Board board) {
+    @Override
+    public List<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int change : Directions.orthogonal) {
             int checkPosition = position + change;
@@ -83,4 +85,35 @@ public class Queen extends Piece {
         return moves;
     }
 
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        List<Move> moves = new ArrayList<>();
+        for (int change : Directions.orthogonal) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
+                    break;
+                moves.add(move);
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                    break;
+                checkPosition += change;
+                move = new Move(position, checkPosition);
+            }
+        }
+        for (int change : Directions.diagonal) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition))) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
+                    break;
+                moves.add(move);
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                    break;
+                checkPosition += change;
+                move = new Move(position, checkPosition);
+            }
+        }
+        return moves;
+    }
 }

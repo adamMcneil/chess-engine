@@ -3,6 +3,7 @@ package cheekykoala.pieces;
 import cheekykoala.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Rook extends Piece {
     private static final double[] valueTable = new double[]{
@@ -48,6 +49,7 @@ public class Rook extends Piece {
         return true;
     }
 
+    @Override
     public ArrayList<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.orthogonal;
@@ -63,6 +65,29 @@ public class Rook extends Piece {
                 }
                 if (isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
+                checkPosition += change;
+                move = new Move(home, checkPosition);
+            }
+        }
+        return moves;
+    }
+
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int[] directions = Directions.orthogonal;
+        int home = position;
+        for (int change : directions) {
+            int checkPosition = home + change;
+            Move move = new Move(home, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(home, checkPosition) || Position.isSameRow(home, checkPosition))) {
+                if (isSameColor(board.getPieceAt(checkPosition))) {
+                    break;
+                }
+                moves.add(move);
+                if (isOppositeColor(board.getPieceAt(checkPosition))) {
+                    break;
+                }
                 checkPosition += change;
                 move = new Move(home, checkPosition);
             }

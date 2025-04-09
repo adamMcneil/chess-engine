@@ -6,6 +6,7 @@ import cheekykoala.Move;
 import cheekykoala.Position;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Bishop extends Piece {
     private static final double[] valueTable = new double[]{
@@ -50,7 +51,8 @@ public class Bishop extends Piece {
         return valueTable;
     }
 
-    public ArrayList<Move> getMoves(Board board) {
+    @Override
+    public List<Move> getMoves(Board board) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.diagonal;
         for (int change : directions) {
@@ -64,6 +66,28 @@ public class Bishop extends Piece {
                 }
                 if (this.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
+                checkPosition += change;
+                move = new Move(position, checkPosition);
+            }
+        }
+        return moves;
+    }
+
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        ArrayList<Move> moves = new ArrayList<>();
+        int[] directions = Directions.diagonal;
+        for (int change : directions) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)) {
+                if (isSameColor(board.getPieceAt(checkPosition))) {
+                    break;
+                }
+                moves.add(move);
+                if (isOppositeColor(board.getPieceAt(checkPosition))) {
+                    break;
+                }
                 checkPosition += change;
                 move = new Move(position, checkPosition);
             }

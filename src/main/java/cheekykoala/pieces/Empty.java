@@ -4,7 +4,7 @@ import cheekykoala.Board;
 import cheekykoala.Color;
 import cheekykoala.Move;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Empty extends Piece {
     private static final Empty INSTANCE = new Empty(0);
@@ -35,7 +35,13 @@ public class Empty extends Piece {
         return true;
     }
 
-    public ArrayList<Move> getMoves(Board board) {
-        return new ArrayList<>();
+    @Override
+    public List<Move> getMoves(Board board) {
+        return List.of();
+    }
+
+    @Override
+    public List<Move> getPseudoMoves(Board board) {
+        return List.of();
     }
 }

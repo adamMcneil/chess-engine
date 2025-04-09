@@ -2,7 +2,7 @@ package cheekykoala.pieces;
 
 import cheekykoala.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Piece {
     int position;
@@ -67,9 +67,11 @@ public abstract class Piece {
         return color == piece.getColor();
     }
 
-    public abstract ArrayList<Move> getMoves(Board board);
+    public abstract List<Move> getMoves(Board board);
 
-    public ArrayList<Move> getPromotionMoves(Board board) {
+    public abstract List<Move> getPseudoMoves(Board board);
+
+    public List<Move> getPromotionMoves(Board board) {
         return null;
     }
 
