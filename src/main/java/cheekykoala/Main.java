@@ -53,7 +53,7 @@ public class Main {
     }
 
     public static String onGo(Board board) {
-        Move bestMove = moveMinimax(board, 4, board.colorToMove);
+        Move bestMove = moveMinimax(board, 5, board.colorToMove);
         System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
@@ -99,15 +99,27 @@ public class Main {
         if (moveList.isEmpty()) {
             return checkmateEval(color);
         }
+        double bestMoveValue;
         if (isWhite) {
-            return moveList.parallelStream()
-                    .mapToDouble(move -> minimax(board.getChild(move), depth - 1, alpha, beta, false))
-                    .reduce(Double.NEGATIVE_INFINITY, Math::max);
+            bestMoveValue = Double.NEGATIVE_INFINITY;
+            for (Move move : moveList) {
+                bestMoveValue = Math.max(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, false));
+                if (bestMoveValue >= beta) {
+                    break;
+                }
+                alpha = Math.max(alpha, bestMoveValue);
+            }
         } else {
-            return moveList.parallelStream()
-                    .mapToDouble(move -> minimax(board.getChild(move), depth - 1, alpha, beta, true))
-                    .reduce(Double.POSITIVE_INFINITY, Math::min);
+            bestMoveValue = Double.POSITIVE_INFINITY;
+            for (Move move : moveList) {
+                bestMoveValue = Math.min(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, true));
+                if (bestMoveValue <= alpha) {
+                    break;
+                }
+                beta = Math.min(beta, bestMoveValue);
+            }
         }
+        return bestMoveValue;
     }
 
     public static double checkmateEval(Color color) {
