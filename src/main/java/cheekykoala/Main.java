@@ -1,6 +1,8 @@
 package cheekykoala;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Main {
@@ -58,34 +60,33 @@ public class Main {
         return "bestmove " + bestMove;
     }
 
-    public static Move moveMinimax(Board board, int depth, Color color) {
-        double bestMoveValue;
-        boolean isMaxPlayer;
-        if (color == Color.w) {
-            bestMoveValue = Double.NEGATIVE_INFINITY;
-            isMaxPlayer = false;
-        } else {
-            bestMoveValue = Double.POSITIVE_INFINITY;
-            isMaxPlayer = true;
+    private static class MoveEntry {
+        public Move move;
+        public double score;
+        MoveEntry(Move move, Board board, int depth, boolean isWhite) {
+            this.move = move;
+            this.score = minimax(board.getChild(move), depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite);
+
+        };
+    }
+
+    private class MoveEntryComparator implements Comparator<MoveEntry> {
+        @Override
+        public int compare(MoveEntry m1, MoveEntry m2) {
+            return Double.compare(m2.score, m1.score); // descending order
         }
-        Board child;
+    }
+
+    public static Move moveMinimax(Board board, int depth, Color color) {
+        boolean isMaxPlayer;
+        isMaxPlayer = color != Color.w;
         List<Move> moves = board.getAllMoves(color);
         Move bestMove = moves.get(0);
-        for (Move move : moves) {
-            child = board.getChild(move);
-            double mx = minimax(child, depth - 1, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY,
-                    isMaxPlayer);
-            if (color == Color.w) {
-                if (mx > bestMoveValue) {
-                    bestMoveValue = mx;
-                    bestMove = move;
-                }
-            } else {
-                if (mx < bestMoveValue) {
-                    bestMoveValue = mx;
-                    bestMove = move;
-                }
-            }
+        Optional<MoveEntry> moveEntry = moves.parallelStream()
+                .map(move -> new MoveEntry(move, board, depth - 1, isMaxPlayer))
+                .max((a, b) -> Double.compare(b.score, a.score));
+        if (moveEntry.isPresent()) {
+            bestMove = moveEntry.get().move;
         }
         return bestMove;
     }
