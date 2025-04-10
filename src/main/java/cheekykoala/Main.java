@@ -63,11 +63,14 @@ public class Main {
     private static class MoveEntry {
         public Move move;
         public double score;
+
         MoveEntry(Move move, Board board, int depth, boolean isWhite) {
             this.move = move;
             this.score = minimax(board.getChild(move), depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite);
 
-        };
+        }
+
+        ;
     }
 
     private class MoveEntryComparator implements Comparator<MoveEntry> {
@@ -82,9 +85,16 @@ public class Main {
         isMaxPlayer = color != Color.w;
         List<Move> moves = board.getAllMoves(color);
         Move bestMove = moves.get(0);
-        Optional<MoveEntry> moveEntry = moves.parallelStream()
-                .map(move -> new MoveEntry(move, board, depth - 1, isMaxPlayer))
-                .max((a, b) -> Double.compare(b.score, a.score));
+        Optional<MoveEntry> moveEntry;
+        if (isMaxPlayer) {
+            moveEntry = moves.parallelStream()
+                    .map(move -> new MoveEntry(move, board, depth - 1, true))
+                    .max((a, b) -> Double.compare(b.score, a.score));
+        } else {
+            moveEntry = moves.parallelStream()
+                    .map(move -> new MoveEntry(move, board, depth - 1, false))
+                    .min((a, b) -> Double.compare(b.score, a.score));
+        }
         if (moveEntry.isPresent()) {
             bestMove = moveEntry.get().move;
         }

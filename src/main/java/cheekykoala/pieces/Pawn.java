@@ -197,11 +197,11 @@ public class Pawn extends Piece {
         int left = position + direction - 1;
         int right = position + direction + 1;
         if ((Position.getRow(left) == 0 || Position.getRow(left) == 7)
-                && (Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left)))) {
+                && (Position.isOnBoard(left) && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left)))) {
             moves.addAll(makePromotionMoves(color, position, left));
         }
         if ((Position.getRow(right) == 0 || Position.getRow(right) == 7)
-                && (Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right)))) {
+                && (Position.isOnBoard(right) && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right)))) {
             moves.addAll(makePromotionMoves(color, position, right));
         }
         return moves;
