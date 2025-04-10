@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bishop extends Piece {
+    private final static Piece white = new Bishop(Color.w);
+    private final static Piece black = new Bishop(Color.b);
     private static final double[] valueTable = new double[]{
             -20, -10, -10, -10, -10, -10, -10, -20,
             -10, 0, 0, 0, 0, 0, 0, -10,
@@ -20,17 +22,7 @@ public class Bishop extends Piece {
             -20, -10, -10, -10, -10, -10, -10, -20,
     };
 
-    public Bishop(Bishop bishop) {
-        super(bishop);
-    }
-
-    @Override
-    public Piece copy() {
-        return new Bishop(this);
-    }
-
-    public Bishop(Color c, int position) {
-        this.position = position;
+    public Bishop(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265D;
@@ -40,6 +32,8 @@ public class Bishop extends Piece {
             letter = 'b';
         }
     }
+
+
 
     @Override
     public boolean isBishop() {
@@ -51,8 +45,24 @@ public class Bishop extends Piece {
         return valueTable;
     }
 
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
+        }
+    }
+
     @Override
-    public List<Move> getMoves(Board board) {
+    public List<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.diagonal;
         for (int change : directions) {
@@ -74,7 +84,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.diagonal;
         for (int change : directions) {

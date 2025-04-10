@@ -22,7 +22,7 @@ public class Move {
             if (color == Color.w) {
                 letter = Character.toUpperCase(letter);
             }
-            move = new PromotionMove(start, end, Piece.makePiece(letter, end));
+            move = new PromotionMove(start, end, Piece.getPiece(letter));
 
         } else {
             move = new Move(start, end);

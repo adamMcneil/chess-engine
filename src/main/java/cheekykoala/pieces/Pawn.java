@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Pawn extends Piece {
+    private static final Piece white = new Pawn(Color.w);
+    private static final Piece black = new Pawn(Color.b);
     private static final double[] valueTable = new double[]{
             0, 0, 0, 0, 0, 0, 0, 0,
             98, 134, 61, 95, 68, 126, 34, -11,
@@ -22,17 +24,7 @@ public class Pawn extends Piece {
             0, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    public Pawn(Pawn other) {
-        super(other);
-    }
-
-    @Override
-    public Piece copy() {
-        return new Pawn(this);
-    }
-
-    public Pawn(Color c, int position) {
-        this.position = position;
+    public Pawn(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265F;
@@ -43,12 +35,29 @@ public class Pawn extends Piece {
         }
     }
 
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
+        }
+    }
+
+
     @Override
     public boolean isPawn() {
         return true;
     }
 
-    public boolean getHasMoved() {
+    public boolean getHasMoved(int position) {
         return !((Position.getRow(position) == 1 && color == Color.b) || (Position.getRow(position) == 6 && color == Color.w));
     }
 
@@ -61,7 +70,7 @@ public class Pawn extends Piece {
         return direction;
     }
 
-    public List<Move> getUpOne(Board board) {
+    public List<Move> getUpOne(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
@@ -73,7 +82,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getPseudoUpOne(Board board) {
+    public List<Move> getPseudoUpOne(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
@@ -85,11 +94,11 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getUpTwo(Board board) {
+    public List<Move> getUpTwo(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int checkPosition;
         int direction = getDirection(color);
-        if (!getHasMoved()) {
+        if (!getHasMoved(position)) {
             checkPosition = position + (direction * 2);
             Move move = new Move(position, checkPosition);
             int oneAbove = position + direction;
@@ -100,11 +109,11 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getPseudoUpTwo(Board board) {
+    public List<Move> getPseudoUpTwo(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int checkPosition;
         int direction = getDirection(color);
-        if (!getHasMoved()) {
+        if (!getHasMoved(position)) {
             checkPosition = position + (direction * 2);
             Move move = new Move(position, checkPosition);
             int oneAbove = position + direction;
@@ -115,7 +124,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getAttack(Board board) {
+    public List<Move> getAttack(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int right = position + direction - 1;
@@ -133,7 +142,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getPseudoAttack(Board board) {
+    public List<Move> getPseudoAttack(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int right = position + direction - 1;
@@ -152,15 +161,15 @@ public class Pawn extends Piece {
     }
 
     public static List<Move> makePromotionMoves(Color color, int position, int end) {
-        Move moveQueen = new PromotionMove(position, end, new Queen(color, end));
-        Move moveKnight = new PromotionMove(position, end, new Knight(color, end));
-        Move moveRook = new PromotionMove(position, end, new Rook(color, end));
-        Move moveBishop = new PromotionMove(position, end, new Bishop(color, end));
+        Move moveQueen = new PromotionMove(position, end, Queen.getPiece(color));
+        Move moveKnight = new PromotionMove(position, end, Knight.getPiece(color));
+        Move moveRook = new PromotionMove(position, end, Rook.getPiece(color));
+        Move moveBishop = new PromotionMove(position, end, Bishop.getPiece(color));
         return Arrays.asList(moveQueen, moveKnight, moveRook, moveBishop);
     }
 
     @Override
-    public List<Move> getPromotionMoves(Board board) {
+    public List<Move> getPromotionMoves(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
@@ -185,7 +194,7 @@ public class Pawn extends Piece {
         return moves;
     }
 
-    public List<Move> getPseudoPromotionMoves(Board board) {
+    public List<Move> getPseudoPromotionMoves(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
@@ -213,22 +222,22 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board board) {
+    public List<Move> getMoves(Board board, int position) {
         List<Move> moves = new ArrayList<>();
-        moves.addAll(getUpOne(board));
-        moves.addAll(getUpTwo(board));
-        moves.addAll(getAttack(board));
-        moves.addAll(getPromotionMoves(board));
+        moves.addAll(getUpOne(board, position));
+        moves.addAll(getUpTwo(board, position));
+        moves.addAll(getAttack(board, position));
+        moves.addAll(getPromotionMoves(board, position));
         return moves;
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         List<Move> moves = new ArrayList<>();
-        moves.addAll(getPseudoUpOne(board));
-        moves.addAll(getPseudoUpTwo(board));
-        moves.addAll(getPseudoAttack(board));
-        moves.addAll(getPseudoPromotionMoves(board));
+        moves.addAll(getPseudoUpOne(board, position));
+        moves.addAll(getPseudoUpTwo(board, position));
+        moves.addAll(getPseudoAttack(board, position));
+        moves.addAll(getPseudoPromotionMoves(board, position));
         return moves;
     }
 

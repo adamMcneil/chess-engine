@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Queen extends Piece {
+    private static final Piece white = new Queen(Color.w);
+    private static final Piece black = new Queen(Color.b);
     private static final double[] valueTable = new double[]{
             -20, -10, -10, -5, -5, -10, -10, -20,
             -10, 0, 0, 0, 0, 0, 0, -10,
@@ -17,18 +19,7 @@ public class Queen extends Piece {
             -20, -10, -10, -5, -5, -10, -10, -20
     };
 
-    public Queen(Queen other) {
-        super(other);
-    }
-
-    @Override
-    public Piece copy() {
-        return new Queen(this);
-    }
-
-
-    public Queen(Color c, int position) {
-        this.position = position;
+    public Queen(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265B;
@@ -36,6 +27,22 @@ public class Queen extends Piece {
         } else {
             piece = (char) 0x2655;
             letter = 'q';
+        }
+    }
+
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
         }
     }
 
@@ -50,7 +57,7 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board board) {
+    public List<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         for (int change : Directions.orthogonal) {
             int checkPosition = position + change;
@@ -86,7 +93,7 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         List<Move> moves = new ArrayList<>();
         for (int change : Directions.orthogonal) {
             int checkPosition = position + change;

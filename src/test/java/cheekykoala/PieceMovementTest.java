@@ -26,7 +26,7 @@ class PieceMovementTest {
         Piece rook = board.getPieceAt(32);
         assertTrue(rook.isRook());
         assertSame(Color.w, rook.getColor());
-        List<Move> moves = rook.getMoves(board);
+        List<Move> moves = rook.getMoves(board, 32);
         assertEquals(9, moves.size());
     }
 
@@ -37,7 +37,7 @@ class PieceMovementTest {
         Piece bishop = board.getPieceAt(27);
         assertTrue(bishop.isBishop());
         assertSame(Color.b, bishop.getColor());
-        int moves = bishop.getMoves(board).size();
+        int moves = bishop.getMoves(board, 27).size();
         assertEquals(13, moves);
     }
 
@@ -49,7 +49,7 @@ class PieceMovementTest {
         Piece knight = board.getPieceAt(35);
         assertTrue(knight.isKnight());
         assertSame(Color.w, knight.getColor());
-        int moves = knight.getMoves(board).size();
+        int moves = knight.getMoves(board, 35).size();
         assertEquals(8, moves);
     }
 
@@ -60,7 +60,7 @@ class PieceMovementTest {
         Piece knight = board.getPieceAt(32);
         assertTrue(knight.isKnight());
         assertSame(Color.w, knight.getColor());
-        int moves = knight.getMoves(board).size();
+        int moves = knight.getMoves(board, 32).size();
         assertEquals(4, moves);
     }
 
@@ -71,7 +71,7 @@ class PieceMovementTest {
         Piece queen = board.getPieceAt(36);
         assertTrue(queen.isQueen());
         assertSame(Color.w, queen.getColor());
-        List<Move> moves = queen.getMoves(board);
+        List<Move> moves = queen.getMoves(board, 36);
         assertEquals(27, moves.size());
     }
 
@@ -82,7 +82,7 @@ class PieceMovementTest {
         Piece king = board.getPieceAt(36);
         assertTrue(king.isKing());
         assertSame(Color.w, king.getColor());
-        int moves = king.getMoves(board).size();
+        int moves = king.getMoves(board, 36).size();
         assertEquals(8, moves);
     }
 
@@ -93,7 +93,7 @@ class PieceMovementTest {
         Piece pawn = board.getPieceAt(35);
         assertTrue(pawn.isPawn());
         assertSame(Color.w, pawn.getColor());
-        int moves = pawn.getMoves(board).size();
+        int moves = pawn.getMoves(board, 35).size();
         assertEquals(1, moves);
     }
 
@@ -103,7 +103,7 @@ class PieceMovementTest {
         Piece pawn = board.getPieceAt(49);
         assertTrue(pawn.isPawn());
         assertSame(Color.w, pawn.getColor());
-        int moves = pawn.getMoves(board).size();
+        int moves = pawn.getMoves(board, 49).size();
         assertEquals(2, moves);
 
     }
@@ -116,8 +116,8 @@ class PieceMovementTest {
         Piece blackPawn = board.getPieceAt(48);
         assertTrue(whitePawn.isPawn());
         assertTrue(blackPawn.isPawn());
-        List<Move> whiteMoves = whitePawn.getMoves(board);
-        int blackMoves = blackPawn.getMoves(board).size();
+        List<Move> whiteMoves = whitePawn.getMoves(board, 8);
+        int blackMoves = blackPawn.getMoves(board, 48).size();
         assertEquals(4, whiteMoves.size());
         assertEquals(4, blackMoves);
     }
@@ -131,8 +131,8 @@ class PieceMovementTest {
         Piece blackPawn = board.getPieceAt(48);
         assertTrue(whitePawn.isPawn());
         assertTrue(blackPawn.isPawn());
-        List<Move> whiteMoves = whitePawn.getMoves(board);
-        int blackMoves = blackPawn.getMoves(board).size();
+        List<Move> whiteMoves = whitePawn.getMoves(board, 8);
+        int blackMoves = blackPawn.getMoves(board, 48).size();
         assertEquals(0, whiteMoves.size());
         assertEquals(0, blackMoves);
     }
@@ -145,8 +145,8 @@ class PieceMovementTest {
         Piece blackKing = board.getPieceAt(4);
         assertTrue(whiteKing.isKing());
         assertTrue(blackKing.isKing());
-        int whiteMoves = whiteKing.getMoves(board).size();
-        int blackMoves = blackKing.getMoves(board).size();
+        int whiteMoves = whiteKing.getMoves(board, 60).size();
+        int blackMoves = blackKing.getMoves(board, 4).size();
         assertEquals(4, whiteMoves);
         assertEquals(4, blackMoves);
     }
@@ -159,8 +159,8 @@ class PieceMovementTest {
         Piece blackKing = board.getPieceAt(4);
         assertTrue(whiteKing.isKing());
         assertTrue(blackKing.isKing());
-        int whiteMoves = whiteKing.getMoves(board).size();
-        int blackMoves = blackKing.getMoves(board).size();
+        int whiteMoves = whiteKing.getMoves(board, 60).size();
+        int blackMoves = blackKing.getMoves(board,4).size();
         assertEquals(2, whiteMoves);
         assertEquals(2, blackMoves);
     }
@@ -173,8 +173,8 @@ class PieceMovementTest {
         Piece blackKing = board.getPieceAt(4);
         assertTrue(whiteKing.isKing());
         assertTrue(blackKing.isKing());
-        int whiteMoves = whiteKing.getMoves(board).size();
-        int blackMoves = blackKing.getMoves(board).size();
+        int whiteMoves = whiteKing.getMoves(board, 60).size();
+        int blackMoves = blackKing.getMoves(board, 4).size();
         assertEquals(2, whiteMoves);
         assertEquals(2, blackMoves);
     }
@@ -185,7 +185,7 @@ class PieceMovementTest {
         board.importBoard("8/8/8/2k5/2pP4/8/B7/4K3 b - d3 0 3");
         assertTrue(board.isColorInCheck(Color.b));
         Piece pawn = board.getPieceAt(34);
-        List<Move> moves = pawn.getMoves(board);
+        List<Move> moves = pawn.getMoves(board, 34);
         for (Move move : moves) {
             System.out.println(move);
         }
@@ -197,7 +197,7 @@ class PieceMovementTest {
         Board board = new Board();
         board.importBoard("3k4/8/8/K1Pp3r/8/8/8/8 w - - 0 1");
         Piece pawn = board.getPieceAt(26);
-        List<Move> moves = pawn.getMoves(board);
+        List<Move> moves = pawn.getMoves(board, 26);
         for (Move move : moves) {
             System.out.println(move);
         }
@@ -210,7 +210,7 @@ class PieceMovementTest {
         board.importBoard("rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNq w Qkq - 0 1");
         Piece queen = board.getPieceAt(63);
         assertTrue(queen.isQueen());
-        List<Move> moves = queen.getMoves(board);
+        List<Move> moves = queen.getMoves(board, 63);
         for (Move move : moves) {
             System.out.println(move);
         }
@@ -224,7 +224,7 @@ class PieceMovementTest {
         board.importBoard("rnb2bnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNk w Q - 0 1");
         Piece king = board.getPieceAt(63);
         assertTrue(king.isKing());
-        List<Move> moves = king.getMoves(board);
+        List<Move> moves = king.getMoves(board, 63);
         for (Move move : moves) {
             System.out.println(move);
         }
@@ -238,7 +238,7 @@ class PieceMovementTest {
         board.importBoard("rnbqkbnr/pppppppp/P7/8/8/8/PPPPPPP1/RNBQKBNR w KQkq - 0 1");
         Piece pawn = board.getPieceAt(16);
         assertTrue(pawn.isPawn());
-        List<Move> moves = pawn.getMoves(board);
+        List<Move> moves = pawn.getMoves(board, 16);
         assertEquals(1, moves.size());
     }
 
@@ -249,7 +249,7 @@ class PieceMovementTest {
         Piece king = board.getPieceAt(23);
         board.printBoard(23);
         assertTrue(king.isKing());
-        List<Move> moves = king.getMoves(board);
+        List<Move> moves = king.getMoves(board,23);
         assertEquals(1, moves.size());
     }
 
@@ -263,7 +263,7 @@ class PieceMovementTest {
         System.out.println(counter);
         int position = 52;
         board.printBoard(position);
-        List<Move> moves = board.getPieceAt(position).getMoves(board);
+        List<Move> moves = board.getPieceAt(position).getMoves(board, 52);
         List<Move> allmoves = board.getAllMoves(Color.w);
 
         for (Move move : moves) {

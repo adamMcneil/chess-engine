@@ -30,8 +30,8 @@ public class Utils {
             System.out.println(convertLetter(beginning.charAt(0)));
             System.out.println(8 - Character.getNumericValue(beginning.charAt(1)));
 
-            int first = (convertLetter(beginning.charAt(0))- 8 - Character.getNumericValue(beginning.charAt(1)));
-            int last = (convertLetter(end.charAt(0))- 8 - Character.getNumericValue(end.charAt(1)));
+            int first = (convertLetter(beginning.charAt(0)) - 8 - Character.getNumericValue(beginning.charAt(1)));
+            int last = (convertLetter(end.charAt(0)) - 8 - Character.getNumericValue(end.charAt(1)));
             if (new Move(first, last).isMoveLegal(board, color)) {
                 board.doMove(new Move(first, last));
                 System.out.println("mediocre move");
@@ -43,10 +43,12 @@ public class Utils {
 
     public static void playRandom(Board board, Color color) {
         ArrayList<Move> moves = new ArrayList<>();
+        int position = 0;
         for (Piece piece : board.getBoard()) {
-                if (piece.getColor() == color) {
-                    moves.addAll(piece.getMoves(board));
+            if (piece.getColor() == color) {
+                moves.addAll(piece.getMoves(board, position));
             }
+            position++;
         }
         int y = (int) (Math.random() * moves.size());
         board.doMove(moves.get(y));

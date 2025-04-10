@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rook extends Piece {
+    private static final Piece white = new Rook(Color.w);
+    private static final Piece black = new Rook(Color.b);
     private static final double[] valueTable = new double[]{
             0, 0, 0, 0, 0, 0, 0, 0,
             5, 10, 10, 10, 10, 10, 10, 5,
@@ -17,18 +19,7 @@ public class Rook extends Piece {
             0, 0, 0, 5, 5, 0, 0, 0
     };
 
-    public Rook(Rook other) {
-        super(other);
-    }
-
-    @Override
-    public Piece copy() {
-        return new Rook(this);
-    }
-
-    public Rook(Color c, int position) {
-        super();
-        this.position = position;
+    public Rook(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265C;
@@ -36,6 +27,22 @@ public class Rook extends Piece {
         } else {
             piece = (char) 0x2656;
             letter = 'r';
+        }
+    }
+
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
         }
     }
 
@@ -50,7 +57,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public ArrayList<Move> getMoves(Board board) {
+    public ArrayList<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.orthogonal;
         int home = position;
@@ -73,14 +80,13 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.orthogonal;
-        int home = position;
         for (int change : directions) {
-            int checkPosition = home + change;
-            Move move = new Move(home, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(home, checkPosition) || Position.isSameRow(home, checkPosition))) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(position, checkPosition) || Position.isSameRow(position, checkPosition))) {
                 if (isSameColor(board.getPieceAt(checkPosition))) {
                     break;
                 }
@@ -89,7 +95,7 @@ public class Rook extends Piece {
                     break;
                 }
                 checkPosition += change;
-                move = new Move(home, checkPosition);
+                move = new Move(position, checkPosition);
             }
         }
         return moves;

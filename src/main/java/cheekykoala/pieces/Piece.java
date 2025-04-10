@@ -5,24 +5,13 @@ import cheekykoala.*;
 import java.util.List;
 
 public abstract class Piece {
-    int position;
     char piece;
     char letter;
     Color color;
 
-    public Piece() {
-    }
+    public Piece() {}
 
-    public Piece(Piece other) {
-        this.position = other.position;
-        this.piece = other.piece;
-        this.letter = other.letter;
-        this.color = other.color;
-    }
-
-    public abstract Piece copy();
-
-    public double getSquareEval() {
+    public double getSquareEval(int position) {
         if (color == Color.w) {
             return getValue(position);
         } else {
@@ -67,11 +56,11 @@ public abstract class Piece {
         return color == piece.getColor();
     }
 
-    public abstract List<Move> getMoves(Board board);
+    public abstract List<Move> getMoves(Board board, int position);
 
-    public abstract List<Move> getPseudoMoves(Board board);
+    public abstract List<Move> getPseudoMoves(Board board, int position);
 
-    public List<Move> getPromotionMoves(Board board) {
+    public List<Move> getPromotionMoves(Board board, int position) {
         return null;
     }
 
@@ -111,67 +100,59 @@ public abstract class Piece {
         return color;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     public char getLetter() {
         return this.letter;
     }
 
-    public static Piece makePiece(char letter, int i) {
+    public static Piece getPiece(char letter) {
         Piece piece = null;
         return switch (letter) {
             case 'r' -> {
-                piece = new Rook(Color.b, i);
+                piece = Rook.getBlackPiece();
                 yield piece;
             }
             case 'R' -> {
-                piece = new Rook(Color.w, i);
+                piece = Rook.getWhitePiece();
                 yield piece;
             }
             case 'n' -> {
-                piece = new Knight(Color.b, i);
+                piece = Knight.getBlackPiece();
                 yield piece;
             }
             case 'N' -> {
-                piece = new Knight(Color.w, i);
+                piece = Knight.getWhitePiece();
                 yield piece;
             }
             case 'b' -> {
-                piece = new Bishop(Color.b, i);
+                piece = Bishop.getBlackPiece();
                 yield piece;
             }
             case 'B' -> {
-                piece = new Bishop(Color.w, i);
+                piece = Bishop.getWhitePiece();
                 yield piece;
             }
             case 'q' -> {
-                piece = new Queen(Color.b, i);
+                piece = Queen.getBlackPiece();
                 yield piece;
             }
             case 'Q' -> {
-                piece = new Queen(Color.w, i);
+                piece = Queen.getWhitePiece();
                 yield piece;
             }
             case 'k' -> {
-                piece = new King(Color.b, i);
+                piece = King.getBlackPiece();
                 yield piece;
             }
             case 'K' -> {
-                piece = new King(Color.w, i);
+                piece = King.getWhitePiece();
                 yield piece;
             }
             case 'p' -> {
-                piece = new Pawn(Color.b, i);
+                piece = Pawn.getBlackPiece();
                 yield piece;
             }
             case 'P' -> {
-                piece = new Pawn(Color.w, i);
+                piece = Pawn.getWhitePiece();
                 yield piece;
             }
             default -> piece;

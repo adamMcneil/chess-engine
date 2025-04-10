@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class King extends Piece {
+    private static final Piece white = new King(Color.w);
+    private static final Piece black = new King(Color.b);
     private static final double[] valueTable = new double[]{
             -30, -40, -40, -50, -50, -40, -40, -30,
             -30, -40, -40, -50, -50, -40, -40, -30,
@@ -20,17 +22,7 @@ public class King extends Piece {
             20, 30, 10, 0, 0, 10, 30, 20
     };
 
-    public King(King other) {
-        super(other);
-    }
-
-    @Override
-    public Piece copy() {
-        return new King(this);
-    }
-
-    public King(Color c, int position) {
-        this.position = position;
+    public King(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265A;
@@ -46,12 +38,29 @@ public class King extends Piece {
         return valueTable;
     }
 
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
+        }
+    }
+
+
     @Override
     public boolean isKing() {
         return true;
     }
 
-    public List<Move> getPseudoCastleMoves(Board board) {
+    public List<Move> getPseudoCastleMoves(Board board, int position) {
         if (board.isColorInCheck(color)) {
             return List.of();
         }
@@ -104,17 +113,16 @@ public class King extends Piece {
                 if (move1.isMoveLegal(board, color)
                         && board.getPieceAt(left3).isEmpty() && board.getPieceAt(move1.getEnd()).getColor() != Color.w
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.w) {
-                    castleMoves.add(new Move(this.position, 2));
+                    castleMoves.add(new Move(position, 2));
                 }
             }
         }
         return castleMoves;
     }
 
-    public List<Move> getCastleMoves(Board board) {
+    public List<Move> getCastleMoves(Board board, int position) {
         if (board.isColorInCheck(color)) {
             return List.of();
-
         }
         List<Move> castleMoves = new ArrayList<>();
         int moveState;
@@ -166,7 +174,7 @@ public class King extends Piece {
                         && board.getPieceAt(move2.getEnd()).getColor() != Color.w
                         && move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
                 ) {
-                    castleMoves.add(new Move(this.position, 2));
+                    castleMoves.add(new Move(position, 2));
                 }
             }
         }
@@ -174,8 +182,8 @@ public class King extends Piece {
     }
 
     @Override
-    public ArrayList<Move> getMoves(Board board) {
-        ArrayList<Move> moves = new ArrayList<>();
+    public List<Move> getMoves(Board board, int position) {
+        List<Move> moves = new ArrayList<>();
         Move move;
         int checkPosition;
         for (int change : Directions.orthogonal) {
@@ -192,12 +200,12 @@ public class King extends Piece {
                 moves.add(move);
             }
         }
-        moves.addAll(getCastleMoves(board));
+        moves.addAll(getCastleMoves(board, position));
         return moves;
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         Move move;
         int checkPosition;
@@ -219,7 +227,7 @@ public class King extends Piece {
                 moves.add(move);
             }
         }
-        moves.addAll(getPseudoCastleMoves(board));
+        moves.addAll(getPseudoCastleMoves(board, position));
         return moves;
     }
 

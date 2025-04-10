@@ -16,7 +16,7 @@ public class TestDoPromotion {
         Board board = new Board();
         board.importBoard("8/P7/8/8/8/8/p7/8 w HAha - 0 1");
 
-        List<Move> whiteMoves = board.getPieceAt(8).getMoves(board);
+        List<Move> whiteMoves = board.getPieceAt(8).getMoves(board, 8);
         assertSame(4, whiteMoves.size());
         for (Move move : whiteMoves) {
             assertSame(Color.w, move.getPiece().getColor());
@@ -26,7 +26,7 @@ public class TestDoPromotion {
             assertSame(Color.w, piece.getColor());
         }
 
-        List<Move> blackMoves = board.getPieceAt(48).getMoves(board);
+        List<Move> blackMoves = board.getPieceAt(48).getMoves(board, 8);
         assertSame(4, blackMoves.size());
         for (Move move : blackMoves) {
             assertSame(Color.b, move.getPiece().getColor());

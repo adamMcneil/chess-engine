@@ -93,16 +93,19 @@ public class Board {
         }
         return i;
     }
+
     public double recomputeBoardEval() {
         double eval = 0;
+        int position = 0;
         for (Piece piece : getBoard()) {
             if (piece.getColor() == Color.w) {
                 eval += piece.getPieceEval();
-                eval += piece.getSquareEval();
+                eval += piece.getSquareEval(position);
             } else {
                 eval -= piece.getPieceEval();
-                eval -= piece.getSquareEval();
+                eval -= piece.getSquareEval(position);
             }
+            position++;
         }
         return eval;
     }
@@ -118,30 +121,26 @@ public class Board {
 
     public List<Move> getAllMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
+        int position = 0;
         for (Piece piece : board) {
             if (piece.getColor() == color) {
-                moves.addAll(piece.getMoves(this));
+                moves.addAll(piece.getMoves(this, position));
             }
+            position++;
         }
         return moves;
     }
 
     public List<Move> getPseudoMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
+        int position = 0;
         for (Piece piece : board) {
             if (piece.getColor() == color) {
-                moves.addAll(piece.getPseudoMoves(this));
+                moves.addAll(piece.getPseudoMoves(this, position));
             }
+            position++;
         }
         return moves;
-    }
-
-    public List<Move> getAllMovesStream(Color color) {
-        return Arrays.stream(board) // Uses regular stream for flexibility
-                .parallel() // Enables parallel execution
-                .filter(piece -> piece.getColor() == color) // Filter pieces by color
-                .flatMap(piece -> piece.getMoves(this).parallelStream()) // Flatten and parallelize move extraction
-                .collect(Collectors.toList()); // Uses L
     }
 
     public void updateCastleState(Piece piece, Move move) {
@@ -154,19 +153,19 @@ public class Board {
         }
         if (piece.isRook()) {
             if (piece.getColor() == Color.w) {
-                if (Position.getColumn(piece.getPosition()) == 0 && Position.getRow(piece.getPosition()) == 7
+                if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 7
                         && this.getWhiteCastleMoveState() != 2) {
                     this.increaseWhiteMoveState(2);
-                } else if (Position.getColumn(piece.getPosition()) == 7 && Position.getRow(piece.getPosition()) == 7
+                } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 7
                         && this.getWhiteCastleMoveState() != 1) {
                     this.increaseWhiteMoveState(1);
                 }
             }
             if (piece.getColor() == Color.b) {
-                if (Position.getColumn(piece.getPosition()) == 0 && Position.getRow(piece.getPosition()) == 0
+                if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 0
                         && this.getBlackCastleMoveState() != 2) {
                     this.increaseBlackMoveState(2);
-                } else if (Position.getColumn(piece.getPosition()) == 7 && Position.getRow(piece.getPosition()) == 0
+                } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 0
                         && this.getBlackCastleMoveState() != 1) {
                     this.increaseBlackMoveState(1);
                 }
@@ -208,7 +207,7 @@ public class Board {
     }
 
     public void printBoard(int position) {
-        List<Move> moves = board[position].getMoves(this);
+        List<Move> moves = board[position].getMoves(this, position);
         int flip = 1;
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
@@ -271,6 +270,7 @@ public class Board {
         }
         System.out.println("   a  b  c  d  e  f  g  h");
     }
+
     public Piece getPieceAt(int position) {
         return board[position];
     }
@@ -440,7 +440,7 @@ public class Board {
         setInPassingSquare(decodeInPassingSquare(splitFen[3]));
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
-                board[z] = Piece.makePiece(fenBoard.charAt(i), z);
+                board[z] = Piece.getPiece(fenBoard.charAt(i));
                 z++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
@@ -468,7 +468,7 @@ public class Board {
     public void copyBoard(Board board) {
         int i = 0;
         for (Piece piece : board.getBoard()) {
-            this.board[i] = piece.copy();
+            this.board[i] = piece;
             i++;
         }
     }
@@ -481,7 +481,6 @@ public class Board {
 
     public void doPromotionMove(Move move) {
         board[move.getEnd()] = move.getPiece();
-        move.getPiece().setPosition(move.getEnd());
         board[move.getBeginning()] = Empty.getInstance();
         setCanEnpassant(false);
     }
@@ -506,7 +505,6 @@ public class Board {
             }
         }
         Piece rookPiece = getPieceAt(rookStartPosition);
-        rookPiece.setPosition(rookPosition);
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
     }
@@ -514,7 +512,6 @@ public class Board {
     public void doInPassingMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
-        movedPiece.setPosition(move.getEnd());
         board[move.getBeginning()] = Empty.getInstance();
         board[Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()))] = Empty.getInstance();
         setCanEnpassant(false);
@@ -536,7 +533,6 @@ public class Board {
     public void doNormalMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
-        movedPiece.setPosition(move.getEnd());
         board[move.getBeginning()] = Empty.getInstance();
         setCanEnpassant(false);
     }

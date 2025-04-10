@@ -7,27 +7,29 @@ import cheekykoala.Move;
 import java.util.List;
 
 public class Empty extends Piece {
-    private static final Empty INSTANCE = new Empty(0);
+    private static final Empty INSTANCE = new Empty();
 
     public static Empty getInstance() {
         return INSTANCE;
     }
 
-    public Empty(int position) {
-        this.position = position;
+    public Empty() {
         this.color = Color.g;
         this.piece = ' ';
         this.letter = ' ';
     }
 
     @Override
-    public Piece copy() {
+    public double[] getTableValue() {
+        return new double[]{};
+    }
+
+    public static Piece getWhitePiece() {
         return INSTANCE;
     }
 
-    @Override
-    public double[] getTableValue() {
-        return new double[]{};
+    public static Piece getBlackPiece() {
+        return INSTANCE;
     }
 
     @Override
@@ -36,12 +38,12 @@ public class Empty extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board board) {
+    public List<Move> getMoves(Board board, int position) {
         return List.of();
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         return List.of();
     }
 }

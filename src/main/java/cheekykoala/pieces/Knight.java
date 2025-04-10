@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Knight extends Piece {
+    private final static Piece white = new Knight(Color.w);
+    private final static Piece black = new Knight(Color.b);
     private static final double[] valueTable = new double[]{
             -50, -40, -30, -30, -30, -30, -40, -50,
             -40, -20, 0, 0, 0, 0, -20, -40,
@@ -20,17 +22,7 @@ public class Knight extends Piece {
             -50, -40, -30, -30, -30, -30, -40, -50,
     };
 
-    public Knight(Knight other) {
-        super(other);
-    }
-
-    @Override
-    public Piece copy() {
-        return new Knight(this);
-    }
-
-    public Knight(Color c, int position) {
-        this.position = position;
+    public Knight(Color c) {
         this.color = c;
         if (c == Color.w) {
             piece = (char) 0x265E;
@@ -47,8 +39,25 @@ public class Knight extends Piece {
         return valueTable;
     }
 
+    public static Piece getWhitePiece() {
+        return white;
+    }
+
+    public static Piece getBlackPiece() {
+        return black;
+    }
+
+    public static Piece getPiece(Color color) {
+        if (color == Color.w) {
+            return white;
+        } else {
+            return black;
+        }
+    }
+
+
     @Override
-    public ArrayList<Move> getMoves(Board board) {
+    public ArrayList<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.knights;
         for (int change : directions) {
@@ -64,7 +73,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public List<Move> getPseudoMoves(Board board) {
+    public List<Move> getPseudoMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.knights;
         for (int change : directions) {
