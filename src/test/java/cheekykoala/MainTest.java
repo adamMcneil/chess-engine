@@ -2,8 +2,7 @@ package cheekykoala;
 
 import org.junit.jupiter.api.Test;
 
-import static cheekykoala.Main.onGo;
-import static cheekykoala.Main.onPosition;
+import static cheekykoala.Main.*;
 
 public class MainTest {
     @Test
@@ -32,6 +31,12 @@ public class MainTest {
         board.importBoard("2kr3r/p1ppqpb1/bn2Qnp1/3PN3/1p2P3/2N5/PPPBBPPP/R3K2R b KQ - 3 2");
         board.printBoard();
         Main.moveMinimax(board, 6, Color.b);
+    }
+
+    @Test
+    public void testIterativeDeepening() {
+        Board board = new Board();
+        System.out.println(iterativeDeepening(board, 30000));
     }
 
 }

@@ -1,9 +1,9 @@
 package cheekykoala;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.TimeoutException;
 
 public class Main {
     public static void main(String[] args) {
@@ -55,7 +55,7 @@ public class Main {
     }
 
     public static String onGo(Board board) {
-        Move bestMove = moveMinimax(board, 5, board.colorToMove);
+        Move bestMove = iterativeDeepening(board, 1000);
         System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
@@ -67,16 +67,11 @@ public class Main {
         MoveEntry(Move move, Board board, int depth, boolean isWhite) {
             this.move = move;
             this.score = minimax(board.getChild(move), depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite);
-
         }
 
-        ;
-    }
-
-    private class MoveEntryComparator implements Comparator<MoveEntry> {
-        @Override
-        public int compare(MoveEntry m1, MoveEntry m2) {
-            return Double.compare(m2.score, m1.score); // descending order
+        MoveEntry(Move move, Board board, int depth, boolean isWhite, long timeLeft) throws TimeoutException {
+            this.move = move;
+            this.score = minimax(board.getChild(move), depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite, timeLeft);
         }
     }
 
@@ -98,6 +93,64 @@ public class Main {
         if (moveEntry.isPresent()) {
             bestMove = moveEntry.get().move;
         }
+        return bestMove;
+    }
+
+    public static Move moveMinimax(Board board, int depth, Color color, long timeLeft) {
+        boolean isMaxPlayer;
+        isMaxPlayer = color != Color.w;
+        List<Move> moves = board.getAllMoves(color);
+        Move bestMove = moves.get(0);
+        Optional<MoveEntry> moveEntry;
+        if (isMaxPlayer) {
+            moveEntry = moves.parallelStream()
+                    .map(move -> {
+                        try {
+                            return new MoveEntry(move, board, depth - 1, true, timeLeft);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .max((a, b) -> Double.compare(b.score, a.score));
+        } else {
+            moveEntry = moves.parallelStream()
+                    .map(move -> {
+                        try {
+                            return new MoveEntry(move, board, depth - 1, false, timeLeft);
+                        } catch (TimeoutException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .min((a, b) -> Double.compare(b.score, a.score));
+        }
+        if (moveEntry.isPresent()) {
+            bestMove = moveEntry.get().move;
+        }
+        return bestMove;
+    }
+
+    public static Move iterativeDeepening(Board board, long timeLimitMillis) {
+        Move bestMove = null;
+        long startTime = System.currentTimeMillis();
+        long softLimit = timeLimitMillis * 9 / 10; // Use 90% of time
+
+        for (int depth = 1; ; depth++) {
+            if (System.currentTimeMillis() - startTime >= softLimit) {
+                break;
+            }
+            long depthTime = System.currentTimeMillis();
+            long remainingTime = softLimit - (System.currentTimeMillis() - startTime);
+            try {
+                Move currentMove = moveMinimax(board, depth, board.colorToMove, remainingTime);
+                if (System.currentTimeMillis() - startTime < softLimit) {
+                    bestMove = currentMove;
+                    System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) /1000.) + " sec");
+                }
+            } catch (Exception e) {
+                break;
+            }
+        }
+
         return bestMove;
     }
 
@@ -124,6 +177,42 @@ public class Main {
             bestMoveValue = Double.POSITIVE_INFINITY;
             for (Move move : moveList) {
                 bestMoveValue = Math.min(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, true));
+                if (bestMoveValue <= alpha) {
+                    break;
+                }
+                beta = Math.min(beta, bestMoveValue);
+            }
+        }
+        return bestMoveValue;
+    }
+
+    public static double minimax(Board board, int depth, double alpha, double beta, boolean isWhite, long timeLeft) throws TimeoutException {
+        long startTime = System.currentTimeMillis();
+        if (timeLeft <= 0) {
+            throw new TimeoutException();
+        }
+        if (depth == 0) {
+            return board.getEval();
+        }
+        Color color = isWhite ? Color.w : Color.b;
+        List<Move> moveList = board.getPseudoMoves(color);
+        if (moveList.isEmpty()) {
+            return checkmateEval(color);
+        }
+        double bestMoveValue;
+        if (isWhite) {
+            bestMoveValue = Double.NEGATIVE_INFINITY;
+            for (Move move : moveList) {
+                bestMoveValue = Math.max(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime)));
+                if (bestMoveValue >= beta) {
+                    break;
+                }
+                alpha = Math.max(alpha, bestMoveValue);
+            }
+        } else {
+            bestMoveValue = Double.POSITIVE_INFINITY;
+            for (Move move : moveList) {
+                bestMoveValue = Math.min(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime)));
                 if (bestMoveValue <= alpha) {
                     break;
                 }
