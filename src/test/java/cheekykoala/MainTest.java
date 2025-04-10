@@ -18,7 +18,7 @@ public class MainTest {
     @Test
     public void timeMinimax() {
         Board board = new Board();
-        Main.moveMinimax(board, 5, Color.w);
+        Main.moveMinimax(board, 6, Color.w);
     }
 
     @Test
