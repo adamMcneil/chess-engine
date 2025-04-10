@@ -112,9 +112,11 @@ public class Board {
 
     public double getEval() {
         double eval = 0;
+        int position = 0;
         for (Piece piece : getBoard()) {
             eval += piece.getPieceEval();
-            // eval += piece.getSquareEval();
+            eval += piece.getSquareEval(position);
+            position++;
         }
         return eval;
     }

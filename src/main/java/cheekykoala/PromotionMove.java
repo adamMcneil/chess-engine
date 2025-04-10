@@ -11,6 +11,7 @@ public class PromotionMove extends Move {
         this.piece = piece;
     }
 
+    @Override
     public Piece getPiece() {
         return piece;
     }
@@ -18,5 +19,10 @@ public class PromotionMove extends Move {
     @Override
     public boolean isPromotionMove() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + piece.getLetter();
     }
 }

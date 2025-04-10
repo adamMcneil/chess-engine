@@ -58,6 +58,7 @@ public class Move {
                 && Math.abs(getBeginning() - getEnd()) == 16);
     }
 
+    @Override
     public String toString() {
         return Position.toString(beginning) + Position.toString(end);
     }

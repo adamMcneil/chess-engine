@@ -26,7 +26,10 @@ public class TestDoPromotion {
             assertSame(Color.w, piece.getColor());
         }
 
-        List<Move> blackMoves = board.getPieceAt(48).getMoves(board, 8);
+        List<Move> blackMoves = board.getPieceAt(48).getMoves(board, 48);
+        for (Move move : blackMoves) {
+            System.out.println(move);
+        }
         assertSame(4, blackMoves.size());
         for (Move move : blackMoves) {
             assertSame(Color.b, move.getPiece().getColor());
