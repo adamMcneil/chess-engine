@@ -49,6 +49,6 @@ public class TestDoPromotion {
         assertTrue(piece.isQueen());
         assertSame(Color.w, piece.getColor());
         board.printBoard();
-        System.out.println(onGo(board));
+        System.out.println(onGo(board, Color.w));
     }
 }

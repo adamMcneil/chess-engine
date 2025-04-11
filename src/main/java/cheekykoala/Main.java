@@ -13,17 +13,18 @@ public class Main {
 
     public static void apiConnect(Board board) {
         Scanner consoleInput = new Scanner(System.in);
+        Color color = Color.w;
         while (true) {
             String input = consoleInput.nextLine();
             System.out.println(input);
             if (input.contains("go")) {
-                System.out.println(onGo(board));
+                System.out.println(onGo(board, color));
             } else if (input.equals("uci")) {
                 System.out.println("uciok");
             } else if (input.contains("isready")) {
                 System.out.println("readyok");
             } else if (input.contains("position")) {
-                onPosition(board, input);
+                color = onPosition(board, input);
                 board.printBoardSimple();
             } else if (input.equals("quit")) {
                 break;
@@ -31,7 +32,7 @@ public class Main {
         }
     }
 
-    public static void onPosition(Board board, String UCIPosition) {
+    public static Color onPosition(Board board, String UCIPosition) {
         int startMoves = 3;
         String[] UCIStringArray = UCIPosition.split(" ");
         if (UCIStringArray[1].equals("startpos")) {
@@ -48,14 +49,20 @@ public class Main {
             board.importBoard(fenString.toString());
             startMoves = i + 1;
         }
+        int numMoves = 0;
         for (int i = startMoves; i < UCIStringArray.length; i++) {
             Move move = Move.moveFromString(UCIStringArray[i], board);
             board.doMove(move);
+            numMoves++;
         }
+        if (numMoves % 2 == 0) {
+           return Color.w;
+        }
+        return Color.b;
     }
 
-    public static String onGo(Board board) {
-        Move bestMove = iterativeDeepening(board, 1000);
+    public static String onGo(Board board, Color color) {
+        Move bestMove = iterativeDeepening(board, color, 1000);
         System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
@@ -129,7 +136,7 @@ public class Main {
         return bestMove;
     }
 
-    public static Move iterativeDeepening(Board board, long timeLimitMillis) {
+    public static Move iterativeDeepening(Board board, Color color, long timeLimitMillis) {
         Move bestMove = null;
         long startTime = System.currentTimeMillis();
         long softLimit = timeLimitMillis * 9 / 10; // Use 90% of time
@@ -141,7 +148,7 @@ public class Main {
             long depthTime = System.currentTimeMillis();
             long remainingTime = softLimit - (System.currentTimeMillis() - startTime);
             try {
-                Move currentMove = moveMinimax(board, depth, board.colorToMove, remainingTime);
+                Move currentMove = moveMinimax(board, depth, color, remainingTime);
                 if (System.currentTimeMillis() - startTime < softLimit) {
                     bestMove = currentMove;
                     System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) /1000.) + " sec");

@@ -3,31 +3,27 @@ package cheekykoala;
 import cheekykoala.pieces.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Board {
-    Piece[] board = new Piece[64];
-    int inPassingSquare = 63;
-    public boolean canEnpassant = false;
-    public int whiteCastleMoveState = 0;
-    public int blackCastleMoveState = 0;
-    Color colorToMove = Color.w;
+    private final Piece[] board = new Piece[64];
+    private int inPassingSquare = -1;
+    private boolean canInPassingAttack = false;
+    private int whiteCastleMoveState = 0;
+    private int blackCastleMoveState = 0;
+    private double eval = 0;
 
     public Board() {
-        makeBoard();
+        importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
     public Board(Board other) {
+        this.copyBoard(other);
         this.setInPassingSquare(other.getInPassingSquare());
-        this.setCanEnpassant(other.getCanEnpassant());
+        this.setCanInPassingAttack(other.getCanInPassingAttack());
         this.increaseWhiteMoveState(other.getWhiteCastleMoveState());
         this.increaseBlackMoveState(other.getBlackCastleMoveState());
-        this.copyBoard(other);
-        this.colorToMove = other.colorToMove;
-
+        this.eval = other.eval;
     }
 
     public void divideOne(Color color, int depth) {
@@ -94,23 +90,7 @@ public class Board {
         return i;
     }
 
-    public double recomputeBoardEval() {
-        double eval = 0;
-        int position = 0;
-        for (Piece piece : getBoard()) {
-            if (piece.getColor() == Color.w) {
-                eval += piece.getPieceEval();
-                eval += piece.getSquareEval(position);
-            } else {
-                eval -= piece.getPieceEval();
-                eval -= piece.getSquareEval(position);
-            }
-            position++;
-        }
-        return eval;
-    }
-
-    public double getEval() {
+    public double recomputeEval() {
         double eval = 0;
         int position = 0;
         for (Piece piece : getBoard()) {
@@ -118,6 +98,10 @@ public class Board {
             eval += piece.getSquareEval(position);
             position++;
         }
+        return eval;
+    }
+
+    public double getEval() {
         return eval;
     }
 
@@ -148,39 +132,39 @@ public class Board {
     public void updateCastleState(Piece piece, Move move) {
         if (piece.isKing()) {
             if (piece.getColor() == Color.w) {
-                this.increaseWhiteMoveState(3);
+                increaseWhiteMoveState(3);
             } else {
-                this.increaseBlackMoveState(3);
+                increaseBlackMoveState(3);
             }
         }
         if (piece.isRook()) {
             if (piece.getColor() == Color.w) {
                 if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 7
-                        && this.getWhiteCastleMoveState() != 2) {
-                    this.increaseWhiteMoveState(2);
+                        && getWhiteCastleMoveState() != 2) {
+                    increaseWhiteMoveState(2);
                 } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 7
-                        && this.getWhiteCastleMoveState() != 1) {
-                    this.increaseWhiteMoveState(1);
+                        && getWhiteCastleMoveState() != 1) {
+                    increaseWhiteMoveState(1);
                 }
             }
             if (piece.getColor() == Color.b) {
                 if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 0
-                        && this.getBlackCastleMoveState() != 2) {
-                    this.increaseBlackMoveState(2);
+                        && getBlackCastleMoveState() != 2) {
+                    increaseBlackMoveState(2);
                 } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 0
-                        && this.getBlackCastleMoveState() != 1) {
-                    this.increaseBlackMoveState(1);
+                        && getBlackCastleMoveState() != 1) {
+                    increaseBlackMoveState(1);
                 }
             }
         }
-        if (move.getEnd() == 56 && this.getWhiteCastleMoveState() != 2) {
-            this.increaseWhiteMoveState(2);
-        } else if (move.getEnd() == 63 && this.getWhiteCastleMoveState() != 1) {
-            this.increaseWhiteMoveState(1);
-        } else if (move.getEnd() == 0 && this.getWhiteCastleMoveState() != 2) {
-            this.increaseWhiteMoveState(2);
-        } else if (move.getEnd() == 7 && this.getWhiteCastleMoveState() != 1) {
-            this.increaseWhiteMoveState(1);
+        if (move.getEnd() == 56 && getWhiteCastleMoveState() != 2) {
+            increaseWhiteMoveState(2);
+        } else if (move.getEnd() == 63 && getWhiteCastleMoveState() != 1) {
+            increaseWhiteMoveState(1);
+        } else if (move.getEnd() == 0 && getWhiteCastleMoveState() != 2) {
+            increaseWhiteMoveState(2);
+        } else if (move.getEnd() == 7 && getWhiteCastleMoveState() != 1) {
+            increaseWhiteMoveState(1);
         }
     }
 
@@ -200,8 +184,8 @@ public class Board {
         blackCastleMoveState += number;
     }
 
-    public boolean getCanEnpassant() {
-        return canEnpassant;
+    public boolean getCanInPassingAttack() {
+        return canInPassingAttack;
     }
 
     public Piece[] getBoard() {
@@ -290,14 +274,12 @@ public class Board {
             Piece piece = board[i];
             if (piece.isKing() && piece.getColor() == color) {
                 home = i;
-
             }
         }
         if (home == -1) {
             return false;
         }
-
-        int checkPosition = 0;
+        int checkPosition;
         for (int change : Directions.knights) {
             checkPosition = home + change;
             if (Position.isOnBoard(checkPosition)
@@ -364,10 +346,6 @@ public class Board {
         return false;
     }
 
-    private void makeBoard() {
-        importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    }
-
     public void setCastleStates(String fenCastleData) {
         boolean whiteKing = false;
         boolean whiteQueen = false;
@@ -413,20 +391,11 @@ public class Board {
         }
     }
 
-    public static Color getColorFromString(String color) {
-        if (Objects.equals(color, "w"))
-            return Color.w;
-        else if (Objects.equals(color, "b")) {
-            return Color.b;
-        }
-        return Color.g;
-    }
-
     public int decodeInPassingSquare(String fenData) {
         if (fenData.equals("-")) {
             return -1;
         }
-        this.canEnpassant = true;
+        this.canInPassingAttack = true;
         char one = fenData.charAt(0);
         int x = ((int) one) - 97;
         int y = 7 - (Character.getNumericValue(fenData.charAt(1)) - 1);
@@ -437,7 +406,6 @@ public class Board {
         int z = 0;
         String[] splitFen = fenBoard.split(" ");
         fenBoard = splitFen[0];
-        this.colorToMove = getColorFromString(splitFen[1]);
         setCastleStates(splitFen[2]);
         setInPassingSquare(decodeInPassingSquare(splitFen[3]));
         for (int i = 0; i < fenBoard.length(); i++) {
@@ -451,7 +419,7 @@ public class Board {
                 }
             }
         }
-
+        eval = recomputeEval();
     }
 
 
@@ -459,8 +427,8 @@ public class Board {
         this.inPassingSquare = x;
     }
 
-    public void setCanEnpassant(Boolean logic) {
-        canEnpassant = logic;
+    public void setCanInPassingAttack(Boolean logic) {
+        canInPassingAttack = logic;
     }
 
     public int getInPassingSquare() {
@@ -482,9 +450,13 @@ public class Board {
     }
 
     public void doPromotionMove(Move move) {
+        removePieceUpdateEval(getPieceAt(move.getBeginning()), move.getBeginning());
+        removePieceUpdateEval(getPieceAt(move.getEnd()), move.getEnd());
+        addPieceUpdateEval(move.getPiece(), move.getEnd());
+
         board[move.getEnd()] = move.getPiece();
         board[move.getBeginning()] = Empty.getInstance();
-        setCanEnpassant(false);
+        setCanInPassingAttack(false);
     }
 
     public void doCastleMove(Move move) {
@@ -509,14 +481,20 @@ public class Board {
         Piece rookPiece = getPieceAt(rookStartPosition);
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
+        movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition));
+        movePieceUpdateEval(getPieceAt(move.getEnd()), move);
     }
 
     public void doInPassingMove(Move move) {
+        int otherPawnPosition = Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()));
+        removePieceUpdateEval(getPieceAt(otherPawnPosition), otherPawnPosition);
+        movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
+
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
-        board[Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()))] = Empty.getInstance();
-        setCanEnpassant(false);
+        board[otherPawnPosition] = Empty.getInstance();
+        setCanInPassingAttack(false);
     }
 
     public void doUpTwoMove(Move move) {
@@ -529,14 +507,17 @@ public class Board {
             direction = 8;
         int inPassingSquare = move.getBeginning() + direction;
         setInPassingSquare(inPassingSquare);
-        setCanEnpassant(true);
+        setCanInPassingAttack(true);
     }
 
     public void doNormalMove(Move move) {
+        removePieceUpdateEval(getPieceAt(move.getEnd()), move.getEnd());
+        movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
+
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
-        setCanEnpassant(false);
+        setCanInPassingAttack(false);
     }
 
     public void doMove(Move move) {
@@ -553,7 +534,20 @@ public class Board {
         } else {
             doNormalMove(move);
         }
-        colorToMove = colorToMove.getOppositeColor();
     }
 
+    private void removePieceUpdateEval(Piece piece, int position) {
+        eval -= piece.getPieceEval();
+        eval -= piece.getSquareEval(position);
+    }
+
+    private void addPieceUpdateEval(Piece piece, int position) {
+        eval += piece.getPieceEval();
+        eval += piece.getSquareEval(position);
+    }
+
+    private void movePieceUpdateEval(Piece piece, Move move) {
+        eval -= piece.getSquareEval(move.getBeginning());
+        eval += piece.getSquareEval(move.getEnd());
+    }
 }

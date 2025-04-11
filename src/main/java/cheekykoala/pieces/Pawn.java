@@ -132,11 +132,11 @@ public class Pawn extends Piece {
         Move moveLeft = new Move(position, left);
         Move moveRight = new Move(position, right);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && moveLeft.isMoveLegal(board, color) && Position.isDiagonal(position, left)
-                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanEnpassant() && left == board.getInPassingSquare())))) {
+                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanInPassingAttack() && left == board.getInPassingSquare())))) {
             moves.add(moveLeft);
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && moveRight.isMoveLegal(board, color) && Position.isDiagonal(position, right)
-                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanEnpassant() && right == board.getInPassingSquare())))) {
+                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanInPassingAttack() && right == board.getInPassingSquare())))) {
             moves.add(moveRight);
         }
         return moves;
@@ -150,11 +150,11 @@ public class Pawn extends Piece {
         Move moveLeft = new Move(position, left);
         Move moveRight = new Move(position, right);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && Position.isDiagonal(position, left)
-                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanEnpassant() && left == board.getInPassingSquare())))) {
+                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanInPassingAttack() && left == board.getInPassingSquare())))) {
             moves.add(moveLeft);
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && Position.isDiagonal(position, right)
-                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanEnpassant() && right == board.getInPassingSquare())))) {
+                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanInPassingAttack() && right == board.getInPassingSquare())))) {
             moves.add(moveRight);
         }
         return moves;

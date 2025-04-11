@@ -8,7 +8,7 @@ public class TestEval {
     @Test
     public void testStartPosition() {
         Board board = new Board();
-        assertEquals(0, board.getEval());
+        assertEquals(0, board.recomputeEval());
 
     }
 }
