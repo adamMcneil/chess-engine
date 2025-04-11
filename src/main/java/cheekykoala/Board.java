@@ -17,6 +17,10 @@ public class Board {
         importBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     }
 
+    public Board(String fen) {
+        importBoard(fen);
+    }
+
     public Board(Board other) {
         this.copyBoard(other);
         this.setInPassingSquare(other.getInPassingSquare());
@@ -482,7 +486,6 @@ public class Board {
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
         movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition));
-        movePieceUpdateEval(getPieceAt(move.getEnd()), move);
     }
 
     public void doInPassingMove(Move move) {
