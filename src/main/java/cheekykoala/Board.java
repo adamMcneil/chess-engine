@@ -9,8 +9,27 @@ public class Board {
     private final Piece[] board = new Piece[64];
     private int inPassingSquare = -1;
     private boolean canInPassingAttack = false;
-    private int whiteCastleMoveState = 0;
-    private int blackCastleMoveState = 0;
+    private boolean whiteCanCastleKingSide = true;
+    private boolean whiteCanCastleQueenSide = true;
+    private boolean blackCanCastleKingSide = true;
+    private boolean blackCanCastleQueenSide = true;
+
+    public boolean isWhiteCanCastleKingSide() {
+        return whiteCanCastleKingSide;
+    }
+
+    public boolean isWhiteCanCastleQueenSide() {
+        return whiteCanCastleQueenSide;
+    }
+
+    public boolean isBlackCanCastleKingSide() {
+        return blackCanCastleKingSide;
+    }
+
+    public boolean isBlackCanCastleQueenSide() {
+        return blackCanCastleQueenSide;
+    }
+
     private double eval = 0;
 
     public Board() {
@@ -25,8 +44,10 @@ public class Board {
         this.copyBoard(other);
         this.setInPassingSquare(other.getInPassingSquare());
         this.setCanInPassingAttack(other.getCanInPassingAttack());
-        this.increaseWhiteMoveState(other.getWhiteCastleMoveState());
-        this.increaseBlackMoveState(other.getBlackCastleMoveState());
+        this.whiteCanCastleKingSide = other.whiteCanCastleKingSide;
+        this.whiteCanCastleQueenSide = other.whiteCanCastleQueenSide;
+        this.blackCanCastleKingSide = other.blackCanCastleKingSide;
+        this.blackCanCastleQueenSide = other.blackCanCastleQueenSide;
         this.eval = other.eval;
     }
 
@@ -136,56 +157,38 @@ public class Board {
     public void updateCastleState(Piece piece, Move move) {
         if (piece.isKing()) {
             if (piece.getColor() == Color.w) {
-                increaseWhiteMoveState(3);
+                whiteCanCastleKingSide = true;
+                whiteCanCastleQueenSide = true;
             } else {
-                increaseBlackMoveState(3);
+                blackCanCastleKingSide = false;
+                blackCanCastleQueenSide = false;
             }
         }
         if (piece.isRook()) {
             if (piece.getColor() == Color.w) {
-                if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 7
-                        && getWhiteCastleMoveState() != 2) {
-                    increaseWhiteMoveState(2);
-                } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 7
-                        && getWhiteCastleMoveState() != 1) {
-                    increaseWhiteMoveState(1);
+                if (move.getBeginning() == 56) {
+                    whiteCanCastleQueenSide = false;
+                } else if (move.getBeginning() == 63) {
+                    whiteCanCastleKingSide = false;
                 }
             }
             if (piece.getColor() == Color.b) {
-                if (Position.getColumn(move.getBeginning()) == 0 && Position.getRow(move.getBeginning()) == 0
-                        && getBlackCastleMoveState() != 2) {
-                    increaseBlackMoveState(2);
-                } else if (Position.getColumn(move.getBeginning()) == 7 && Position.getRow(move.getBeginning()) == 0
-                        && getBlackCastleMoveState() != 1) {
-                    increaseBlackMoveState(1);
+                if (move.getBeginning() == 0) {
+                    blackCanCastleQueenSide = false;
+                } else if (move.getBeginning() == 7) {
+                    blackCanCastleKingSide = false;
                 }
             }
         }
-        if (move.getEnd() == 56 && getWhiteCastleMoveState() != 2) {
-            increaseWhiteMoveState(2);
-        } else if (move.getEnd() == 63 && getWhiteCastleMoveState() != 1) {
-            increaseWhiteMoveState(1);
-        } else if (move.getEnd() == 0 && getWhiteCastleMoveState() != 2) {
-            increaseWhiteMoveState(2);
-        } else if (move.getEnd() == 7 && getWhiteCastleMoveState() != 1) {
-            increaseWhiteMoveState(1);
+        if (move.getEnd() == 56) {
+            whiteCanCastleQueenSide = false;
+        } else if (move.getEnd() == 63) {
+            whiteCanCastleKingSide = false;
+        } else if (move.getEnd() == 0) {
+            blackCanCastleQueenSide = false;
+        } else if (move.getEnd() == 7) {
+        blackCanCastleKingSide = false;
         }
-    }
-
-    public int getWhiteCastleMoveState() {
-        return whiteCastleMoveState;
-    }
-
-    public int getBlackCastleMoveState() {
-        return blackCastleMoveState;
-    }
-
-    public void increaseWhiteMoveState(int number) {
-        whiteCastleMoveState += number;
-    }
-
-    public void increaseBlackMoveState(int number) {
-        blackCastleMoveState += number;
     }
 
     public boolean getCanInPassingAttack() {
@@ -351,47 +354,25 @@ public class Board {
     }
 
     public void setCastleStates(String fenCastleData) {
-        boolean whiteKing = false;
-        boolean whiteQueen = false;
-        boolean blackKing = false;
-        boolean blackQueen = false;
+        whiteCanCastleKingSide = false;
+        whiteCanCastleQueenSide = false;
+        blackCanCastleKingSide = false;
+        blackCanCastleQueenSide = false;
         for (char c : fenCastleData.toCharArray()) {
             switch (c) {
                 case 'K':
-                    whiteKing = true;
+                    whiteCanCastleKingSide = true;
                     break;
                 case 'Q':
-                    whiteQueen = true;
+                    whiteCanCastleQueenSide = true;
                     break;
                 case 'k':
-                    blackKing = true;
+                    blackCanCastleKingSide = true;
                     break;
                 case 'q':
-                    blackQueen = true;
+                    blackCanCastleQueenSide = true;
                     break;
             }
-        }
-        if (whiteKing) {
-            if (whiteQueen) {
-                this.whiteCastleMoveState = 0;
-            } else {
-                this.whiteCastleMoveState = 2;
-            }
-        } else if (whiteQueen) {
-            this.whiteCastleMoveState = 1;
-        } else {
-            this.whiteCastleMoveState = 3;
-        }
-        if (blackKing) {
-            if (blackQueen) {
-                this.blackCastleMoveState = 0;
-            } else {
-                this.blackCastleMoveState = 2;
-            }
-        } else if (blackQueen) {
-            this.blackCastleMoveState = 1;
-        } else {
-            this.blackCastleMoveState = 3;
         }
     }
 

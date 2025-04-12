@@ -65,10 +65,8 @@ public class King extends Piece {
             return List.of();
         }
         List<Move> castleMoves = new ArrayList<>();
-        int moveState;
         if (color == Color.w) {
-            moveState = board.getWhiteCastleMoveState();
-            if ((moveState == 0 || moveState == 2)) {
+            if (board.isWhiteCanCastleKingSide()) {
                 int right1 = 61;
                 int right2 = 62;
                 Move move1 = new Move(position, right1);
@@ -79,7 +77,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(position, 62));
                 }
             }
-            if ((moveState == 0 || moveState == 1)) {
+            if (board.isWhiteCanCastleQueenSide()) {
                 int left1 = 59;
                 int left2 = 58;
                 int left3 = 57;
@@ -92,8 +90,7 @@ public class King extends Piece {
                 }
             }
         } else {
-            moveState = board.getBlackCastleMoveState();
-            if ((moveState == 0 || moveState == 2)) {
+            if (board.isBlackCanCastleKingSide()) {
                 int right1 = 5;
                 int right2 = 6;
                 Move move1 = new Move(position, right1);
@@ -104,7 +101,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(position, 6));
                 }
             }
-            if ((moveState == 0 || moveState == 1)) {
+            if (board.isBlackCanCastleQueenSide()) {
                 int left1 = 3;
                 int left2 = 2;
                 int left3 = 1;
@@ -127,8 +124,7 @@ public class King extends Piece {
         List<Move> castleMoves = new ArrayList<>();
         int moveState;
         if (color == Color.w) {
-            moveState = board.getWhiteCastleMoveState();
-            if ((moveState == 0 || moveState == 2)) {
+            if (board.isWhiteCanCastleKingSide()) {
                 int right1 = 61;
                 int right2 = 62;
                 Move move1 = new Move(position, right1);
@@ -139,7 +135,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(position, 62));
                 }
             }
-            if ((moveState == 0 || moveState == 1)) {
+            if (board.isWhiteCanCastleQueenSide()) {
                 int left1 = 59;
                 int left2 = 58;
                 int left3 = 57;
@@ -152,8 +148,7 @@ public class King extends Piece {
                 }
             }
         } else {
-            moveState = board.getBlackCastleMoveState();
-            if ((moveState == 0 || moveState == 2)) {
+            if (board.isBlackCanCastleKingSide()) {
                 int right1 = 5;
                 int right2 = 6;
                 Move move1 = new Move(position, right1);
@@ -164,7 +159,7 @@ public class King extends Piece {
                     castleMoves.add(new Move(position, 6));
                 }
             }
-            if ((moveState == 0 || moveState == 1)) {
+            if (board.isBlackCanCastleQueenSide()) {
                 int left1 = 3;
                 int left2 = 2;
                 int left3 = 1;
