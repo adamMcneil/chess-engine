@@ -17,6 +17,16 @@ public class Directions {
             1,
     };
 
+    final public static int[] vertical = {
+            -8,
+            8,
+    };
+
+    final public static int[] horizontal = {
+            -1,
+            1,
+    };
+
     final public static int[] all = {
             -8,
             8,

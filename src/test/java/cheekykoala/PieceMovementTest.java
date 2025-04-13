@@ -256,15 +256,15 @@ class PieceMovementTest {
 
     @Test
     void testFen() {
+        int position = 40;
         Board board = new Board();
-        board.importBoard("8/5k2/8/7p/8/6PP/4pP2/4R1K1 b - - 9 53");
-        board.printBoard(52);
+        board.importBoard("1nbqkbnr/rppppppp/p7/8/P7/R7/1PPPPPPP/1NBQKBNR w KAka - 0 1");
+        board.printBoard(position);
         board.printBoard();
         MoveCounter counter = board.countNodes(1, Color.b);
         System.out.println(counter);
-        int position = 52;
         board.printBoard(position);
-        List<Move> moves = board.getPieceAt(position).getMoves(board, 52);
+        List<Move> moves = board.getPieceAt(position).getMoves(board, position);
         List<Move> allmoves = board.getAllMoves(Color.w);
 
         for (Move move : moves) {

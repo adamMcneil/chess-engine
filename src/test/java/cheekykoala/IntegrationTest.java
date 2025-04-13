@@ -117,18 +117,20 @@ public class IntegrationTest {
 
     @Test
     public void testDivide() {
-        List<String> moves = new ArrayList<>(List.of());
+        int depth = 5;
+        List<String> moves = List.of("a2a4", "a7a6", "a1a3", "a8a7");
         Color color = Color.w;
         if (moves.size() % 2 == 1) {
             color = Color.b;
         }
         Board board = new Board();
-        board.importBoard("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
         for (String move : moves) {
             board.doMove(Move.moveFromString(move, board));
         }
-        board.printBoard();
-        board.divideOne(color, 2);
+        board.printBoard(40);
+        System.out.println("Number of moves: " + board.getAllMoves(color).size());
+        board.divideOne(color, depth - moves.size() - 1);
+
     }
 
 }

@@ -59,12 +59,10 @@ public class Rook extends Piece {
     @Override
     public ArrayList<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
-        int[] directions = Directions.orthogonal;
-        int home = position;
-        for (int change : directions) {
-            int checkPosition = home + change;
-            Move move = new Move(home, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(home, checkPosition) || Position.isSameRow(home, checkPosition))) {
+        for (int change : Directions.vertical) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition)) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (move.isMoveLegal(board, color)) {
@@ -73,7 +71,22 @@ public class Rook extends Piece {
                 if (isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(home, checkPosition);
+                move = new Move(position, checkPosition);
+            }
+        }
+        for (int change : Directions.horizontal) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
+                    break;
+                if (move.isMoveLegal(board, color)) {
+                    moves.add(move);
+                }
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                    break;
+                checkPosition += change;
+                move = new Move(position, checkPosition);
             }
         }
         return moves;
@@ -82,18 +95,28 @@ public class Rook extends Piece {
     @Override
     public List<Move> getPseudoMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
-        int[] directions = Directions.orthogonal;
-        for (int change : directions) {
+        for (int change : Directions.vertical) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameColumn(position, checkPosition) || Position.isSameRow(position, checkPosition))) {
-                if (isSameColor(board.getPieceAt(checkPosition))) {
+            while (Position.isOnBoard(checkPosition)) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
-                }
                 moves.add(move);
-                if (isOppositeColor(board.getPieceAt(checkPosition))) {
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
-                }
+                checkPosition += change;
+                move = new Move(position, checkPosition);
+            }
+        }
+        for (int change : Directions.horizontal) {
+            int checkPosition = position + change;
+            Move move = new Move(position, checkPosition);
+            while (Position.isSameRow(position, checkPosition)) {
+                if (isSameColor(board.getPieceAt(checkPosition)))
+                    break;
+                moves.add(move);
+                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                    break;
                 checkPosition += change;
                 move = new Move(position, checkPosition);
             }
