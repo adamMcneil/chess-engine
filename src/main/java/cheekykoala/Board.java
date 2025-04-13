@@ -2,11 +2,12 @@ package cheekykoala;
 
 import cheekykoala.pieces.*;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
-    private final Piece[] board = new Piece[64];
+    private BigInteger bitBoard = BigInteger.ZERO;
     private int inPassingSquare = -1;
     private boolean canInPassingAttack = false;
     private boolean whiteCanCastleKingSide = true;
@@ -41,7 +42,7 @@ public class Board {
     }
 
     public Board(Board other) {
-        this.copyBoard(other);
+        this.bitBoard = new BigInteger(other.bitBoard.toByteArray());
         this.setInPassingSquare(other.getInPassingSquare());
         this.setCanInPassingAttack(other.getCanInPassingAttack());
         this.whiteCanCastleKingSide = other.whiteCanCastleKingSide;
@@ -117,11 +118,10 @@ public class Board {
 
     public double recomputeEval() {
         double eval = 0;
-        int position = 0;
-        for (Piece piece : getBoard()) {
+        for (int i = 0; i < 64; i++) {
+            Piece piece = getPieceAtBitBoard(i);
             eval += piece.getPieceEval();
-            eval += piece.getSquareEval(position);
-            position++;
+            eval += piece.getSquareEval(i);
         }
         return eval;
     }
@@ -132,24 +132,24 @@ public class Board {
 
     public List<Move> getAllMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
-        int position = 0;
-        for (Piece piece : board) {
+        Piece piece;
+        for (int i = 0; i < 64; i++) {
+            piece = getPieceAtBitBoard(i);
             if (piece.getColor() == color) {
-                moves.addAll(piece.getMoves(this, position));
+                moves.addAll(piece.getMoves(this, i));
             }
-            position++;
         }
         return moves;
     }
 
     public List<Move> getPseudoMoves(Color color) {
         ArrayList<Move> moves = new ArrayList<>();
-        int position = 0;
-        for (Piece piece : board) {
+        Piece piece;
+        for (int i = 0; i < 64; i++) {
+            piece = getPieceAtBitBoard(i);
             if (piece.getColor() == color) {
-                moves.addAll(piece.getPseudoMoves(this, position));
+                moves.addAll(piece.getPseudoMoves(this, i));
             }
-            position++;
         }
         return moves;
     }
@@ -195,12 +195,30 @@ public class Board {
         return canInPassingAttack;
     }
 
-    public Piece[] getBoard() {
-        return board;
+    public void setPiece(int position, Piece piece) {
+        setPiece(position, Piece.getBitsFromPiece(piece));
+    }
+
+    public void setPiece(int position, int piece) {
+        if (position < 0 || position >= 64) throw new IllegalArgumentException("Invalid position");
+        if (piece < 0 || piece >= 16) throw new IllegalArgumentException("Invalid piece");
+
+        int shift = position * 4;
+        BigInteger mask = BigInteger.valueOf(0b1111L).shiftLeft(shift);
+        bitBoard = bitBoard.and(mask.not());
+        bitBoard = bitBoard.or(BigInteger.valueOf(piece).shiftLeft(shift));
+    }
+
+    public Piece getPieceAtBitBoard(int position) {
+        if (position < 0 || position >= 64) throw new IllegalArgumentException("Invalid position");
+
+        int shift = position * Piece.numberOfBits;
+        int bits = bitBoard.shiftRight(shift).and(BigInteger.valueOf(0b1111)).intValue();
+        return Piece.getPieceFromBits(bits);
     }
 
     public void printBoard(int position) {
-        List<Move> moves = board[position].getMoves(this, position);
+        List<Move> moves = getPieceAtBitBoard(position).getMoves(this, position);
         int flip = 1;
         for (int i = 0; i < 64; i++) {
             if (i % 8 == 0) {
@@ -217,7 +235,7 @@ public class Board {
                 }
             }
             if (!canMoveHere) {
-                System.out.print(" " + board[i].getPiece() + " ");
+                System.out.print(" " + getPieceAtBitBoard(position).getPiece() + " ");
             }
             if ((flip + i) % 2 == 0) {
                 System.out.print("\033[0m");
@@ -239,7 +257,7 @@ public class Board {
             if ((flip + i) % 2 == 0) {
                 System.out.print("\033[40m");
             }
-            System.out.print(" " + board[i].getPiece() + " ");
+            System.out.print(" " + getPieceAtBitBoard(i).getPiece() + " ");
             if ((flip + i) % 2 == 0) {
                 System.out.print("\033[0m");
             }
@@ -256,7 +274,7 @@ public class Board {
             if (i % 8 == 0) {
                 System.out.print(8 - (i / 8) + " ");
             }
-            System.out.print(" " + board[i].getPiece() + " ");
+            System.out.print(" " + getPieceAtBitBoard(i).getPiece() + " ");
             if (i % 8 == 7) {
                 System.out.println();
             }
@@ -265,7 +283,7 @@ public class Board {
     }
 
     public Piece getPieceAt(int position) {
-        return board[position];
+        return getPieceAtBitBoard(position);
     }
 
     public boolean isColorInMate(Color color) {
@@ -278,7 +296,7 @@ public class Board {
     public boolean isColorInCheck(Color color) {
         int home = -1;
         for (int i = 0; i < 64; i++) {
-            Piece piece = board[i];
+            Piece piece = getPieceAtBitBoard(i);
             if (piece.isKing() && piece.getColor() == color) {
                 home = i;
             }
@@ -395,11 +413,11 @@ public class Board {
         setInPassingSquare(decodeInPassingSquare(splitFen[3]));
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
-                board[z] = Piece.getPiece(fenBoard.charAt(i));
+                setPiece(z, Piece.getPiece(fenBoard.charAt(i)));
                 z++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
-                    board[z] = Empty.getInstance();
+                    setPiece(z, Empty.getInstance());
                     z++;
                 }
             }
@@ -420,14 +438,6 @@ public class Board {
         return inPassingSquare;
     }
 
-    public void copyBoard(Board board) {
-        int i = 0;
-        for (Piece piece : board.getBoard()) {
-            this.board[i] = piece;
-            i++;
-        }
-    }
-
     public Board getChild(Move move) {
         Board child = new Board(this);
         child.doMove(move);
@@ -439,13 +449,13 @@ public class Board {
         removePieceUpdateEval(getPieceAt(move.getEnd()), move.getEnd());
         addPieceUpdateEval(move.getPiece(), move.getEnd());
 
-        board[move.getEnd()] = move.getPiece();
-        board[move.getBeginning()] = Empty.getInstance();
+        setPiece(move.getEnd(), move.getPiece());
+        setPiece(move.getBeginning(), Empty.getInstance());
         setCanInPassingAttack(false);
     }
 
     public void doCastleMove(Move move) {
-        Piece king = board[move.getBeginning()];
+        Piece king = getPieceAtBitBoard(move.getBeginning());
         doNormalMove(move);
         int direction = move.getEnd() - move.getBeginning();
         int rookPosition = (move.getBeginning() + move.getEnd()) / 2;
@@ -464,8 +474,8 @@ public class Board {
             }
         }
         Piece rookPiece = getPieceAt(rookStartPosition);
-        board[rookPosition] = rookPiece;
-        board[rookStartPosition] = Empty.getInstance();
+        setPiece(rookPosition, rookPiece);
+        setPiece(rookStartPosition, Empty.getInstance());
         movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition));
     }
 
@@ -475,9 +485,9 @@ public class Board {
         movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
 
         Piece movedPiece = getPieceAt(move.getBeginning());
-        board[move.getEnd()] = movedPiece;
-        board[move.getBeginning()] = Empty.getInstance();
-        board[otherPawnPosition] = Empty.getInstance();
+        setPiece(move.getEnd(), movedPiece);
+        setPiece(move.getBeginning(), Empty.getInstance());
+        setPiece(otherPawnPosition, Empty.getInstance());
         setCanInPassingAttack(false);
     }
 
@@ -499,8 +509,8 @@ public class Board {
         movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
 
         Piece movedPiece = getPieceAt(move.getBeginning());
-        board[move.getEnd()] = movedPiece;
-        board[move.getBeginning()] = Empty.getInstance();
+        setPiece(move.getEnd(), movedPiece);
+        setPiece(move.getBeginning(), Empty.getInstance());
         setCanInPassingAttack(false);
     }
 

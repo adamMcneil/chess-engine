@@ -5,6 +5,24 @@ import cheekykoala.*;
 import java.util.List;
 
 public abstract class Piece {
+    static public final int numberOfBits = 4;
+    static private final Piece[] pieces = {
+            Empty.getInstance(),
+
+            Pawn.getWhitePiece(),
+            Rook.getWhitePiece(),
+            Knight.getWhitePiece(),
+            Bishop.getWhitePiece(),
+            Queen.getWhitePiece(),
+            King.getWhitePiece(),
+
+            Pawn.getBlackPiece(),
+            Rook.getBlackPiece(),
+            Knight.getBlackPiece(),
+            Bishop.getBlackPiece(),
+            Queen.getBlackPiece(),
+            King.getBlackPiece()};
+
     char piece;
     char letter;
     Color color;
@@ -43,7 +61,7 @@ public abstract class Piece {
             case 'Q' -> 900;
             case 'P' -> 100;
             case 'K' -> 100000;
-            default -> 0;
+            default -> 0; // Empty piece
         };
     }
 
@@ -104,58 +122,37 @@ public abstract class Piece {
         return this.letter;
     }
 
+    public static Piece getPieceFromBits(int bits) {
+        if (bits < 0 || bits >= pieces.length) {
+            throw new IllegalArgumentException("Invalid piece bits: " + bits);
+        }
+        return pieces[bits];
+    }
+
+    public static int getBitsFromPiece(Piece piece) {
+        for (int i = 0; i < pieces.length; i++) {
+            if (pieces[i] == piece) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException("Invalid piece: " + piece);
+    }
+
     public static Piece getPiece(char letter) {
-        Piece piece = null;
         return switch (letter) {
-            case 'r' -> {
-                piece = Rook.getBlackPiece();
-                yield piece;
-            }
-            case 'R' -> {
-                piece = Rook.getWhitePiece();
-                yield piece;
-            }
-            case 'n' -> {
-                piece = Knight.getBlackPiece();
-                yield piece;
-            }
-            case 'N' -> {
-                piece = Knight.getWhitePiece();
-                yield piece;
-            }
-            case 'b' -> {
-                piece = Bishop.getBlackPiece();
-                yield piece;
-            }
-            case 'B' -> {
-                piece = Bishop.getWhitePiece();
-                yield piece;
-            }
-            case 'q' -> {
-                piece = Queen.getBlackPiece();
-                yield piece;
-            }
-            case 'Q' -> {
-                piece = Queen.getWhitePiece();
-                yield piece;
-            }
-            case 'k' -> {
-                piece = King.getBlackPiece();
-                yield piece;
-            }
-            case 'K' -> {
-                piece = King.getWhitePiece();
-                yield piece;
-            }
-            case 'p' -> {
-                piece = Pawn.getBlackPiece();
-                yield piece;
-            }
-            case 'P' -> {
-                piece = Pawn.getWhitePiece();
-                yield piece;
-            }
-            default -> piece;
+            case 'r' -> Rook.getBlackPiece();
+            case 'R' -> Rook.getWhitePiece();
+            case 'n' -> Knight.getBlackPiece();
+            case 'N' -> Knight.getWhitePiece();
+            case 'b' -> Bishop.getBlackPiece();
+            case 'B' -> Bishop.getWhitePiece();
+            case 'q' -> Queen.getBlackPiece();
+            case 'Q' -> Queen.getWhitePiece();
+            case 'k' -> King.getBlackPiece();
+            case 'K' -> King.getWhitePiece();
+            case 'p' -> Pawn.getBlackPiece();
+            case 'P' -> Pawn.getWhitePiece();
+            default -> throw new IllegalArgumentException("Invalid piece letter: " + letter);
         };
     }
 }

@@ -43,12 +43,11 @@ public class Utils {
 
     public static void playRandom(Board board, Color color) {
         ArrayList<Move> moves = new ArrayList<>();
-        int position = 0;
-        for (Piece piece : board.getBoard()) {
+        for (int i = 0; i < 64; i++) {
+            Piece piece = board.getPieceAt(i);
             if (piece.getColor() == color) {
-                moves.addAll(piece.getMoves(board, position));
+                moves.addAll(piece.getMoves(board, i));
             }
-            position++;
         }
         int y = (int) (Math.random() * moves.size());
         board.doMove(moves.get(y));
