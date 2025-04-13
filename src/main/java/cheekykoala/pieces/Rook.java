@@ -56,19 +56,21 @@ public class Rook extends Piece {
         return true;
     }
 
-    @Override
-    public ArrayList<Move> getMoves(Board board, int position) {
-        ArrayList<Move> moves = new ArrayList<>();
+
+
+    public static List<Move> getRookMoves(Board board, int position) {
+        List<Move> moves = new ArrayList<>();
+        Piece piece = board.getPieceAt(position);
         for (int change : Directions.vertical) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
             while (Position.isOnBoard(checkPosition)) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
+                if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
-                if (move.isMoveLegal(board, color)) {
+                if (move.isMoveLegal(board, piece.color)) {
                     moves.add(move);
                 }
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
                 move = new Move(position, checkPosition);
@@ -78,18 +80,23 @@ public class Rook extends Piece {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
             while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
+                if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
-                if (move.isMoveLegal(board, color)) {
+                if (move.isMoveLegal(board, piece.color)) {
                     moves.add(move);
                 }
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
+                if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
                 move = new Move(position, checkPosition);
             }
         }
         return moves;
+    }
+
+    @Override
+    public List<Move> getMoves(Board board, int position) {
+        return getRookMoves(board, position);
     }
 
     @Override

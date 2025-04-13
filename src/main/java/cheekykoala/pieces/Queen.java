@@ -59,21 +59,7 @@ public class Queen extends Piece {
     @Override
     public List<Move> getMoves(Board board, int position) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (int change : Directions.orthogonal) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                if (move.isMoveLegal(board, color)) {
-                    moves.add(move);
-                }
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition);
-            }
-        }
+        moves.addAll(Rook.getRookMoves(board, position));
         for (int change : Directions.diagonal) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);

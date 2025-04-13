@@ -40,7 +40,7 @@ public class IntegrationTest {
             } else {
                 color = Color.b;
             }
-            int totalMoves = board.countNodes(entry.depth, color).nodes;
+            int totalMoves = board.countOnlyNodes(entry.depth, color);
             assertEquals(entry.nodes, totalMoves, "Failed for FEN: " + entry.fen);
             System.out.println(entry.fen + " : depth " + entry.depth);
         }
@@ -94,7 +94,7 @@ public class IntegrationTest {
     @Test
     public void testStartPosition() {
         Board board = new Board();
-        int[] expectedNodes = {20, 400, 8902, 197281, 4865609}; // Expected values for depths 1 to 4
+        int[] expectedNodes = {20, 400, 8902, 197281, 4865609};
 
         for (int depth = 1; depth <= expectedNodes.length; depth++) {
             MoveCounter counter = board.countNodes(depth, Color.w);
@@ -117,18 +117,20 @@ public class IntegrationTest {
 
     @Test
     public void testDivide() {
-        int depth = 5;
-        List<String> moves = List.of("a2a4", "a7a6", "a1a3", "a8a7");
+        int depth = 3;
+        List<String> moves = List.of();
         Color color = Color.w;
         if (moves.size() % 2 == 1) {
             color = Color.b;
         }
-        Board board = new Board();
+        Board board = new Board("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
         for (String move : moves) {
             board.doMove(Move.moveFromString(move, board));
         }
-        board.printBoard(40);
+        board.printBoard();
+        board.printBoard(32);
         System.out.println("Number of moves: " + board.getAllMoves(color).size());
+        System.out.println("Number of nodes: " + board.countOnlyNodes(depth, color));
         board.divideOne(color, depth - moves.size() - 1);
 
     }
