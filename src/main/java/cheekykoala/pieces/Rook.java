@@ -118,7 +118,7 @@ public class Rook extends Piece {
         for (int change : Directions.horizontal) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition);
-            while (Position.isSameRow(position, checkPosition)) {
+            while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 moves.add(move);

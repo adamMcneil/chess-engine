@@ -62,7 +62,7 @@ public class Main {
     }
 
     public static String onGo(Board board, Color color) {
-        Move bestMove = iterativeDeepening(board, color, 1000);
+        Move bestMove = iterativeDeepening(board, color, 5000);
         System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
@@ -154,6 +154,7 @@ public class Main {
                     System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) /1000.) + " sec");
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 break;
             }
         }

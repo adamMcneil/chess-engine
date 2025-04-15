@@ -17,10 +17,13 @@ public class TestDoInPassing {
         Piece pawn = board.getPieceAt(24);
         board.printBoard(24);
         assertTrue(pawn.isPawn());
-        List<Move> moves = pawn.getMoves(board, 9);
+        List<Move> moves = pawn.getMoves(board, 24);
+        for (Move move : moves) {
+            System.out.println(move);
+        }
         assertEquals(2, moves.size());
         board.doMove(new Move(10, 18));
-        assertEquals(1, pawn.getMoves(board, 9).size());
+        assertEquals(1, pawn.getMoves(board, 24).size());
         board.printBoard(24);
     }
 

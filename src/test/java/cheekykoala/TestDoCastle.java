@@ -53,4 +53,18 @@ public class TestDoCastle {
         assertTrue(board.getPieceAt(58).isKing());
         assertTrue(board.getPieceAt(59).isRook());
     }
+
+    @Test
+    public void tsetMovingKing() {
+        Board board = new Board();
+        board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
+        board.printBoard();
+        Move move = new Move(60, 59);
+        board.doMove(move);
+        board.printBoard();
+        for (Move m : board.getPieceAt(59).getMoves(board, 59)) {
+            System.out.println(m);
+        }
+        assertEquals(board.getPieceAt(59).getMoves(board, 59).size(), 2);
+    }
 }

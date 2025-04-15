@@ -36,7 +36,7 @@ public class MainTest {
     @Test
     public void testIterativeDeepening() {
         Board board = new Board();
-        System.out.println(iterativeDeepening(board, Color.w, 10000));
+        System.out.println(iterativeDeepening(board, Color.w, 1000));
     }
 
 }

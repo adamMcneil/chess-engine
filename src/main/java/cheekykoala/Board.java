@@ -157,8 +157,8 @@ public class Board {
     public void updateCastleState(Piece piece, Move move) {
         if (piece.isKing()) {
             if (piece.getColor() == Color.w) {
-                whiteCanCastleKingSide = true;
-                whiteCanCastleQueenSide = true;
+                whiteCanCastleKingSide = false;
+                whiteCanCastleQueenSide = false;
             } else {
                 blackCanCastleKingSide = false;
                 blackCanCastleQueenSide = false;
