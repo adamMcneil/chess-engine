@@ -118,11 +118,19 @@ public class King extends Piece {
     }
 
     public List<Move> getCastleMoves(Board board, int position) {
+        if (color == Color.w) {
+            if (!board.isWhiteCanCastleKingSide() && !board.isWhiteCanCastleQueenSide()) {
+                return List.of();
+            }
+        } else {
+            if (!board.isBlackCanCastleKingSide() && !board.isBlackCanCastleQueenSide()) {
+                return List.of();
+            }
+        }
         if (board.isColorInCheck(color)) {
             return List.of();
         }
         List<Move> castleMoves = new ArrayList<>();
-        int moveState;
         if (color == Color.w) {
             if (board.isWhiteCanCastleKingSide()) {
                 int right1 = 61;
