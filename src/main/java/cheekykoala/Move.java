@@ -39,9 +39,10 @@ public class Move {
     }
 
     public boolean isCastleMove(Board board) {
-        return (board.getPieceAt(getBeginning()).isKing()
-                && (this.getEnd() - this.getBeginning() == 2
-                || this.getEnd() - this.getBeginning() == -2));
+        return (
+                (getEnd() - getBeginning() == 2 || getEnd() - getBeginning() == -2)
+                        && board.getPieceAt(getBeginning()).isKing()
+        );
     }
 
     public boolean isCapture(Board board) {
@@ -49,8 +50,10 @@ public class Move {
     }
 
     public boolean isInPassingMove(Board board) {
-        return (board.getPieceAt(getBeginning()).isPawn() && board.getPieceAt(getEnd()).isEmpty()
-                && Position.getColumn(getEnd()) != Position.getColumn(getBeginning()));
+        return (Position.getColumn(getEnd()) != Position.getColumn(getBeginning())
+                && board.getPieceAt(getBeginning()).isPawn()
+                && board.getPieceAt(getEnd()).isEmpty()
+        );
     }
 
     public boolean isUpTwoMove(Board board) {

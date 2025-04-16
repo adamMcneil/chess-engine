@@ -61,8 +61,14 @@ public class King extends Piece {
     }
 
     public List<Move> getPseudoCastleMoves(Board board, int position) {
-        if (board.isColorInCheck(color)) {
-            return List.of();
+        if (color == Color.w) {
+            if (!board.isWhiteCanCastleKingSide() && !board.isWhiteCanCastleQueenSide()) {
+                return List.of();
+            }
+        } else {
+            if (!board.isBlackCanCastleKingSide() && !board.isBlackCanCastleQueenSide()) {
+                return List.of();
+            }
         }
         List<Move> castleMoves = new ArrayList<>();
         if (color == Color.w) {
@@ -113,6 +119,9 @@ public class King extends Piece {
                     castleMoves.add(new Move(position, 2));
                 }
             }
+        }
+        if (castleMoves.isEmpty() || board.isColorInCheck(color)) {
+            return List.of();
         }
         return castleMoves;
     }
