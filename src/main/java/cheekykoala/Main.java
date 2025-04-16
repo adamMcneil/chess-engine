@@ -74,7 +74,7 @@ public class Main {
             numMoves++;
         }
         if (numMoves % 2 == 0) {
-           return Color.w;
+            return Color.w;
         }
         return Color.b;
     }
@@ -176,10 +176,9 @@ public class Main {
                 Move currentMove = depthSearch(board, depth, color, remainingTime);
                 if (System.currentTimeMillis() - startTime < softLimit) {
                     bestMove = currentMove;
-                    System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) /1000.) + " sec");
+                    System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) / 1000.) + " sec");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 break;
             }
         }
