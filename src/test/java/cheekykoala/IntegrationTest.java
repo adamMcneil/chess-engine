@@ -104,12 +104,6 @@ public class IntegrationTest {
     }
 
     @Test
-    public void testPerformanceStartPosition() {
-        Board board = new Board();
-        assertEquals(4865609, board.countNodes(5, Color.w).nodes);
-    }
-
-    @Test
     public void testPerformanceStartPosition1() {
         Board board = new Board();
         assertEquals(4865609, board.countOnlyNodes(5, Color.w));
@@ -117,20 +111,20 @@ public class IntegrationTest {
 
     @Test
     public void testDivide() {
-        int depth = 3;
-        List<String> moves = List.of();
+        int depth = 4;
+        List<String> moves = List.of("a2b3", "e6f5", "d2d4");
         Color color = Color.w;
         if (moves.size() % 2 == 1) {
             color = Color.b;
         }
-        Board board = new Board("r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10");
+        Board board = new Board("8/8/4k3/8/2p5/8/B2P2K1/8 w - - 0 1");
         for (String move : moves) {
             board.doMove(Move.moveFromString(move, board));
         }
         board.printBoard();
         board.printBoard(32);
         System.out.println("Number of moves: " + board.getAllMoves(color).size());
-        System.out.println("Number of nodes: " + board.countOnlyNodes(depth, color));
+        System.out.println("Number of nodes: " + board.countOnlyNodes(depth - moves.size(), color));
         board.divideOne(color, depth - moves.size() - 1);
 
     }

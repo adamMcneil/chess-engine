@@ -483,7 +483,7 @@ public class Board {
 
     public void doUpTwoMove(Move move) {
         doNormalMove(move);
-        Piece movedPiece = getPieceAt(move.getBeginning());
+        Piece movedPiece = getPieceAt(move.getEnd());
         int direction;
         if (movedPiece.getColor() == Color.w)
             direction = -8;
