@@ -6,12 +6,30 @@ import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 public class Main {
-    public static void main(String[] args) {
-        Board board = new Board();
-        apiConnect(board);
+    static String ALGORITHM = "iterative";
+    static long THINK_TIME = 5000;
+    static int DEPTH = 5;
+
+    public static void readInputs(String[] args) {
+
+        if (args.length > 0) {
+            try {
+                ALGORITHM = args[0];
+                THINK_TIME = Long.parseLong(args[1]);
+                DEPTH = Integer.parseInt(args[2]);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid time limit argument, using default.");
+            }
+        }
     }
 
-    public static void apiConnect(Board board) {
+    public static void main(String[] args) {
+        readInputs(args);
+        apiConnect();
+    }
+
+    public static void apiConnect() {
+        Board board = new Board();
         Scanner consoleInput = new Scanner(System.in);
         Color color = Color.w;
         while (true) {
@@ -62,7 +80,14 @@ public class Main {
     }
 
     public static String onGo(Board board, Color color) {
-        Move bestMove = iterativeDeepening(board, color, 5000);
+        Move bestMove;
+        if (ALGORITHM.equals("depth")) {
+            bestMove = depthSearch(board, DEPTH, color);
+        } else if (ALGORITHM.equals("iterative")) {
+            bestMove = iterativeDeepening(board, color, THINK_TIME);
+        } else {
+            throw new IllegalArgumentException("Invalid algorithm, using default.");
+        }
         System.out.println("Board Evaluation:" + board.getEval());
         return "bestmove " + bestMove;
     }
@@ -82,7 +107,7 @@ public class Main {
         }
     }
 
-    public static Move moveMinimax(Board board, int depth, Color color) {
+    public static Move depthSearch(Board board, int depth, Color color) {
         boolean isMaxPlayer;
         isMaxPlayer = color != Color.w;
         List<Move> moves = board.getAllMoves(color);
@@ -103,7 +128,7 @@ public class Main {
         return bestMove;
     }
 
-    public static Move moveMinimax(Board board, int depth, Color color, long timeLeft) {
+    public static Move depthSearch(Board board, int depth, Color color, long timeLeft) {
         boolean isMaxPlayer;
         isMaxPlayer = color != Color.w;
         List<Move> moves = board.getAllMoves(color);
@@ -148,7 +173,7 @@ public class Main {
             long depthTime = System.currentTimeMillis();
             long remainingTime = softLimit - (System.currentTimeMillis() - startTime);
             try {
-                Move currentMove = moveMinimax(board, depth, color, remainingTime);
+                Move currentMove = depthSearch(board, depth, color, remainingTime);
                 if (System.currentTimeMillis() - startTime < softLimit) {
                     bestMove = currentMove;
                     System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) /1000.) + " sec");

@@ -5,7 +5,7 @@ import cheekykoala.pieces.Piece;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static cheekykoala.Main.moveMinimax;
+import static cheekykoala.Main.depthSearch;
 
 public class Utils {
 
@@ -62,7 +62,7 @@ public class Utils {
             playRandom(board, Color.w);
             board.printBoard();
             System.out.println();
-            moveMinimax(board, 3, Color.b);
+            Main.depthSearch(board, 3, Color.b);
         }
     }
 
