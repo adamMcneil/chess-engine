@@ -50,7 +50,7 @@ public class Utils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            mapper.writeValue(new File("benchmark_results.json"), results);
+            mapper.writeValue(new File("benchmark_results_" + System.currentTimeMillis() % 10000 + ".json"), results);
         } catch (IOException e) {
             System.out.println("Failed to write JSON results: " + e.getMessage());
         }
