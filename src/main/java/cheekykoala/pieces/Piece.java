@@ -3,6 +3,7 @@ package cheekykoala.pieces;
 import cheekykoala.*;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public abstract class Piece {
     char piece;
@@ -56,13 +57,11 @@ public abstract class Piece {
         return color == piece.getColor();
     }
 
-    public abstract List<Move> getMoves(Board board, int position);
-
-    public abstract List<Move> getPseudoMoves(Board board, int position);
-
-    public List<Move> getPromotionMoves(Board board, int position) {
-        return null;
+    final public List<Move> getMoves(Board board, int position) {
+        return getMoves(board, position, move -> move.isMoveLegal(board, color));
     }
+
+    public abstract List<Move> getMoves(Board board, int position, Predicate<Move> filter);
 
     public boolean isKing() {
         return false;

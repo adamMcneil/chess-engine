@@ -7,7 +7,7 @@ public class PromotionMove extends Move {
     Piece piece;
 
     public PromotionMove(int beginning, int end, Piece piece) {
-        super(beginning, end);
+        super(beginning, end, MoveType.promotion);
         this.piece = piece;
     }
 

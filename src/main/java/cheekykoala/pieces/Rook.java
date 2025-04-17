@@ -4,6 +4,7 @@ import cheekykoala.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Rook extends Piece {
     private static final Piece white = new Rook(Color.w);
@@ -56,79 +57,44 @@ public class Rook extends Piece {
         return true;
     }
 
-
-
-    public static List<Move> getRookMoves(Board board, int position) {
+    public static List<Move> getRookMoves(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         Piece piece = board.getPieceAt(position);
         for (int change : Directions.vertical) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
+            Move move = new Move(position, checkPosition, MoveType.normal);
             while (Position.isOnBoard(checkPosition)) {
                 if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
-                if (move.isMoveLegal(board, piece.color)) {
+                if (filter.test(move)) {
                     moves.add(move);
                 }
                 if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition);
+                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         for (int change : Directions.horizontal) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
+            Move move = new Move(position, checkPosition, MoveType.normal);
             while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
                 if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
-                if (move.isMoveLegal(board, piece.color)) {
+                if (filter.test(move)) {
                     moves.add(move);
                 }
                 if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition);
+                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         return moves;
     }
 
     @Override
-    public List<Move> getMoves(Board board, int position) {
-        return getRookMoves(board, position);
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+        return getRookMoves(board, position, filter);
     }
-
-    @Override
-    public List<Move> getPseudoMoves(Board board, int position) {
-        ArrayList<Move> moves = new ArrayList<>();
-        for (int change : Directions.vertical) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition)) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                moves.add(move);
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition);
-            }
-        }
-        for (int change : Directions.horizontal) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                moves.add(move);
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition);
-            }
-        }
-        return moves;
-    }
-
 }

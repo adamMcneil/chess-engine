@@ -2,15 +2,45 @@ package cheekykoala;
 
 import cheekykoala.pieces.Piece;
 
+import java.util.function.Predicate;
+
 public class Move {
+
     int beginning;
     int end;
+    MoveType type;
 
-    public Move(int beginning, int end) {
+    private Move(int beginning, int end) {
         this.beginning = beginning;
         this.end = end;
     }
 
+    public Move(Board board, int beginning, int end) {
+        this.beginning = beginning;
+        this.end = end;
+        this.type = getMoveCode(board, beginning, end);
+    }
+
+    public Move(int beginning, int end, MoveType type) {
+        this.beginning = beginning;
+        this.end = end;
+        this.type = type;
+    }
+
+    public static MoveType getMoveCode(Board board, int start, int end) {
+        Move move = new Move(start, end);
+        if (move.isPromotionMove()) {
+            return MoveType.promotion;
+        } else if (move.isCastleMove(board)) {
+            return MoveType.castling;
+        } else if (move.isInPassingMove(board)) {
+            return MoveType.inPassing;
+        } else if (move.isUpTwoMove(board)) {
+            return MoveType.upTwo;
+        } else {
+            return MoveType.normal;
+        }
+    }
     public static Move moveFromString(String string, Board board) {
         Move move;
         int start = (Position.charToInt(string.charAt(0)) + 8 * (8 - Character.getNumericValue(string.charAt(1))));
@@ -25,7 +55,7 @@ public class Move {
             move = new PromotionMove(start, end, Piece.getPiece(letter));
 
         } else {
-            move = new Move(start, end);
+            move = new Move(board, start, end);
         }
         return move;
     }

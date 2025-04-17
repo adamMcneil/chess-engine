@@ -236,7 +236,7 @@ public class Main {
             return board.getEval();
         }
         Color color = isWhite ? Color.w : Color.b;
-        List<Move> moveList = board.getPseudoMoves(color);
+        List<Move> moveList = board.getMoves(color, move -> true);
         if (moveList.isEmpty()) {
             return checkmateEval(color);
         }
@@ -272,7 +272,7 @@ public class Main {
             return board.getEval();
         }
         Color color = isWhite ? Color.w : Color.b;
-        List<Move> moveList = board.getPseudoMoves(color);
+        List<Move> moveList = board.getMoves(color, move -> true);
         if (moveList.isEmpty()) {
             return checkmateEval(color);
         }

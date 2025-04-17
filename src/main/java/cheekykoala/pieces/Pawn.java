@@ -1,14 +1,11 @@
 package cheekykoala.pieces;
 
-import cheekykoala.Board;
-import cheekykoala.Color;
-import cheekykoala.Move;
-import cheekykoala.Position;
-import cheekykoala.PromotionMove;
+import cheekykoala.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Pawn extends Piece {
     private static final Piece white = new Pawn(Color.w);
@@ -70,92 +67,56 @@ public class Pawn extends Piece {
         return direction;
     }
 
-    public List<Move> getUpOne(Board board, int position) {
+    public List<Move> getUpOne(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
-        Move move = new Move(position, checkPosition);
-        if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g
-                && Position.getRow(checkPosition) != 0 && Position.getRow(checkPosition) != 7) {
-            moves.add(move);
-        }
-        return moves;
-    }
-
-    public List<Move> getPseudoUpOne(Board board, int position) {
-        List<Move> moves = new ArrayList<>();
-        int direction = getDirection(color);
-        int checkPosition = position + direction;
-        Move move = new Move(position, checkPosition);
+        Move move = new Move(position, checkPosition, MoveType.normal);
         if (board.getPieceAt(checkPosition).getColor() == Color.g
                 && Position.getRow(checkPosition) != 0 && Position.getRow(checkPosition) != 7) {
-            moves.add(move);
-        }
-        return moves;
-    }
-
-    public List<Move> getUpTwo(Board board, int position) {
-        List<Move> moves = new ArrayList<>();
-        int checkPosition;
-        int direction = getDirection(color);
-        if (!getHasMoved(position)) {
-            checkPosition = position + (direction * 2);
-            Move move = new Move(position, checkPosition);
-            int oneAbove = position + direction;
-            if (move.isMoveLegal(board, color) && board.getPieceAt(oneAbove).getColor() == Color.g
-                    && board.getPieceAt(checkPosition).getColor() == Color.g)
+            if (filter.test(move)) {
                 moves.add(move);
+            }
         }
         return moves;
     }
 
-    public List<Move> getPseudoUpTwo(Board board, int position) {
+    public List<Move> getUpTwo(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int checkPosition;
         int direction = getDirection(color);
         if (!getHasMoved(position)) {
             checkPosition = position + (direction * 2);
-            Move move = new Move(position, checkPosition);
+            Move move = new Move(position, checkPosition, MoveType.upTwo);
             int oneAbove = position + direction;
             if (board.getPieceAt(oneAbove).getColor() == Color.g
-                    && board.getPieceAt(checkPosition).getColor() == Color.g)
-                moves.add(move);
+                    && board.getPieceAt(checkPosition).getColor() == Color.g) {
+                if (filter.test(move)) {
+                    moves.add(move);
+                }
+            }
         }
         return moves;
     }
 
-    public List<Move> getAttack(Board board, int position) {
+    public List<Move> getAttacks(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int right = position + direction - 1;
         int left = position + direction + 1;
-        Move moveLeft = new Move(position, left);
-        Move moveRight = new Move(position, right);
-        if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && moveLeft.isMoveLegal(board, color) && Position.isDiagonal(position, left)
-                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanInPassingAttack() && left == board.getInPassingSquare())))) {
-            moves.add(moveLeft);
-        }
-        if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && moveRight.isMoveLegal(board, color) && Position.isDiagonal(position, right)
-                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanInPassingAttack() && right == board.getInPassingSquare())))) {
-            moves.add(moveRight);
-        }
-        return moves;
-    }
-
-    public List<Move> getPseudoAttack(Board board, int position) {
-        List<Move> moves = new ArrayList<>();
-        int direction = getDirection(color);
-        int right = position + direction - 1;
-        int left = position + direction + 1;
-        Move moveLeft = new Move(position, left);
-        Move moveRight = new Move(position, right);
+        Move moveLeft = new Move(position, left, MoveType.normal);
+        Move moveRight = new Move(position, right, MoveType.normal);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && Position.isDiagonal(position, left)
-                && ((isOppositeColor(board.getPieceAt(left)) || (board.getCanInPassingAttack() && left == board.getInPassingSquare())))) {
-            moves.add(moveLeft);
+                && isOppositeColor(board.getPieceAt(left))) {
+            if (filter.test(moveLeft)) {
+                moves.add(moveLeft);
+            }
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && Position.isDiagonal(position, right)
-                && ((isOppositeColor(board.getPieceAt(right)) || (board.getCanInPassingAttack() && right == board.getInPassingSquare())))) {
-            moves.add(moveRight);
+                && isOppositeColor(board.getPieceAt(right))) {
+            if (filter.test(moveRight)) {
+                moves.add(moveRight);
+            }
         }
         return moves;
     }
@@ -168,50 +129,55 @@ public class Pawn extends Piece {
         return Arrays.asList(moveQueen, moveKnight, moveRook, moveBishop);
     }
 
-    @Override
-    public List<Move> getPromotionMoves(Board board, int position) {
+    public List<Move> getPromotionMoves(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
-        Move move = new Move(position, checkPosition);
-        if (move.isMoveLegal(board, color) && board.getPieceAt(checkPosition).getColor() == Color.g
+        Move move = new Move(position, checkPosition, MoveType.promotion);
+        if (board.getPieceAt(checkPosition).getColor() == Color.g
                 && (Position.getRow(checkPosition) == 0 || Position.getRow(checkPosition) == 7)) {
-            moves.addAll(makePromotionMoves(color, position, checkPosition));
+            if (filter.test(move)) {
+                moves.addAll(makePromotionMoves(color, position, checkPosition));
+            }
         }
 
         int left = position + direction - 1;
         int right = position + direction + 1;
-        Move moveLeft = new Move(position, left);
-        Move moveRight = new Move(position, right);
+        Move moveLeft = new Move(position, left, MoveType.promotion);
+        Move moveRight = new Move(position, right, MoveType.promotion);
         if ((Position.getRow(left) == 0 || Position.getRow(left) == 7)
-                && (moveLeft.isMoveLegal(board, color) && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left)))) {
-            moves.addAll(makePromotionMoves(color, position, left));
+                && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left))) {
+            if (filter.test(moveRight)) {
+                moves.addAll(makePromotionMoves(color, position, left));
+            }
         }
         if ((Position.getRow(right) == 0 || Position.getRow(right) == 7)
-                && (moveRight.isMoveLegal(board, color) && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right)))) {
-            moves.addAll(makePromotionMoves(color, position, right));
+                && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right))) {
+            if (filter.test(moveLeft)) {
+                moves.addAll(makePromotionMoves(color, position, right));
+            }
         }
         return moves;
     }
 
-    public List<Move> getPseudoPromotionMoves(Board board, int position) {
+    private List<Move> getInPassingMoves(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
-        int checkPosition = position + direction;
-        if (board.getPieceAt(checkPosition).getColor() == Color.g
-                && (Position.getRow(checkPosition) == 0 || Position.getRow(checkPosition) == 7)) {
-            moves.addAll(makePromotionMoves(color, position, checkPosition));
+        int right = position + direction - 1;
+        int left = position + direction + 1;
+        Move moveLeft = new Move(position, left, MoveType.inPassing);
+        Move moveRight = new Move(position, right, MoveType.inPassing);
+        if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && Position.isDiagonal(position, left)
+                && board.getCanInPassingAttack() && left == board.getInPassingSquare()) {
+            if (filter.test(moveLeft)) {
+                moves.add(moveLeft);
+            }
         }
-
-        int left = position + direction - 1;
-        int right = position + direction + 1;
-        if ((Position.getRow(left) == 0 || Position.getRow(left) == 7)
-                && (Position.isOnBoard(left) && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left)))) {
-            moves.addAll(makePromotionMoves(color, position, left));
-        }
-        if ((Position.getRow(right) == 0 || Position.getRow(right) == 7)
-                && (Position.isOnBoard(right) && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right)))) {
-            moves.addAll(makePromotionMoves(color, position, right));
+        if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && Position.isDiagonal(position, right)
+                && board.getCanInPassingAttack() && right == board.getInPassingSquare()) {
+            if (filter.test(moveRight)) {
+                moves.add(moveRight);
+            }
         }
         return moves;
     }
@@ -222,23 +188,13 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board board, int position) {
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
-        moves.addAll(getUpOne(board, position));
-        moves.addAll(getUpTwo(board, position));
-        moves.addAll(getAttack(board, position));
-        moves.addAll(getPromotionMoves(board, position));
+        moves.addAll(getUpOne(board, position, filter));
+        moves.addAll(getUpTwo(board, position, filter));
+        moves.addAll(getAttacks(board, position, filter));
+        moves.addAll(getInPassingMoves(board, position, filter));
+        moves.addAll(getPromotionMoves(board, position, filter));
         return moves;
     }
-
-    @Override
-    public List<Move> getPseudoMoves(Board board, int position) {
-        List<Move> moves = new ArrayList<>();
-        moves.addAll(getPseudoUpOne(board, position));
-        moves.addAll(getPseudoUpTwo(board, position));
-        moves.addAll(getPseudoAttack(board, position));
-        moves.addAll(getPseudoPromotionMoves(board, position));
-        return moves;
-    }
-
 }

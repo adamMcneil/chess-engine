@@ -4,6 +4,7 @@ import cheekykoala.pieces.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Board {
     private final Piece[] board = new Piece[64];
@@ -131,23 +132,15 @@ public class Board {
     }
 
     public List<Move> getAllMoves(Color color) {
-        ArrayList<Move> moves = new ArrayList<>();
-        int position = 0;
-        for (Piece piece : board) {
-            if (piece.getColor() == color) {
-                moves.addAll(piece.getMoves(this, position));
-            }
-            position++;
-        }
-        return moves;
+        return getMoves(color, move -> move.isMoveLegal(this, color));
     }
 
-    public List<Move> getPseudoMoves(Color color) {
+    public List<Move> getMoves(Color color, Predicate<Move> filter) {
         ArrayList<Move> moves = new ArrayList<>();
         int position = 0;
         for (Piece piece : board) {
             if (piece.getColor() == color) {
-                moves.addAll(piece.getPseudoMoves(this, position));
+                moves.addAll(piece.getMoves(this, position, filter));
             }
             position++;
         }
@@ -466,7 +459,7 @@ public class Board {
         Piece rookPiece = getPieceAt(rookStartPosition);
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
-        movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition));
+        movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition, MoveType.normal));
     }
 
     public void doInPassingMove(Move move) {

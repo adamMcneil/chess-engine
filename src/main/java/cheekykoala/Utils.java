@@ -79,8 +79,8 @@ public class Utils {
 
             int first = (convertLetter(beginning.charAt(0)) - 8 - Character.getNumericValue(beginning.charAt(1)));
             int last = (convertLetter(end.charAt(0)) - 8 - Character.getNumericValue(end.charAt(1)));
-            if (new Move(first, last).isMoveLegal(board, color)) {
-                board.doMove(new Move(first, last));
+            if (new Move(first, last, MoveType.normal).isMoveLegal(board, color)) {
+                board.doMove(new Move(first, last, MoveType.normal));
                 System.out.println("mediocre move");
                 return;
             }

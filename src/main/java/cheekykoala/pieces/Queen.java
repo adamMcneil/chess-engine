@@ -4,6 +4,7 @@ import cheekykoala.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Queen extends Piece {
     private static final Piece white = new Queen(Color.w);
@@ -57,12 +58,11 @@ public class Queen extends Piece {
     }
 
     @Override
-    public List<Move> getMoves(Board board, int position) {
-        ArrayList<Move> moves = new ArrayList<>();
-        moves.addAll(Rook.getRookMoves(board, position));
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+        ArrayList<Move> moves = new ArrayList<>(Rook.getRookMoves(board, position, filter));
         for (int change : Directions.diagonal) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
+            Move move = new Move(position, checkPosition, MoveType.normal);
             while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition))) {
                 if (isSameColor(board.getPieceAt(checkPosition)))
                     break;
@@ -72,39 +72,7 @@ public class Queen extends Piece {
                 if (isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition);
-            }
-        }
-        return moves;
-    }
-
-    @Override
-    public List<Move> getPseudoMoves(Board board, int position) {
-        List<Move> moves = new ArrayList<>();
-        for (int change : Directions.orthogonal) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(checkPosition, position))) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                moves.add(move);
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition);
-            }
-        }
-        for (int change : Directions.diagonal) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition))) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                moves.add(move);
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition);
+                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         return moves;

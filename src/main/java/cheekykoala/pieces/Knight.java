@@ -1,12 +1,10 @@
 package cheekykoala.pieces;
 
-import cheekykoala.Board;
-import cheekykoala.Color;
-import cheekykoala.Move;
-import cheekykoala.Position;
+import cheekykoala.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Knight extends Piece {
     private final static Piece white = new Knight(Color.w);
@@ -57,33 +55,18 @@ public class Knight extends Piece {
 
 
     @Override
-    public ArrayList<Move> getMoves(Board board, int position) {
-        ArrayList<Move> moves = new ArrayList<>();
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+        List<Move> moves = new ArrayList<>();
         int[] directions = Directions.knights;
         for (int change : directions) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
+            Move move = new Move(position, checkPosition, MoveType.normal);
             if (move.isMoveLegal(board, color)
                     && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
                     && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
-                moves.add(move);
-            }
-        }
-        return moves;
-    }
-
-    @Override
-    public List<Move> getPseudoMoves(Board board, int position) {
-        ArrayList<Move> moves = new ArrayList<>();
-        int[] directions = Directions.knights;
-        for (int change : directions) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition);
-            if (Position.isOnBoard(checkPosition)
-                    && board.getPieceAt(checkPosition).color != color
-                    && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
-                    && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
-                moves.add(move);
+                if (filter.test(move)) {
+                    moves.add(move);
+                }
             }
         }
         return moves;
