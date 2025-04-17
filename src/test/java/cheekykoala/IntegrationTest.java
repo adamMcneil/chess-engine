@@ -8,30 +8,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
+import static cheekykoala.Utils.getTestCases;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IntegrationTest {
 
-    static class JsonTestEntry {
-        public int depth;
-        public int nodes;
-        public String fen;
-    }
-
     @Test
     void testMoveGenerationFromJson() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("test-fens.json");
-        if (inputStream == null) {
-            throw new FileNotFoundException("Resource file test-fens.json not found");
-        }
-        List<JsonTestEntry> testEntries = objectMapper.readValue(inputStream, new TypeReference<>() {
-        });
-
-        for (JsonTestEntry entry : testEntries) {
+        List<Utils.JsonTestEntry> testEntries = getTestCases();
+        for (Utils.JsonTestEntry entry : testEntries) {
             Board board = new Board();
             board.importBoard(entry.fen);
             Color color;

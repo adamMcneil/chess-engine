@@ -1,13 +1,60 @@
 package cheekykoala;
 
 import cheekykoala.pieces.Piece;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static cheekykoala.Main.depthSearch;
 
 public class Utils {
+
+
+    public static class JsonTestEntry {
+        public int depth;
+        public int nodes;
+        public String fen;
+    }
+
+    public static class TestOutput {
+        public double min;
+        public double average;
+        public String fen;
+
+        public TestOutput(String fen, double average, double min) {
+            this.fen = fen;
+            this.min = min;
+            this.average = average;
+        }
+    }
+
+    public static List<JsonTestEntry> getTestCases() throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        InputStream inputStream = Utils.class.getClassLoader().getResourceAsStream("test-fens.json");
+        if (inputStream == null) {
+            throw new FileNotFoundException("Resource file test-fens.json not found");
+        }
+        return objectMapper.readValue(inputStream, new TypeReference<>() {
+        });
+    }
+
+    public static void outputTestCases(List<TestOutput> results) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            mapper.writeValue(new File("benchmark_results.json"), results);
+        } catch (IOException e) {
+            System.out.println("Failed to write JSON results: " + e.getMessage());
+        }
+    }
 
     public static int convertLetter(char x) {
         return (x - 97);

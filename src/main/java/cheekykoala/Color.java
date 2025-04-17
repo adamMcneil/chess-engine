@@ -11,5 +11,15 @@ public enum Color {
         }
         return Color.w;
     }
+
+    public static Color getColorFromFen(String fen) {
+        if (fen.contains("b")) {
+            return Color.b;
+        }
+        if (fen.contains("w")) {
+            return Color.w;
+        }
+        throw new IllegalArgumentException("Invalid fen: " + fen);
+    }
 }
 

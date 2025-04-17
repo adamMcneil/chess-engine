@@ -1,14 +1,13 @@
 package cheekykoala;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 public class Main {
     static String ALGORITHM = "iterative";
     static long THINK_TIME = 5000;
     static int DEPTH = 5;
+    static int TRIALS = 3;
 
     public static void readInputs(String[] args) {
 
@@ -17,6 +16,7 @@ public class Main {
                 ALGORITHM = args[0];
                 THINK_TIME = Long.parseLong(args[1]);
                 DEPTH = Integer.parseInt(args[2]);
+                TRIALS = Integer.parseInt(args[3]);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid time limit argument, using default.");
             }
@@ -44,10 +44,47 @@ public class Main {
             } else if (input.contains("position")) {
                 color = onPosition(board, input);
                 board.printBoardSimple();
+            } else if (input.equals("test")) {
+                test();
             } else if (input.equals("quit")) {
                 break;
             }
         }
+    }
+
+    public static void test() {
+        List<Utils.JsonTestEntry> testEntries = List.of();
+        try {
+            testEntries = Utils.getTestCases();
+        }  catch (Exception e) {
+            System.out.println("Could not get test cases");
+        }
+        List<Utils.TestOutput> results = new ArrayList<>();
+        Board board = new Board();
+        for (Utils.JsonTestEntry entry : testEntries) {
+            board.importBoard(entry.fen);
+            board.printBoard();
+            Color color = Color.getColorFromFen(entry.fen);
+            List<Long> runTimes = new ArrayList<>();
+            for (int i = 0; i < TRIALS; i++) {
+                long runTime = reportDepthSearch(board, DEPTH, color);
+                runTimes.add(runTime);
+            }
+            Optional<Long> shorteshRunTime = runTimes.stream().min(Long::compareTo);
+            double average = runTimes.stream()
+                    .mapToLong(Long::longValue)
+                    .average()
+                    .orElse(0.0) / 1000.0;
+
+            double min = runTimes.stream()
+                    .mapToLong(Long::longValue)
+                    .min()
+                    .orElse(0) / 1000.0;
+
+            results.add(new Utils.TestOutput(entry.fen, average, min));
+            System.out.println("Completed depth " + DEPTH + ": " + ((shorteshRunTime.get()) / 1000.0) + " sec");
+        }
+        Utils.outputTestCases(results);
     }
 
     public static Color onPosition(Board board, String UCIPosition) {
@@ -105,6 +142,14 @@ public class Main {
             this.move = move;
             this.score = minimax(board.getChild(move), depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite, timeLeft);
         }
+    }
+
+    public static long reportDepthSearch(Board board, int depth, Color color) {
+        long startTime = System.currentTimeMillis();
+        Move bestMove = depthSearch(board, depth, color);
+        long depthTime = System.currentTimeMillis() - startTime;
+        System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + (depthTime / 1000.0) + " sec");
+        return depthTime;
     }
 
     public static Move depthSearch(Board board, int depth, Color color) {
