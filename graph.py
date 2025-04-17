@@ -2,15 +2,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load JSON
-df_old = pd.read_json('benchmark_results.json')
-df_new = pd.read_json('benchmark_results_7933.json')
+df_old = pd.read_json('recompute-eval-6.json')
+df_new = pd.read_json('baseline-6.json')
 
 # Plot
 plt.figure(figsize=(10,6))
-plt.bar(2 * df_old.index, df_old['average'], label='Average Time')
-plt.bar(2 * df_old.index + 0.1, df_old['min'], label='Min Time', alpha=0.7)
-plt.bar(2 * df_new.index + 1, df_new['average'], label='Average Time')
-plt.bar(2 * df_new.index + 1.1, df_new['min'], label='Min Time', alpha=0.7)
+plt.bar(2 * df_old.index, df_old['average'], label='Average Time', color= 'red')
+plt.bar(2 * df_old.index, df_old['min'], label='Min Time', alpha=0.7, color='orange')
+plt.bar(2 * df_new.index + 1, df_new['average'], label='Average Time', color='blue')
+plt.bar(2 * df_new.index + 1, df_new['min'], label='Min Time', alpha=0.7, color='skyblue')
 plt.xlabel('FEN')
 plt.ylabel('Time (seconds)')
 plt.title('Chess Position Search Runtimes')

@@ -127,7 +127,7 @@ public class Board {
     }
 
     public double getEval() {
-        return eval;
+        return recomputeEval();
     }
 
     public List<Move> getAllMoves(Color color) {
