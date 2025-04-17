@@ -90,11 +90,9 @@ public class King extends Piece {
                 int left2 = 58;
                 int left3 = 57;
                 Move move1 = new Move(position, left1, MoveType.normal);
-                Move move2 = new Move(position, left2, MoveType.normal);
-                Move castleMove = new Move(position, left3, MoveType.castling);
-                if (board.getPieceAt(left3).isEmpty() && board.getPieceAt(move1.getEnd()).getColor() != Color.b
-                        && board.getPieceAt(move2.getEnd()).getColor() != Color.b
-                        && move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)) {
+                Move castleMove = new Move(position, left2, MoveType.castling);
+                if (board.getPieceAt(left3).isEmpty() && board.getPieceAt(left2).isEmpty() && board.getPieceAt(left1).isEmpty()
+                        && move1.isMoveLegal(board, color)) {
                     if (filter.test(castleMove)) {
                         castleMoves.add(castleMove);
                     }
@@ -119,12 +117,9 @@ public class King extends Piece {
                 int left2 = 2;
                 int left3 = 1;
                 Move move1 = new Move(position, left1, MoveType.normal);
-                Move move2 = new Move(position, left2, MoveType.normal);
-                Move castleMove = new Move(position, left3, MoveType.castling);
-                if (board.getPieceAt(left3).isEmpty() && board.getPieceAt(move1.getEnd()).getColor() != Color.w
-                        && board.getPieceAt(move2.getEnd()).getColor() != Color.w
-                        && move1.isMoveLegal(board, color) && move2.isMoveLegal(board, color)
-                ) {
+                Move castleMove = new Move(position, left2, MoveType.castling);
+                if (board.getPieceAt(left3).isEmpty() && board.getPieceAt(left2).isEmpty() && board.getPieceAt(left1).isEmpty()
+                        && move1.isMoveLegal(board, color)) {
                     if (filter.test(castleMove)) {
                         castleMoves.add(castleMove);
                     }
@@ -141,8 +136,8 @@ public class King extends Piece {
         int checkPosition;
         for (int change : Directions.orthogonal) {
             checkPosition = position + change;
-            move = new Move(position, checkPosition, MoveType.normal);
-            if (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition)) {
+            if (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition))) {
+                move = new Move(position, checkPosition, MoveType.normal);
                 if (filter.test(move)) {
                     moves.add(move);
                 }
@@ -150,9 +145,11 @@ public class King extends Piece {
         }
         for (int change : Directions.diagonal) {
             checkPosition = position + change;
-            move = new Move(position, checkPosition, MoveType.normal);
-            if (Position.isDiagonal(position, checkPosition) && filter.test(move)) {
-                moves.add(move);
+            if (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)) {
+                move = new Move(position, checkPosition, MoveType.normal);
+                if (filter.test(move)) {
+                    moves.add(move);
+                }
             }
         }
         moves.addAll(getCastleMoves(board, position, filter));

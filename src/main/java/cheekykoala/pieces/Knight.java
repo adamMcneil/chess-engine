@@ -58,12 +58,13 @@ public class Knight extends Piece {
     public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         int[] directions = Directions.knights;
+        Move move;
         for (int change : directions) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition, MoveType.normal);
             if (Position.isOnBoard(checkPosition)
                     && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
                     && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
+                move = new Move(position, checkPosition, MoveType.normal);
                 if (filter.test(move)) {
                     moves.add(move);
                 }

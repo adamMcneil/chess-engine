@@ -224,7 +224,6 @@ public class Main {
                     System.out.println("Completed depth " + depth + " with move " + bestMove + ": " + ((System.currentTimeMillis() - depthTime) / 1000.) + " sec");
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 break;
             }
         }

@@ -104,16 +104,16 @@ public class Pawn extends Piece {
         int direction = getDirection(color);
         int right = position + direction - 1;
         int left = position + direction + 1;
-        Move moveLeft = new Move(position, left, MoveType.normal);
-        Move moveRight = new Move(position, right, MoveType.normal);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && Position.isDiagonal(position, left)
                 && isOppositeColor(board.getPieceAt(left))) {
+            Move moveLeft = new Move(position, left, MoveType.normal);
             if (filter.test(moveLeft)) {
                 moves.add(moveLeft);
             }
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && Position.isDiagonal(position, right)
                 && isOppositeColor(board.getPieceAt(right))) {
+            Move moveRight = new Move(position, right, MoveType.normal);
             if (filter.test(moveRight)) {
                 moves.add(moveRight);
             }
@@ -143,17 +143,17 @@ public class Pawn extends Piece {
 
         int left = position + direction - 1;
         int right = position + direction + 1;
-        Move moveLeft = new Move(position, left, MoveType.normal);
-        Move moveRight = new Move(position, right, MoveType.normal);
         if ((Position.getRow(left) == 0 || Position.getRow(left) == 7) && Position.isOnBoard(left)
                 && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left))) {
-            if (filter.test(moveRight)) {
+            Move moveLeft = new Move(position, left, MoveType.normal);
+            if (filter.test(moveLeft)) {
                 moves.addAll(makePromotionMoves(color, position, left));
             }
         }
         if ((Position.getRow(right) == 0 || Position.getRow(right) == 7) && Position.isOnBoard(right)
                 && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right))) {
-            if (filter.test(moveLeft)) {
+            Move moveRight = new Move(position, right, MoveType.normal);
+            if (filter.test(moveRight)) {
                 moves.addAll(makePromotionMoves(color, position, right));
             }
         }
@@ -165,16 +165,16 @@ public class Pawn extends Piece {
         int direction = getDirection(color);
         int right = position + direction - 1;
         int left = position + direction + 1;
-        Move moveLeft = new Move(position, left, MoveType.inPassing);
-        Move moveRight = new Move(position, right, MoveType.inPassing);
         if (Position.getRow(left) != 0 && Position.getRow(left) != 7 && Position.isDiagonal(position, left)
                 && board.getCanInPassingAttack() && left == board.getInPassingSquare()) {
+            Move moveLeft = new Move(position, left, MoveType.inPassing);
             if (filter.test(moveLeft)) {
                 moves.add(moveLeft);
             }
         }
         if (Position.getRow(right) != 0 && Position.getRow(right) != 7 && Position.isDiagonal(position, right)
                 && board.getCanInPassingAttack() && right == board.getInPassingSquare()) {
+            Move moveRight = new Move(position, right, MoveType.inPassing);
             if (filter.test(moveRight)) {
                 moves.add(moveRight);
             }

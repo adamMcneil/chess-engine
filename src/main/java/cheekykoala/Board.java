@@ -128,7 +128,7 @@ public class Board {
     }
 
     public double getEval() {
-        return recomputeEval();
+        return eval;
     }
 
     public List<Move> getAllMoves(Color color) {
@@ -502,7 +502,9 @@ public class Board {
         Piece movedPiece = getPieceAt(move.getBeginning());
         MoveType type = move.getType();
         updateCastleState(movedPiece, move);
-        if (type == MoveType.promotion) {
+        if (type == MoveType.normal) {
+            doNormalMove(move);
+        } else if (type == MoveType.promotion) {
             doPromotionMove(move);
         } else if (type == MoveType.castling) {
             doCastleMove(move);
@@ -510,10 +512,8 @@ public class Board {
             doInPassingMove(move);
         } else if (type == MoveType.upTwo) {
             doUpTwoMove(move);
-        } else if (type == MoveType.normal){
-            doNormalMove(move);
         } else {
-            throw new RuntimeException("Move type not is null");
+            throw new RuntimeException("Move type is null");
         }
     }
 

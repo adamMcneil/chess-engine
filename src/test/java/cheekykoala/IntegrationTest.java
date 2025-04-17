@@ -84,9 +84,9 @@ public class IntegrationTest {
         int[] expectedNodes = {20, 400, 8902, 197281, 4865609};
 
         for (int depth = 1; depth <= expectedNodes.length; depth++) {
-            MoveCounter counter = board.countNodes(depth, Color.w);
+            int counter = board.countOnlyNodes(depth, Color.w);
             System.out.println("Depth " + depth + ": " + counter);
-            assertEquals(expectedNodes[depth - 1], counter.nodes);
+            assertEquals(expectedNodes[depth - 1], counter);
         }
     }
 
@@ -98,13 +98,13 @@ public class IntegrationTest {
 
     @Test
     public void testDivide() {
-        int depth = 4;
-        List<String> moves = List.of("a2b3", "e6f5", "d2d4");
+        int depth = 3;
+        List<String> moves = List.of("c8d7", "f8d8");
         Color color = Color.w;
         if (moves.size() % 2 == 1) {
             color = Color.b;
         }
-        Board board = new Board("8/8/4k3/8/2p5/8/B2P2K1/8 w - - 0 1");
+        Board board = new Board("2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1");
         for (String move : moves) {
             board.doMove(Move.moveFromString(move, board));
         }

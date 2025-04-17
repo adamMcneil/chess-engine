@@ -2,8 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load JSON
-df_old = pd.read_json('recompute-eval-6.json')
-df_new = pd.read_json('baseline-6.json')
+df_old = pd.read_json('baseline-5.json')
+df_new = pd.read_json('benchmark_results_1383.json')
 
 # Plot
 plt.figure(figsize=(10,6))

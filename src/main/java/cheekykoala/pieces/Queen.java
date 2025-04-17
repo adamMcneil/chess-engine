@@ -60,21 +60,7 @@ public class Queen extends Piece {
     @Override
     public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
         ArrayList<Move> moves = new ArrayList<>(Rook.getRookMoves(board, position, filter));
-        for (int change : Directions.diagonal) {
-            int checkPosition = position + change;
-            Move move = new Move(position, checkPosition, MoveType.normal);
-            while (Position.isOnBoard(checkPosition) && (Position.isDiagonal(position, checkPosition))) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
-                    break;
-                if (move.isMoveLegal(board, color)) {
-                    moves.add(move);
-                }
-                if (isOppositeColor(board.getPieceAt(checkPosition)))
-                    break;
-                checkPosition += change;
-                move = new Move(position, checkPosition, MoveType.normal);
-            }
-        }
+        moves.addAll(Bishop.getBishopMoves(board, position, filter));
         return moves;
     }
 }
