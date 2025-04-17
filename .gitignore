@@ -3,4 +3,5 @@ out/
 /build
 /.gradle
 /src/bin
+/.venv
 .project
