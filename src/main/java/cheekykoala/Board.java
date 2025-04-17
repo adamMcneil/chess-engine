@@ -258,6 +258,7 @@ public class Board {
     }
 
     public Piece getPieceAt(int position) {
+        assert Position.isOnBoard(position);
         return board[position];
     }
 
@@ -499,17 +500,20 @@ public class Board {
 
     public void doMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
+        MoveType type = move.getType();
         updateCastleState(movedPiece, move);
-        if (move.isPromotionMove()) {
+        if (type == MoveType.promotion) {
             doPromotionMove(move);
-        } else if (move.isCastleMove(this)) {
+        } else if (type == MoveType.castling) {
             doCastleMove(move);
-        } else if (move.isInPassingMove(this)) {
+        } else if (type == MoveType.inPassing) {
             doInPassingMove(move);
-        } else if (move.isUpTwoMove(this)) {
+        } else if (type == MoveType.upTwo) {
             doUpTwoMove(move);
-        } else {
+        } else if (type == MoveType.normal){
             doNormalMove(move);
+        } else {
+            throw new RuntimeException("Move type not is null");
         }
     }
 

@@ -62,8 +62,9 @@ public class Rook extends Piece {
         Piece piece = board.getPieceAt(position);
         for (int change : Directions.vertical) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition, MoveType.normal);
+            Move move;
             while (Position.isOnBoard(checkPosition)) {
+                move = new Move(position, checkPosition, MoveType.normal);
                 if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (filter.test(move)) {
@@ -72,13 +73,13 @@ public class Rook extends Piece {
                 if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         for (int change : Directions.horizontal) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition, MoveType.normal);
+            Move move;
             while (Position.isOnBoard(checkPosition) && Position.isSameRow(position, checkPosition)) {
+                move = new Move(position, checkPosition, MoveType.normal);
                 if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (filter.test(move)) {
@@ -87,7 +88,6 @@ public class Rook extends Piece {
                 if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         return moves;

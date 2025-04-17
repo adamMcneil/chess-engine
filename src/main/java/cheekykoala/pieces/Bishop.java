@@ -59,25 +59,30 @@ public class Bishop extends Piece {
         }
     }
 
-    @Override
-    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+    public static List<Move> getBishopMoves(Board board, int position, Predicate<Move> filter) {
         ArrayList<Move> moves = new ArrayList<>();
         int[] directions = Directions.diagonal;
+        Piece piece = board.getPieceAt(position);
         for (int change : directions) {
             int checkPosition = position + change;
-            Move move = new Move(position, checkPosition, MoveType.normal);
+            Move move;
             while (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)) {
-                if (isSameColor(board.getPieceAt(checkPosition)))
+                move = new Move(position, checkPosition, MoveType.normal);
+                if (piece.isSameColor(board.getPieceAt(checkPosition)))
                     break;
                 if (filter.test(move)) {
                     moves.add(move);
                 }
-                if (this.isOppositeColor(board.getPieceAt(checkPosition)))
+                if (piece.isOppositeColor(board.getPieceAt(checkPosition)))
                     break;
                 checkPosition += change;
-                move = new Move(position, checkPosition, MoveType.normal);
             }
         }
         return moves;
+    }
+
+    @Override
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+        return getBishopMoves(board, position, filter);
     }
 }

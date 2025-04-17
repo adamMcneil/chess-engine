@@ -109,7 +109,7 @@ public class King extends Piece {
                 if (board.getPieceAt(move1.getEnd()).getColor() != Color.w
                         && board.getPieceAt(castleMove.getEnd()).getColor() != Color.w
                         && move1.isMoveLegal(board, color)) {
-                    if (filter.test(move1)) {
+                    if (filter.test(castleMove)) {
                         castleMoves.add(castleMove);
                     }
                 }

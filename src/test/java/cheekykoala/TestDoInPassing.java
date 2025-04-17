@@ -13,7 +13,7 @@ public class TestDoInPassing {
     void testDoInPassing() {
         Board board = new Board();
         board.importBoard("rnbqkbnr/pppp1ppp/8/P3p3/8/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1");
-        board.doMove(new Move(9, 25));
+        board.doMove(new Move(board, 9, 25));
         Piece pawn = board.getPieceAt(24);
         board.printBoard(24);
         assertTrue(pawn.isPawn());
@@ -22,7 +22,7 @@ public class TestDoInPassing {
             System.out.println(move);
         }
         assertEquals(2, moves.size());
-        board.doMove(new Move(10, 18));
+        board.doMove(new Move(board, 10, 18));
         assertEquals(1, pawn.getMoves(board, 24).size());
         board.printBoard(24);
     }

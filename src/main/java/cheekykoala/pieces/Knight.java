@@ -61,7 +61,7 @@ public class Knight extends Piece {
         for (int change : directions) {
             int checkPosition = position + change;
             Move move = new Move(position, checkPosition, MoveType.normal);
-            if (move.isMoveLegal(board, color)
+            if (Position.isOnBoard(checkPosition)
                     && Math.abs(Position.getRow(checkPosition) - Position.getRow(position)) < 3
                     && Math.abs(Position.getColumn(checkPosition) - Position.getColumn(position)) < 3) {
                 if (filter.test(move)) {

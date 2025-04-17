@@ -33,21 +33,21 @@ public class TestEval {
     @Test
     public void testCastling() {
         Board board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        board.doMove(new Move(4, 2));
+        board.doMove(new Move(4, 2, MoveType.castling));
         double testEval = board.getEval();
         assertEquals(testEval, board.recomputeEval());
 
-        board.doMove(new Move(60, 58));
+        board.doMove(new Move(60, 58, MoveType.castling));
         testEval = board.getEval();
         assertEquals(testEval, board.recomputeEval());
         board.printBoard();
 
         board = new Board("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R b KQkq - 0 1");
-        board.doMove(new Move(4, 6));
+        board.doMove(new Move(4, 6, MoveType.castling));
         testEval = board.getEval();
         assertEquals(testEval, board.recomputeEval());
 
-        board.doMove(new Move(60, 62));
+        board.doMove(new Move(60, 62, MoveType.castling));
         testEval = board.getEval();
         assertEquals(testEval, board.recomputeEval());
         board.printBoard();
@@ -71,7 +71,7 @@ public class TestEval {
     @Test
     public void testInPassing() {
         Board board = new Board("rnbqkbnr/ppp1pppp/8/2Pp4/8/8/PP1PPPPP/RNBQKBNR w KQkq d6 0 1");
-        board.doMove(new Move(26, 19));
+        board.doMove(new Move(26, 19, MoveType.inPassing));
         double testEval = board.getEval();
         assertEquals(testEval, board.recomputeEval());
         board.printBoard();

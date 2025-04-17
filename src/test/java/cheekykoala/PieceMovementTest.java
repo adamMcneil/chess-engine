@@ -112,6 +112,7 @@ class PieceMovementTest {
     void testPromotionMoves() {
         Board board = new Board();
         board.importBoard("8/P7/8/8/8/8/p7/8 w - - 0 1");
+        board.printBoard();
         Piece whitePawn = board.getPieceAt(8);
         Piece blackPawn = board.getPieceAt(48);
         assertTrue(whitePawn.isPawn());
@@ -126,7 +127,6 @@ class PieceMovementTest {
     void testPromotionMovesBlock() {
         Board board = new Board();
         board.importBoard("k7/P7/8/8/8/8/p7/K7 w - - 0 1");
-        board.printBoard();
         Piece whitePawn = board.getPieceAt(8);
         Piece blackPawn = board.getPieceAt(48);
         assertTrue(whitePawn.isPawn());

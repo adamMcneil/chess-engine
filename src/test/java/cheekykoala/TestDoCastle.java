@@ -10,7 +10,7 @@ public class TestDoCastle {
     public void blackKingSide() {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        Move castle = new Move(4, 6);
+        Move castle = new Move(board, 4, 6);
         board.doCastleMove(castle);
         assertTrue(board.getPieceAt(7).isEmpty());
         assertTrue(board.getPieceAt(6).isKing());
@@ -22,7 +22,7 @@ public class TestDoCastle {
     public void blackQueenSide() {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        Move castle = new Move(4, 2);
+        Move castle = new Move(board, 4, 2);
         board.doCastleMove(castle);
         assertTrue(board.getPieceAt(0).isEmpty());
         assertTrue(board.getPieceAt(2).isKing());
@@ -34,7 +34,7 @@ public class TestDoCastle {
     public void whiteKingSide() {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        Move castle = new Move(60, 62);
+        Move castle = new Move(board, 60, 62);
         board.doCastleMove(castle);
         board.printBoard();
         assertTrue(board.getPieceAt(63).isEmpty());
@@ -46,7 +46,7 @@ public class TestDoCastle {
     public void whiteQueenSide() {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
-        Move castle = new Move(60, 58);
+        Move castle = new Move(board, 60, 58);
         board.doCastleMove(castle);
         board.printBoard();
         assertTrue(board.getPieceAt(56).isEmpty());
@@ -59,7 +59,7 @@ public class TestDoCastle {
         Board board = new Board();
         board.importBoard("r3k2r/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
         board.printBoard();
-        Move move = new Move(60, 59);
+        Move move = new Move(board, 60, 59);
         board.doMove(move);
         board.printBoard();
         for (Move m : board.getPieceAt(59).getMoves(board, 59)) {

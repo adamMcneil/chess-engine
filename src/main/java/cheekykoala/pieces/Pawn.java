@@ -133,8 +133,8 @@ public class Pawn extends Piece {
         List<Move> moves = new ArrayList<>();
         int direction = getDirection(color);
         int checkPosition = position + direction;
-        Move move = new Move(position, checkPosition, MoveType.promotion);
-        if (board.getPieceAt(checkPosition).getColor() == Color.g
+        Move move = new Move(position, checkPosition, MoveType.normal);
+        if (Position.isOnBoard(checkPosition) && board.getPieceAt(checkPosition).getColor() == Color.g
                 && (Position.getRow(checkPosition) == 0 || Position.getRow(checkPosition) == 7)) {
             if (filter.test(move)) {
                 moves.addAll(makePromotionMoves(color, position, checkPosition));
@@ -143,15 +143,15 @@ public class Pawn extends Piece {
 
         int left = position + direction - 1;
         int right = position + direction + 1;
-        Move moveLeft = new Move(position, left, MoveType.promotion);
-        Move moveRight = new Move(position, right, MoveType.promotion);
-        if ((Position.getRow(left) == 0 || Position.getRow(left) == 7)
+        Move moveLeft = new Move(position, left, MoveType.normal);
+        Move moveRight = new Move(position, right, MoveType.normal);
+        if ((Position.getRow(left) == 0 || Position.getRow(left) == 7) && Position.isOnBoard(left)
                 && Position.isDiagonal(position, left) && isOppositeColor(board.getPieceAt(left))) {
             if (filter.test(moveRight)) {
                 moves.addAll(makePromotionMoves(color, position, left));
             }
         }
-        if ((Position.getRow(right) == 0 || Position.getRow(right) == 7)
+        if ((Position.getRow(right) == 0 || Position.getRow(right) == 7) && Position.isOnBoard(right)
                 && Position.isDiagonal(position, right) && isOppositeColor(board.getPieceAt(right))) {
             if (filter.test(moveLeft)) {
                 moves.addAll(makePromotionMoves(color, position, right));

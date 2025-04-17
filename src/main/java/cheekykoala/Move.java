@@ -2,13 +2,11 @@ package cheekykoala;
 
 import cheekykoala.pieces.Piece;
 
-import java.util.function.Predicate;
-
 public class Move {
 
-    int beginning;
-    int end;
-    MoveType type;
+    private int beginning;
+    private int end;
+    private MoveType type;
 
     private Move(int beginning, int end) {
         this.beginning = beginning;
@@ -16,15 +14,21 @@ public class Move {
     }
 
     public Move(Board board, int beginning, int end) {
+        assert Position.isOnBoard(beginning) && Position.isOnBoard(end);
         this.beginning = beginning;
         this.end = end;
         this.type = getMoveCode(board, beginning, end);
     }
 
     public Move(int beginning, int end, MoveType type) {
+        assert Position.isOnBoard(beginning) && Position.isOnBoard(end);
         this.beginning = beginning;
         this.end = end;
         this.type = type;
+    }
+
+    public MoveType getType() {
+        return type;
     }
 
     public static MoveType getMoveCode(Board board, int start, int end) {
