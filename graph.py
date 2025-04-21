@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 # Load JSON
 df_old = pd.read_json('baseline-5.json')
-df_new = pd.read_json('benchmark_results_1383.json')
+df_new = pd.read_json('benchmark_results_1254.json')
 
 # Plot
 plt.figure(figsize=(10,6))
