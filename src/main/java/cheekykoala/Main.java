@@ -159,10 +159,18 @@ public class Main {
         Move bestMove = moves.get(0);
         Optional<MoveEntry> moveEntry;
         if (isMaxPlayer) {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
+            for (Move move : moves) {
+                System.out.println(move + " " + move.getEval());
+            }
             moveEntry = moves.parallelStream()
                     .map(move -> new MoveEntry(move, board, depth - 1, true))
                     .max((a, b) -> Double.compare(b.score, a.score));
         } else {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
+            for (Move move : moves) {
+                System.out.println(move + " " + move.getEval());
+            }
             moveEntry = moves.parallelStream()
                     .map(move -> new MoveEntry(move, board, depth - 1, false))
                     .min((a, b) -> Double.compare(b.score, a.score));
@@ -180,6 +188,7 @@ public class Main {
         Move bestMove = moves.get(0);
         Optional<MoveEntry> moveEntry;
         if (isMaxPlayer) {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
             moveEntry = moves.parallelStream()
                     .map(move -> {
                         try {
@@ -190,6 +199,7 @@ public class Main {
                     })
                     .max((a, b) -> Double.compare(b.score, a.score));
         } else {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
             moveEntry = moves.parallelStream()
                     .map(move -> {
                         try {
@@ -272,15 +282,15 @@ public class Main {
             return board.getEval();
         }
         Color color = isWhite ? Color.w : Color.b;
-        List<Move> moveList = board.getMoves(color, move -> true);
-        if (moveList.isEmpty()) {
+        List<Move> moves = board.getMoves(color, move -> true);
+        if (moves.isEmpty()) {
             return checkmateEval(color);
         }
         double bestMoveValue;
         if (isWhite) {
-            moveList.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
             bestMoveValue = Double.NEGATIVE_INFINITY;
-            for (Move move : moveList) {
+            for (Move move : moves) {
                 bestMoveValue = Math.max(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime)));
                 if (bestMoveValue >= beta) {
                     break;
@@ -288,9 +298,9 @@ public class Main {
                 alpha = Math.max(alpha, bestMoveValue);
             }
         } else {
-            moveList.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
             bestMoveValue = Double.POSITIVE_INFINITY;
-            for (Move move : moveList) {
+            for (Move move : moves) {
                 bestMoveValue = Math.min(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime)));
                 if (bestMoveValue <= alpha) {
                     break;
