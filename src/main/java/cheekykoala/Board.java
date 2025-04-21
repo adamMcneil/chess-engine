@@ -429,10 +429,6 @@ public class Board {
     }
 
     public void doPromotionMove(Move move) {
-        removePieceUpdateEval(getPieceAt(move.getBeginning()), move.getBeginning());
-        removePieceUpdateEval(getPieceAt(move.getEnd()), move.getEnd());
-        addPieceUpdateEval(move.getPiece(), move.getEnd());
-
         board[move.getEnd()] = move.getPiece();
         board[move.getBeginning()] = Empty.getInstance();
         setCanInPassingAttack(false);
@@ -460,14 +456,10 @@ public class Board {
         Piece rookPiece = getPieceAt(rookStartPosition);
         board[rookPosition] = rookPiece;
         board[rookStartPosition] = Empty.getInstance();
-        movePieceUpdateEval(getPieceAt(rookPosition), new Move(rookStartPosition, rookPosition, MoveType.normal));
     }
 
     public void doInPassingMove(Move move) {
         int otherPawnPosition = Position.getColumn(move.getEnd()) + (8 * Position.getRow(move.getBeginning()));
-        removePieceUpdateEval(getPieceAt(otherPawnPosition), otherPawnPosition);
-        movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
-
         Piece movedPiece = getPieceAt(move.getBeginning());
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
@@ -490,13 +482,6 @@ public class Board {
 
     public void doNormalMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
-        Piece takenPiece = getPieceAt(move.getEnd());
-
-        if (movedPiece != Empty.getInstance()) {
-            removePieceUpdateEval(takenPiece, move.getEnd());
-        }
-        movePieceUpdateEval(movedPiece, move);
-
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
         setCanInPassingAttack(false);
@@ -505,6 +490,7 @@ public class Board {
     public void doMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
         MoveType type = move.getType();
+        eval += move.getEval(this);
         updateCastleState(movedPiece, move);
         if (type == MoveType.normal) {
             doNormalMove(move);
@@ -519,20 +505,5 @@ public class Board {
         } else {
             throw new RuntimeException("Move type is null");
         }
-    }
-
-    private void removePieceUpdateEval(Piece piece, int position) {
-        eval -= piece.getPieceEval();
-        eval -= piece.getSquareEval(position);
-    }
-
-    private void addPieceUpdateEval(Piece piece, int position) {
-        eval += piece.getPieceEval();
-        eval += piece.getSquareEval(position);
-    }
-
-    private void movePieceUpdateEval(Piece piece, Move move) {
-        eval -= piece.getSquareEval(move.getBeginning());
-        eval += piece.getSquareEval(move.getEnd());
     }
 }

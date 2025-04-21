@@ -125,19 +125,19 @@ public class Move {
             eval += movePieceUpdateEval(movedPiece);
         } else if (type == MoveType.castling) {
             if (movedPiece.getColor() == Color.w) {
-                eval += 90;
+                eval += 15;
             } else {
-                eval -= 90;
+                eval -= 15;
             }
         } else if (type == MoveType.promotion) {
-            eval += removePieceUpdateEval(takenPiece, getBeginning());
+            eval += removePieceUpdateEval(movedPiece, getBeginning());
             eval += removePieceUpdateEval(takenPiece, getEnd());
-            eval += addPieceUpdateEval(movedPiece, getEnd());
+            eval += addPieceUpdateEval(getPiece(), getEnd());
         } else if (type == MoveType.inPassing) {
             int otherPawnPosition = Position.getColumn(getEnd()) + (8 * Position.getRow(getBeginning()));
             takenPiece = board.getPieceAt(otherPawnPosition);
-            removePieceUpdateEval(takenPiece, otherPawnPosition);
-            movePieceUpdateEval(movedPiece);
+            eval += removePieceUpdateEval(takenPiece, otherPawnPosition);
+            eval += movePieceUpdateEval(movedPiece);
         } else {
             throw new RuntimeException("Move type is null");
         }
