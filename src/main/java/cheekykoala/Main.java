@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 public class Main {
     static String ALGORITHM = "iterative";
     static long THINK_TIME = 5000;
-    static int DEPTH = 5;
+    static int DEPTH = 6;
     static int TRIALS = 3;
 
     public static void readInputs(String[] args) {
@@ -278,6 +278,7 @@ public class Main {
         }
         double bestMoveValue;
         if (isWhite) {
+            moveList.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
             bestMoveValue = Double.NEGATIVE_INFINITY;
             for (Move move : moveList) {
                 bestMoveValue = Math.max(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime)));
@@ -287,6 +288,7 @@ public class Main {
                 alpha = Math.max(alpha, bestMoveValue);
             }
         } else {
+            moveList.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
             bestMoveValue = Double.POSITIVE_INFINITY;
             for (Move move : moveList) {
                 bestMoveValue = Math.min(bestMoveValue, minimax(board.getChild(move), depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime)));
