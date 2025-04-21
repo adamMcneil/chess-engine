@@ -116,6 +116,55 @@ public class Move {
         return true;
     }
 
+    public double recomputeEval(Board board) {
+        Piece movedPiece = board.getPieceAt(getBeginning());
+        Piece takenPiece = board.getPieceAt(getEnd());
+        double eval = 0;
+        if (type == MoveType.normal || type == MoveType.upTwo) {
+            eval += removePieceUpdateEval(takenPiece, getEnd());
+            eval += movePieceUpdateEval(movedPiece);
+        } else if (type == MoveType.castling) {
+            if (movedPiece.getColor() == Color.w) {
+                eval += 90;
+            } else {
+                eval -= 90;
+            }
+        } else if (type == MoveType.promotion) {
+            eval += removePieceUpdateEval(takenPiece, getBeginning());
+            eval += removePieceUpdateEval(takenPiece, getEnd());
+            eval += addPieceUpdateEval(movedPiece, getEnd());
+        } else if (type == MoveType.inPassing) {
+            int otherPawnPosition = Position.getColumn(getEnd()) + (8 * Position.getRow(getBeginning()));
+            takenPiece = board.getPieceAt(otherPawnPosition);
+            removePieceUpdateEval(takenPiece, otherPawnPosition);
+            movePieceUpdateEval(movedPiece);
+        } else {
+            throw new RuntimeException("Move type is null");
+        }
+        return eval;
+    }
+
+    private double removePieceUpdateEval(Piece piece, int position) {
+        double eval = -piece.getPieceEval();
+        eval -= piece.getSquareEval(position);
+        return eval;
+    }
+
+    private double addPieceUpdateEval(Piece piece, int position) {
+        double eval = piece.getPieceEval();
+        eval += piece.getSquareEval(position);
+        return eval;
+    }
+
+    private double movePieceUpdateEval(Piece piece) {
+        double eval = -piece.getSquareEval(getBeginning());
+        eval += piece.getSquareEval(getEnd());
+        return eval;
+    }
+    public double getEval(Board board) {
+        return recomputeEval(board);
+    }
+
     public int getBeginning() {
         return beginning;
     }
