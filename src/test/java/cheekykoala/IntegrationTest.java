@@ -99,17 +99,17 @@ public class IntegrationTest {
     @Test
     public void testDivide() {
         int depth = 3;
-        List<String> moves = List.of("c8d7", "f8d8");
+        List<String> moves = List.of();
         Color color = Color.w;
         if (moves.size() % 2 == 1) {
             color = Color.b;
         }
-        Board board = new Board("2K2r2/4P3/8/8/8/8/8/3k4 w - - 0 1");
+        Board board = new Board("r1b2k1r/pppp1ppp/6n1/2P5/7q/5B2/P3Q1P1/R2KR3 w Qkq - 0 1");
         for (String move : moves) {
             board.doMove(Move.moveFromString(move, board));
         }
         board.printBoard();
-        board.printBoard(32);
+        board.printBoard(52);
         System.out.println("Number of moves: " + board.getAllMoves(color).size());
         System.out.println("Number of nodes: " + board.countOnlyNodes(depth - moves.size(), color));
         board.divideOne(color, depth - moves.size() - 1);

@@ -489,10 +489,14 @@ public class Board {
     }
 
     public void doNormalMove(Move move) {
-        removePieceUpdateEval(getPieceAt(move.getEnd()), move.getEnd());
-        movePieceUpdateEval(getPieceAt(move.getBeginning()), move);
-
         Piece movedPiece = getPieceAt(move.getBeginning());
+        Piece takenPiece = getPieceAt(move.getEnd());
+
+        if (movedPiece != Empty.getInstance()) {
+            removePieceUpdateEval(takenPiece, move.getEnd());
+        }
+        movePieceUpdateEval(movedPiece, move);
+
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
         setCanInPassingAttack(false);
@@ -504,14 +508,14 @@ public class Board {
         updateCastleState(movedPiece, move);
         if (type == MoveType.normal) {
             doNormalMove(move);
-        } else if (type == MoveType.promotion) {
-            doPromotionMove(move);
-        } else if (type == MoveType.castling) {
-            doCastleMove(move);
-        } else if (type == MoveType.inPassing) {
-            doInPassingMove(move);
         } else if (type == MoveType.upTwo) {
             doUpTwoMove(move);
+        } else if (type == MoveType.castling) {
+            doCastleMove(move);
+        } else if (type == MoveType.promotion) {
+            doPromotionMove(move);
+        } else if (type == MoveType.inPassing) {
+            doInPassingMove(move);
         } else {
             throw new RuntimeException("Move type is null");
         }
