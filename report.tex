@@ -3,7 +3,6 @@
 \settopmatter{printacmref=false}
 \renewcommand\footnotetextcopyrightpermission[1]{}
 
-
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -24,21 +23,21 @@
   \country{University of Illinois Urbana-Champaign, Urbana, Illinois, USA}
 }
 
-
 \begin{abstract}
-In this paper we highlight optimization done on a Java chess engine.
-The goal of the optimization are to increase the depth that the engine is able to compute efficiently.
-Though this does not necessarily make it better at playing chess since we are computing at a small depth increasing it will make the chess engine more accurate.
-There are also other way to make the chess engine better they are not the focus of this paper.
+In this paper, we highlight optimizations performed on a Java chess engine.
+The goal of these optimizations is to increase the depth that the engine is able to compute efficiently.
+Though this does not necessarily make it better at playing chess—since we are computing at a small depth—increasing it will make the chess engine more accurate.
+There are also other ways to make the chess engine better, but they are not the focus of this paper.
 \end{abstract}
 
 \maketitle
 Link to the engine: \url{https://github.com/adamMcneil/chess-engine}
 
 Link to the bot: \url{https://github.com/adamMcneil/cheeky-koala-lichess-bot}
+
 \section{Background}
-This project was originally developer by me and friend in the summer of 2021.
-We designed it in an object oriented way which was not always the most preformant.
+This project was originally developed by me and a friend in the summer of 2021.
+We designed it in an object-oriented way, which was not always the most performant.
 This is the original file structure of the project:
 \begin{verbatim}
 Cheakykoala/
@@ -58,43 +57,40 @@ Cheakykoala/
 |-- Position.java
 |-- PromotionMove.java
 \end{verbatim}
-\texttt{Piece} is an abstract class that the other piece inherit from.
-\texttt{Color} is an \texttt{Enum} with three values \texttt{w, b, g}.
-These represent white, black, and gray respectively.
-Gray is used for the Empty Piece.
-Have a Empty Piece to represent a blank square does not seem very performance but surprisingly it does not make a huge impact on performance.
+\texttt{Piece} is an abstract class that the other pieces inherit from.
+\texttt{Color} is an \texttt{Enum} with three values: \texttt{w, b, g}.
+These represent white, black, and gray, respectively.
+Gray is used for the Empty Piece. Having an Empty Piece to represent a blank square does not seem very efficient, but surprisingly, it does not make a huge impact on performance.
 The \texttt{Position} class adds a lot of overhead to the program; all it does is wrap two integers together to represent the position.
-It introduces a lot of unnecessary object allocation and functions call.
+It introduces a lot of unnecessary object allocation and function calls.
 \texttt{PromotionMove} inherits from the \texttt{Move} class; this is probably not the best way to handle this and should be optimized.
 
 \subsection{Gradle}
-In the past I relied on the IntelliJ IDE for building the project.
-Since the project was out of date it did not work when I dusted the project off.
+In the past, I relied on the IntelliJ IDE for building the project.
+Since the project was out of date, it did not work when I revisited it.
 So I decided to switch to Gradle for building the project.
-This was a good decision because it offers a lot of different action out of the box like: running the application, running tests, and generating jar files.
+This was a good decision because it offers a lot of different actions out of the box, such as running the application, running tests, and generating jar files.
 
 \subsection{IntelliJ}
-Since I am a student I have access to IntelliJ Ultimate.
-IntelliJ Ultimate offer a lot of features that will be very helpful for performance engineering the application.
-They have built in code coverage tool that will show what percentage of lines that are covered by your tests.
-They also give you access to a profiling program that will generate a Flame Graph, Call Tree, Method List, Timeline, CPU Usage, and Events.
-It also give me access to the debugger which will be helpful for debugging.
+Since I am a student, I have access to IntelliJ Ultimate. IntelliJ Ultimate offers a lot of features that are very helpful for performance engineering the application.
+It has built-in code coverage tools that show what percentage of lines are covered by your tests.
+It also provides access to a profiling program that can generate a Flame Graph, Call Tree, Method List, Timeline, CPU Usage, and Events.
+It also gives me access to the debugger, which is helpful for debugging.
 
 \subsection{Lichess}
-I used an open source resource \cite{lichess-bot} to connect my chess engine to Lichess.
-It uses the universal chess interface (UCI) \cite{uci} to talk to Lichess.
-In order to use the program you only need to point the program to your chess engine executable and use a yaml config file to configure your chess engine.
-It also allows you to use opening books, which is a set of games that the engine will play by default at the beginning of a game \cite{pgn}.
+I used an open-source resource \cite{lichess-bot} to connect my chess engine to Lichess.
+It uses the Universal Chess Interface (UCI) \cite{uci} to communicate with Lichess.
+To use the program, you only need to point it to your chess engine executable and use a YAML config file to configure your chess engine.
+It also allows you to use opening books, which are sets of games that the engine will play by default at the beginning of a game \cite{pgn}.
 
-In order to turn the chess project into a executable.
-I use Gradle to build the project in to a jar file and then use a bash script to execute the file.
-This just runs the java interpreter.
-We use the following simple script to run the program.
+To turn the chess project into an executable, I use Gradle to build the project into a jar file and then use a bash script to execute the file.
+This just runs the Java interpreter.
+We use the following simple script to run the program:
 \begin{verbatim}
 #!/bin/bash
 java -cp chess-engine-1.0-SNAPSHOT.jar cheekykoala.Main
 \end{verbatim}
-In order to communicate with Lichess, must make your chess engine respond very simple inputs described in Table~\ref{tab:api}.
+To communicate with Lichess, your chess engine must respond to very simple inputs described in Table~\ref{tab:api}.
 
 \begin{table*}[h]
     \centering
@@ -115,116 +111,101 @@ In order to communicate with Lichess, must make your chess engine respond very s
         \texttt{quit} & \texttt{Quit the chess engine} & \\
         \hline
     \end{tabular}
-    \caption{A description of the API that the chess engine needs to response to play on Lichess.}
+    \caption{A description of the API that the chess engine needs to respond to in order to play on Lichess.}
     \label{tab:api}
 \end{table*}
 
-
 \section{Introduction}
-A chess engine consists of a couple of basic parts.
+A chess engine consists of a few basic parts.
 \begin{enumerate}
     \item \textbf{Move Generation} – Responsible for determining all legal moves from a given board state.
     \item \textbf{Board Evaluation} – Assigns a score or value to a position to help judge its quality.
-    \item \textbf{Search Algorithm} - Combines the other component to find the best move in any given state.
+    \item \textbf{Search Algorithm} – Combines the other components to find the best move in any given state.
 \end{enumerate}
 
 \subsection{Move Generation}
-This is relatively simple it just requires you to specify the rules of chess in a programming language.
-This requires a lot of test and debugging to cover all of the corner cases (literally the corner cases).
-However the structure of the data that you use in this case will affect how efficiently you can produce a list of legal moves. 
+This is relatively simple; it just requires you to specify the rules of chess in a programming language. This requires a lot of testing and debugging to cover all of the corner cases (literally the corner cases).
+However, the structure of the data you use in this case will affect how efficiently you can produce a list of legal moves.
 
 \subsection{Board Evaluation}
-This in the most simple form is variable with four possible values.
+In its simplest form, this is a variable with four possible values.
 \begin{itemize}
     \item Black in checkmate
     \item White in checkmate
     \item Stalemate
     \item None
 \end{itemize}
-However this is an unrealistic metrics because the search space is to massive to find a mate from stating position and the bot would see no way to win so it would play randomly.
+However, this is an unrealistic metric because the search space is too massive to find a mate from the starting position, and the bot would see no way to win, so it would play randomly.
 
-The next obvious metric would be material advantage (this is simple who has better pieces on the board).
-We assign values to each piece and make the black piece the negative value of the white pieces.
-In this way we can have the player prefer positions were they have better pieces on the board and the other person has less players on the board.
-This is a good heuristic for who is winning the game.
+The next obvious metric would be material advantage (simply, who has better pieces on the board).
+We assign values to each piece and make the black pieces the negative value of the white pieces.
+In this way, we can have the player prefer positions where they have better pieces on the board and the other person has fewer pieces on the board. This is a good heuristic for who is winning the game.
 
-However this does not capture everything that chess players to determine which side is in better position.
-Players also develop pieces this usually means moving piece toward the center of the board or having a good pawn structure.
-In order to capture this we can use a table of values that offer a little benefit to piece in each of those positions.
-Each Piece has a separate table of value that is used to determine the benefit of each Piece in a specific location on the board.
-Intuitively this is because it is better to have your king in the back protected, and pawns it is good to have on the second to last row so that they are close to promoting.
+However, this does not capture everything that chess players use to determine which side is in a better position.
+Players also develop pieces—this usually means moving pieces toward the center of the board or having a good pawn structure.
+To capture this, we can use a table of values that offers a small benefit to pieces in each of those positions.
+Each piece has a separate table of values that is used to determine the benefit of each piece in a specific location on the board.
+Intuitively, this is because it is better to have your king in the back protected, and for pawns, it is good to have them on the second-to-last row so that they are close to promoting.
 
 \subsection{Move Search}
-Since chess is a two player game it uses a mini-max algorithm to find the best move.
-There are better explanation of this algorithm is online somewhere, but at a basic level the computer takes turns maximizing and minimizing the branching board state.
-This simulate both player playing optimally and will allow the computer to compute the most optimal solution.
+Since chess is a two-player game, it uses a minimax algorithm to find the best move.
+There are better explanations of this algorithm online, but at a basic level, the computer takes turns maximizing and minimizing the branching board state. This simulates both players playing optimally and allows the computer to compute the most optimal solution.
 
-Now that we have a move generator and way to compare board we can use standard graph algorithms to search for the best move.
+Now that we have a move generator and a way to compare boards, we can use standard graph algorithms to search for the best move.
 The most basic search would be a depth search.
-However this is not optimal in chess because the player needs to move in real time.
+However, this is not optimal in chess because the player needs to move in real time.
 It is hard to know how long the depth search will take.
-Because of this it is hard to determine the what depth the bot should search for. 
-Furthermore the search needs to complete before it finds a move.
+Because of this, it is hard to determine what depth the bot should search for.
+Furthermore, the search needs to complete before it finds a move.
 
 The algorithm that is best for looking for moves in chess is iterative deepening.
 It works by doing consecutive executions of a depth search.
-This allows the bot to return the best move that is has found after it has reached some timeout.
-
+This allows the bot to return the best move it has found after it has reached some timeout.
 
 \section{Related Works}
 Stockfish \cite{stockfish} is the state of the art in chess engines today.
-It has dominated the Top Chess Engine Championship for the past several years.
-It is implemented with C++ and is open source.
+It has dominated the Top Chess Engine Championship for the past several years. It is implemented in C++ and is open source.
 
-The project uses a distributed testing frame work called Fishtest where people donate CPU time to play games against the release of Stockfish.
-After playing bunch of game they determine if the change was better and should be keep \cite{stockwiki}.
+The project uses a distributed testing framework called Fishtest, where people donate CPU time to play games against the release of Stockfish.
+After playing a bunch of games, they determine if the change was better and should be kept \cite{stockwiki}.
 Stockfish is trying to optimize winning games; this is not what we are trying to optimize in this paper.
-This paper primarily focus on being able to compute a larger depth faster.
+This paper primarily focuses on being able to compute a larger depth faster.
 
-It uses bit boards to represent the state of the board \cite{stockwiki}.
-Bit boards work by using a 64 bit array to store the states of the board.
-A different bit board is used for each piece.
-This board can be combined to generate moves.
+It uses bitboards to represent the state of the board \cite{stockwiki}.
+Bitboards work by using a 64-bit array to store the states of the board.
+A different bitboard is used for each piece.
+These boards can be combined to generate moves.
 
-One notable change to Stockfish happened in 2020 when efficiently updatable neural network (NNUE) to evaluate the board state \cite{chesswiki}.
-This replaced the heuristics that are previously used to compare boards.
-
-
-
-
+One notable change to Stockfish happened in 2020, when an efficiently updatable neural network (NNUE) was introduced to evaluate the board state \cite{chesswiki}.
+This replaced the heuristics that were previously used to compare boards.
 
 \section{Overview}
-We perform a wide range of optimization on the chess engine.
-However all the changes that we made can be categorized into three groups:
+We performed a wide range of optimizations on the chess engine.
+However, all the changes that we made can be categorized into three groups:
 \begin{enumerate}
     \item Data Structure Changes
     \item Adding Parallelism
     \item Implementing Search Heuristics
 \end{enumerate}
 
-This type optimization included changing the way we represented the board.
-The original optimization used a 2-D array however we found that a 1-D array was more efficient.
-It reduced overhead by eliminating the Position class and allowed us to identify a position with just and integer.
-We were also able to make all of the Piece class Singleton class by removing the position variable on the Piece class.
+This type of optimization included changing the way we represented the board.
+The original implementation used a 2-D array; however, we found that a 1-D array was more efficient.
+It reduced overhead by eliminating the Position class and allowed us to identify a position with just an integer.
+We were also able to make all of the Piece classes Singleton classes by removing the position variable from the Piece class.
 
-This type of graph search is highly parallelism because we can have multiple thread working on different portions of the tree.
-The parallelism that we implement in this works by paralleling the base layer of the mini-max.
-Effectively meaning that each of the moves at depth one are being computed in parallel.
-Though this does increase the efficiency of the program be a lot.
-This is not the best way to implement parallelism and lead to a lot of problems that will be discussed in the implementation.
+This type of graph search is highly parallelizable because we can have multiple threads working on different portions of the tree.
+The parallelism that we implement in this work involves parallelizing the base layer of the minimax.
+Effectively, this means that each of the moves at depth one is being computed in parallel. Though this does increase the efficiency of the program by a lot, it is not the best way to implement parallelism and led to a lot of problems that will be discussed in the implementation section.
 
-We were able to also include some logic for 
-
-There are also a lot more optimization/refactoring that cannot all be reported.
-For example the static arrays was being reallocated in a loop while generating moves which was causing overhead.
-We were also able the restructure if statement to break earlier.
+There are also many more optimizations/refactorings that cannot all be reported.
+For example, static arrays were being reallocated in a loop while generating moves, which was causing overhead.
+We were also able to restructure if statements to break earlier.
 
 \section{Implementation}
 \subsection{Tests}
 It is very important to run tests to verify that your application is correct after refactoring for performance.
 To achieve this, I used a database of chess positions \cite{jones} and the number of legal moves at a certain depth to verify the accuracy of the chess engine.
-Each of the individual tests are formed like the following json object. 
-The test imports the fen \cite{fen} string and verifies that the number of nodes is the same at that depth of search.
+Each of the individual tests is formed like the following JSON object. The test imports the FEN \cite{fen} string and verifies that the number of nodes is the same at that depth of search.
 \begin{verbatim}
   {
     "depth":1,
@@ -232,15 +213,14 @@ The test imports the fen \cite{fen} string and verifies that the number of nodes
     "fen":"r6r/1b2k1bq/8/8/7B/8/8/R3K2R b KQ - 3 2"
   }
 \end{verbatim}
-I also created similar tests that would test the piece that tested the piece individually that would make it easier to pin point bugs.
-I am waiting to wright unit tests for the Board class until after I refactor it to use a 1-D array.
+I also created similar tests that would test the pieces individually, making it easier to pinpoint bugs.
+I am waiting to write unit tests for the Board class until after I refactor it to use a 1-D array.
 
 \subsection{Board Representation}
 A large refactoring that will increase the efficiency of the program by a lot is representing the board with a 1-D array instead of a 2-D array.
-This makes computing moves a little more tricky but it will result in being able to get rid of the \texttt{Position} class.
+This makes computing moves a little more tricky, but it will allow us to get rid of the \texttt{Position} class.
 The \texttt{Position} class is creating a lot of unnecessary object allocations.
-The class only contains an \texttt{int[]} with two elements.
-By switching to a 1D array to represent the board we can represent a position on the board with just an \texttt{int}.
+The class only contains an \texttt{int[]} with two elements. By switching to a 1D array to represent the board, we can represent a position on the board with just an \texttt{int}.
 \begin{table}[H]
     \renewcommand{\arraystretch}{1.5}
     \setlength{\arrayrulewidth}{1pt}
@@ -296,9 +276,9 @@ By switching to a 1D array to represent the board we can represent a position on
 \end{table}
 
 \subsection{Caching Board Evaluation}
-When keep track of the evaluation of the board, the simplest scheme is to recompute the evaluation of the board each time it is needed.
-We can obviously do better then this by just creating a variable on the board class to store the evaluation.
-However since the evaluation only changes when a move happens we can change update the evaluation 
+When keeping track of the evaluation of the board, the simplest scheme is to recompute the evaluation each time it is needed.
+We can obviously do better than this by just creating a variable on the board class to store the evaluation.
+However, since the evaluation only changes when a move happens, we can update the evaluation incrementally.
 
 \begin{figure}[H]
     \centering
@@ -306,103 +286,9 @@ However since the evaluation only changes when a move happens we can change upda
     \caption{The red bars represent the program where the board evaluation was recomputed each time during a depth search. The blue bars are when we cache and update the board evaluation}
     \label{fig:eval-speedup}
 \end{figure}
+
 \subsection{Parallelism}
-The simplest way to parallelize the move search algorithm is at the top level.
-Given a board state we can get all of the moves in that state we can then in parallel we can use the mini-max algorithm to those result in the best position for that player.
-However this might not be the most optimal solution as Figure~\ref{fig:cpu-trace} shows.
-This Figure~\ref{fig:cpu-trace} shows the CPU utilization over a run of iterative deepening looking for the best move.
-The dips in CPU usage are when we are close to finishing a depth and start the next depth.
-This happens because one of the branches of the search is taking longer to search. 
-We were bottle necked by the slowest running move search.
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\linewidth]{parallism-cpu.png}
-    \caption{Shows the usage of the CPU over the course an execution of iterative deepening.}
-    \label{fig:cpu-trace}
-\end{figure}
-We also do not always get the benefits of the parallelism.
-For example if there are only a few moves at depth one you do not get the benefits of parallelism.
-
-There is the additional complexity of using alpha beta pruning with parallelism.
-There are also additional considerations with alpha beta pruning.
-
-\subsection{Piece Singletons}
-This is a very simple idea that greatly reduced the number of objects that we need to make.
-The idea is that you do not need to make multiple instances of a Piece (eg. all of the white pawn in the entire program can point to the same Pawn object).
-This greatly reduces the amount of time that we spent copying the board while branching.
-Instead of allocating a new object we just need to copy the array of Piece references to the other board.
-We can create all of the Piece class Singletons class.
-
-Piece with this schema become just a collection of function.
-
- \subsection{Alpha Beta Pruning}
- Alpha-beta pruning is an optimization for the mini-max algorithm.
- It skips evaluating branches that will not affect the final optimal decision.
- It does this by using two values—alpha (best already explored path for the maximizer) and beta (best already explore path for the minimizer)—to "prune" unneeded branches.
- The following optimization rely on using the fact that we are using alpha beta pruning when we are looking for a move.
-
-\subsubsection{Pseudo Move Generation}
-This optimization relies on the benefits of alpha-b beta pruning.
-The basic idea is that produce all of the valid move from any position is much more computationally expensive then generating a list of pseudo valid moves.
-The moves are not valid in the sense that the computer is allowed to put it self in check.
-This does not matter because during the mini-max algorithm the players would never chose to put them selves in check.
-Furthermore those branches will be quickly pruned because of alpha beta pruning.
-
-The reason that checking if a move puts the moving play in check is because it is implemented by copying the board preforming the move and check it the king is under attack.
-This can be optimized by adding a conceptual  adding an undo move function.
-Adding this function is not as simple at first glance it requires adding some extra board state like the piece that was taken last.
-It also requires updating other castling and enpassent variables.
-
-\subsubsection{Move Heuristic}
-
-
- 
-\begin{figure*}
-    \centering
-    \includegraphics[width=1.25\linewidth]{flamegraph-first.png}
-    \caption{This is the flame graph produced running a 5 depth search from the start position. It show the unnecessary calls made in \texttt{Board.getChild()}}
-    \label{fig:fist-flame}
-\end{figure*}
-\section{Results}
-Depth 5 start position took 95 seconds.
-After board copy constructor 58 seconds.
-
-So far I have been able to reducer the execution time from the starting position from 93 seconds to 24 seconds for a 5 depth search.
-
-\section{Appendix}
-
-\begin{thebibliography}{9}
-    \bibitem{jones} Peter Ellis Jones' Gist,  
-        \url{https://gist.github.com/peterellisjones/8c46c28141c162d1d8a0f0badbc9cff9}
-    
-    \bibitem{pgn} PGN Mentor - Abdusattorov's Games,  
-        \url{https://www.pgnmentor.com/players/Abdusattorov/}
-        
-    \bibitem{lichess-bot} lichess-bot,  
-        \url{https://github.com/lichess-bot-devs/lichess-bot}
-        
-    \bibitem{uci} uci,  
-        \url{https://www.chessprogramming.org/UCI}
-    
-    \bibitem{fen} fen,  
-        \url{https://www.chessprogramming.org/Forsyth-Edwards_Notation}
-        
-    \bibitem{roce} ROCE - Roman's Own Chess Engine,  
-        \url{http://www.rocechess.ch/rocee.html}
-        
-    \bibitem{parallel} Parallel Search,  
-        \url{https://www.chessprogramming.org/Parallel_Search}
-        
-    \bibitem{stockfish} Stockfish,  
-        \url{https://stockfishchess.org/}
-
-    \bibitem{stockwiki} Stockfish Wikepidia,  
-        \url{https://en.wikipedia.org/wiki/Stockfish_(chess)#Competition_results}
-        
-    \bibitem{bitboard} Bitboards,
-        \url{https://www.chessprogramming.org/Bitboards}
-        
-\end{thebibliography}
-
-
-\end{document}
+The simplest way to parallelize the move search algorithm is at the top level. Given a board state, we can get all of the moves in that state; then, in parallel, we can use the minimax algorithm to evaluate those results and find the best position for that player.
+However, this might not be the most optimal solution, as Figure~\ref{fig:cpu-trace} shows.
+This figure shows the CPU utilization over a run of iterative deepening looking for the best move.
+The dips in CPU usage are when...
