@@ -127,9 +127,9 @@ A chess engine consists of a couple of basic parts:
 \end{enumerate}
 
 \subsection{Move Generation}
-This is relatively simple; it just requires you to specify the rules of chess in a programming language.
+This is relatively simple; it just requires you to specify the rules of chess in a programming language. 
 This requires a lot of testing and debugging to cover all of the corner cases (literally the corner cases).
-However, the structure of the data that you use in this case will affect how efficiently you can produce a list of legal moves.
+However, the structure of the data that you use in this case will affect how efficiently you can produce a list of legal moves. 
 One of the main trade-offs that we found was increasing the size of dat stored and recomputing values.
 
 \subsection{Board Evaluation}
@@ -156,14 +156,14 @@ Intuitively, this is because it is better to have your king in the back protecte
 
 \subsection{Move Search}
 Since chess is a two-player game, it uses a mini-max algorithm to find the best move.
-There are better explanations of this algorithm online somewhere, but at a basic level, the computer takes turns maximizing and minimizing the branching board state.
+There are better explanations of this algorithm online somewhere, but at a basic level, the computer takes turns maximizing and minimizing the branching board state. 
 This simulates both players playing optimally and will allow the computer to compute the most optimal solution.
 
 Now that we have a move generator and a way to compare boards, we can use standard graph algorithms to search for the best move.
 The most basic search would be a depth search.
 However, this is not optimal in chess because the player needs to move in real time.
 It is hard to know how long the depth search will take.
-Because of this, it is hard to determine the depth that the bot should search.
+Because of this, it is hard to determine the depth that the bot should search. 
 Furthermore, the search needs to be completed before it returns a move.
 
 The algorithm that is best for looking for moves in chess is iterative deepening.
@@ -177,21 +177,21 @@ It has dominated the Top Chess Engine Championship for the past several years \c
 It is implemented with C++ and is open source.
 
 The project uses a distributed testing framework called Fishtest, where people donate CPU time to play games against the release of Stockfish.
-After playing a bunch of games, they determine if the change was better and should be kept \cite{stockwiki}.
+After playing a lot of games, they determine if the change was better and should be kept \cite{stockwiki}.
 Stockfish is trying to optimize winning games; this is not what we are trying to optimize in this paper.
-This paper primarily focuses on being able to compute a larger depth faster.
+This paper focuses primarily on being able to compute a larger depth faster.
 
 It also uses bit boards to represent the state of the board \cite{stockwiki}.
-Bit boards work by represent the board with a 64 bits \cite{bitboard}.
+Bit boards work by representing the board with 64 bits \cite{bitboard}.
 Each piece can have a bit board associated with it.
-These bit board can be combined to find moves.
+These bit boards can be combined to find moves.
 
 One notable change to Stockfish happened in 2020 when they added a neural network (NNUE) to evaluate the state of the board \cite{chesswiki}.
 This replaced the heuristics that were previously used to compare boards.
 
-For parallel search it is standard to use the algorithm outlined here \cite{parallel}.
-The main challenge of parallelism is using it in conjunction with alpha beta pruning.
-Alpha beta pruning depends heavily on the order the nodes are searched in, so if they are searched in parallel you cannot control what order to search them in.
+For parallel search, it is standard to use the algorithm outlined here \cite{parallel}.
+The main challenge of parallelism is to use it in conjunction with alpha-b beta pruning.
+Alpha beta pruning depends heavily on the order in which the nodes are searched, so if they are searched in parallel you cannot control which order to search them in.
 It works by computing the "killer move" or the move with the highest heuristic first and then using the rest of the compute power to compare with that move.
 Since the heuristic in most chess engine are very good it is able to find the best move very quickly.
 
@@ -210,28 +210,30 @@ The original optimization used a 2-D array; however, we found that a 1-D array w
 It reduced overhead by eliminating the Position class and allowed us to identify a position with just an integer.
 We were also able to make all of the Piece classes Singleton classes by removing the position variable on the Piece class.
 It also included caching computed values so that they do not need to be recomputed.
+These optimizations were fundamentally about the trade-off between storing values and recomputing them later. 
+In most of the cases, it was beneficial to store the variable for later use.
 
 \subsection{Parallelism}
 This type of graph search is highly parallelizable because we can have multiple threads working on different portions of the tree.
-The parallelism that we implement in this work parallels the base layer of the mini-max.
-Effectively meaning that each of the moves at depth one are being computed in parallel.
+The parallelism that we implement in this work parallels the base layer of the minimax.
+This means that each of the moves at depth one are being computed in parallel.
 Though this does increase the efficiency of the program by a lot, this is not the best way to implement parallelism and leads to a lot of problems that will be discussed in the Implementation section.
 
 \subsection{Search Heuristics}
-The mini-max algorithm depends a lot on the order the moves are searched in this is because it uses alpha beta pruning.
-By sorting the moves we can prune more branches of the tree.
-Additionally, we can take advantage of alpha-beta pruning by creating a list of pseudo moves that included illegal moves but would be likely pruned out because they left the player in a losing position.
+The mini-max algorithm depends a lot on the order in which the moves are searched in this is because it uses alpha-beta pruning.
+By sorting the moves, we can prune more branches of the tree.
+Additionally, we can take advantage of alpha-beta pruning by creating a list of pseudo-moves that included illegal moves but would be likely pruned out because they left the player in a losing position.
 Though we are searching over more moves it is much fast to generate the moves and alpha beta pruning becomes more affective.
 
 There are also a lot more optimizations/refactoring that cannot all be reported.
 For example, the static arrays were being reallocated in a loop while generating moves, which was causing overhead.
 We were also able to restructure if statements to break earlier.
 
-\section{Implementation}
+\section{Implementation/Results}
 \subsection{Tests}
 It is very important to run tests to verify that your application is correct after refactoring for performance.
 To achieve this, I used a database of chess positions \cite{jones} and the number of legal moves at a certain depth to verify the accuracy of the chess engine.
-Each of the individual tests is formed like the following JSON object.
+Each of the individual tests is formed like the following JSON object. 
 The test imports the FEN \cite{fen} string and verifies that the number of nodes is the same at that depth of search.
 \begin{verbatim}
   {
@@ -276,7 +278,7 @@ By switching to a 1D array to represent the board, we can represent a position o
     \end{tabular}
     \caption{This table represents the old indexing scheme used with a 2D array representing the board.}
     \label{tab:example_table}
-\end{table}
+\end{table} 
 
 \begin{table}[H]
     \renewcommand{\arraystretch}{1.5}
@@ -338,19 +340,20 @@ Though the performance was modest for some benchmarks it made a significant diff
 
 \subsection{Parallelism}
 The simplest way to parallelize the move search algorithm is at the top level.
-Given a board state, we can get all of the moves in that state; then, in parallel, we can use the mini-max algorithm to find those that result in the best position for that player.
-However, this might not be the most optimal solution, as Figure~\ref{fig:cpu-trace} shows. This Figure~\ref{fig:cpu-trace} shows the CPU utilization over a run of iterative deepening looking for the best move.
-The dips in CPU usage are when we are close to finishing a depth and starting the next depth.
+Given a board state, we can get all of the moves in that state; then, in parallel, we can use the mini-max algorithm to find the board position that two optimal players would reach. 
+However, this might not be the most efficient solution, as Figure~\ref{fig:cpu-trace} shows.
+This Figure~\ref{fig:cpu-trace} shows the CPU utilization over a run of iterative deepening looking for the best move.
+The dips in CPU usage are when the program is close to finishing a depth and starting the next depth.
 This happens because one of the branches of the search is taking longer to search.
 We were bottle necked by the slowest-running move search.
+We also do not always get the benefits of the parallelism.
+For example, if there are only a few moves at depth one you do not get the benefits of parallelism.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\linewidth]{parallism-cpu.png}
     \caption{Shows the usage of the CPU over the course of an execution of iterative deepening.}
     \label{fig:cpu-trace}
 \end{figure}
-We also do not always get the benefits of the parallelism.
-For example, if there are only a few moves at depth one you do not get the benefits of parallelism.
 
 \subsection{Piece Singletons}
 This is a very simple idea that greatly reduces the number of objects that we need to make.
@@ -383,17 +386,18 @@ It theoretically should be able to but I think that it does not find the right m
 
 \subsubsection{Move Heuristic}
 We were also able to give a value to move.
-The value of the move is defined as the change in the eval of the board.
-This allows us to sort the moves before they are searched to find the best move.
+The value of the move is defined as the change in the eval of the board by making the move.
+This allows us to heuristically sort the moves before they are searched to hopefully find the best move.
 This allows us to more quickly look at the good moves and prune the bad moves.
 However, it does introduce overhead that the list of moves needs to be sorted.
 In some cases, the overhead was more than the benefits we got from pruning.
 Defining a better heuristic could improve performance.
 
 A possible better heuristic would be to use the evaluation of the board found in the previous runs of iterative deepening.
+As the iterative search would run a better evaluation would be given to the move.
 Since we are already computing those values we could cache them and use them in subsequent runs.
-However, it is not guaranteed that a move at depth 4 would also be good at depth 5.
-Though it could provide
+However, it is not guaranteed that a move at depth 3 would also be good at depth 4, which could lead to searching for some bad moves first.
+It is impossible to make a perfect heuristic because the heuristic is trying to tell you the best move but the search is also trying to give you the best move.
 
  \begin{figure}[H]
      \centering
@@ -401,7 +405,7 @@ Though it could provide
      \caption{This shows the small benefits of the move heuristics had on performance. They should only increase with depth because it will be able to prune more.}
      \label{fig:enter-label}
  \end{figure}
-\section{Results}
+\section{Results Overview}
 One simple bench that I would run throughout testing the application was how quickly we could count all the nodes from the start position.
 When I first started it took 95 seconds to compute to a depth of 5 from the starting position.
 We were able to reduce this to a speed of 5 seconds at the same depth.
@@ -420,6 +424,7 @@ Exploring other representations would be good future work.
 
 It would also be good to add a new way of parallising the program because with the way it is implemented in the paper you do not get the benefits of alpha beta pruning at the base layer.
 This is the most important place to have it because it will allow you to prune the largest branches.
+A simlpe
 
 A way to visualize the graph that was searched would also be very helpful for finding bugs in the evaluation function and search function.
 This could be done with the Graphviz software.
@@ -429,47 +434,47 @@ Getting better hardware would also be a major help to performance (I am just run
 \begin{thebibliography}{99}
 
 \bibitem{jones}
-Peter Ellis Jones' Gist.
+Peter Ellis Jones' Gist.  
 \url{https://gist.github.com/peterellisjones/8c46c28141c162d1d8a0f0badbc9cff9}
 
 \bibitem{pgn}
-PGN Mentor – Abdusattorov's Games.
+PGN Mentor – Abdusattorov's Games.  
 \url{https://www.pgnmentor.com/players/Abdusattorov/}
 
 \bibitem{lichess-bot}
-Lichess Bot.
+Lichess Bot.  
 \url{https://github.com/lichess-bot-devs/lichess-bot}
 
 \bibitem{uci}
-UCI Protocol.
+UCI Protocol.  
 \url{https://www.chessprogramming.org/UCI}
 
 \bibitem{fen}
-Forsyth–Edwards Notation (FEN).
+Forsyth–Edwards Notation (FEN).  
 \url{https://www.chessprogramming.org/Forsyth-Edwards_Notation}
 
 \bibitem{roce}
-ROCE – Roman's Own Chess Engine.
+ROCE – Roman's Own Chess Engine.  
 \url{http://www.rocechess.ch/rocee.html}
 
 \bibitem{parallel}
-Parallel Alpha–Beta Search Discussion.
+Parallel Alpha–Beta Search Discussion.  
 \url{https://stackoverflow.com/questions/26748118/is-it-possible-to-run-a-minimax-search-with-alpha-beta-pruning-in-parallel-with}
 
 \bibitem{stockfish}
-Stockfish Chess Engine.
+Stockfish Chess Engine.  
 \url{https://stockfishchess.org/}
 
 \bibitem{stockwiki}
-Stockfish Wikipedia Entry.
+Stockfish Wikipedia Entry.  
 \url{https://en.wikipedia.org/wiki/Stockfish_(chess)#Competition_results}
 
 \bibitem{bitboard}
-Bitboards – Chess Programming Wiki.
+Bitboards – Chess Programming Wiki.  
 \url{https://www.chessprogramming.org/Bitboards}
 
 \bibitem{testing}
-Testing a Chess Engine.
+Testing a Chess Engine.  
 \url{https://www.royvanrijn.com/blog/2011/02/unit-testing-a-chess-engine/}
 
 \end{thebibliography}
@@ -482,17 +487,19 @@ In order to showcase the application we will show that the engine finds a checkm
     \caption{Can you find mate in 5 moves. It is black turn to move.}
     \label{fig:enter-label}
 \end{figure}
+You can view the chess board on Lichess here.
+\url{https://lichess.org/analysis/standard/2r3k1/p4p2/3Rp2p/1p2P1pK/8/1P4P1/P3Q2P/1q6_b_-_-_0_1#2}
 
 The chess engine was given the following fen string.
 \begin{verbatim}
 2r3k1/p4p2/3Rp2p/1p2P1pK/8/1P4P1/P3Q2P/1q6 b - - 0 1
 \end{verbatim}
 We then ran iterative deepening for 10-seconds.
-You can see how long it took to compute each depth.
+You can see how long it took to compute each depth. 
 You can also notice that it was not able to finish depth 6 because it reached the 10 second timeout.
 However, it would be ideal if the engine would return as soon as it found checkmate.
 Regardless, it was able to find the first step of the checkmate sequence.
-The solution is on the next page.
+It also able to find the two subsequent moves.
 
 \begin{figure}[H]
     \centering
@@ -500,8 +507,6 @@ The solution is on the next page.
     \caption{Here is the output of the chess engine that ran iterative deepening for 10 seconds.}
     \label{fig:enter-label}
 \end{figure}
-You can view the solution here.
-\url{https://lichess.org/analysis/standard/2r3k1/p4p2/3Rp2p/1p2P1pK/8/1P4P1/P3Q2P/1q6_b_-_-_0_1#2}
 
 \subsection{Solution}
 \begin{verbatim}
