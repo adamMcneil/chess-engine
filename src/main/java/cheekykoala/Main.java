@@ -328,7 +328,7 @@ public class Main {
             long depthTime = System.currentTimeMillis();
             long remainingTime = softLimit - (System.currentTimeMillis() - startTime);
             try {
-                bestPath = minimaxBoard(board, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite, remainingTime);
+                bestPath = minimaxBoard(board, true, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite, remainingTime);
                 if (System.currentTimeMillis() - startTime < softLimit) {
                     System.out.println("Completed depth " + depth + " with move " + bestPath.move + ": " + ((System.currentTimeMillis() - depthTime) / 1000.) + " sec");
                 }
@@ -339,7 +339,7 @@ public class Main {
         return bestPath;
     }
 
-    public static Path minimaxBoard(Board board, int depth, double alpha, double beta, boolean isWhite, long timeLeft) throws TimeoutException {
+    public static Path minimaxBoard(Board board, boolean start, int depth, double alpha, double beta, boolean isWhite, long timeLeft) throws TimeoutException {
         long startTime = System.currentTimeMillis();
         if (timeLeft <= 0) {
             throw new TimeoutException();
@@ -348,7 +348,12 @@ public class Main {
             return new Path(board);
         }
         Color color = isWhite ? Color.w : Color.b;
-        List<Move> moves = board.getMoves(color, move -> true);
+        List<Move> moves;
+        if (start) {
+            moves = board.getMoves(color, move -> move.isMoveLegal(board, color));
+        } else {
+            moves = board.getMoves(color, move -> true);
+        }
         if (moves.isEmpty()) {
             return new Path(board);
         }
@@ -359,7 +364,7 @@ public class Main {
             bestMoveValue = Double.NEGATIVE_INFINITY;
             for (Move move : moves) {
                 Board child = board.getChild(move);
-                Path p = minimaxBoard(child, depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime));
+                Path p = minimaxBoard(child, false, depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime));
                 if (p.board.getEval() > bestMoveValue) {
                     bestMoveValue = p.board.getEval();
                     bestPath.move = move;
@@ -375,7 +380,7 @@ public class Main {
             bestMoveValue = Double.POSITIVE_INFINITY;
             for (Move move : moves) {
                 Board child = board.getChild(move);
-                Path p = minimaxBoard(child, depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime));
+                Path p = minimaxBoard(child, false, depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime));
                 if (p.board.getEval() < bestMoveValue) {
                     bestMoveValue = p.board.getEval();
                     bestPath.move = move;
