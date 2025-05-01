@@ -166,8 +166,6 @@ public class Move {
     public double getEval(Board board) {
         if (eval == null) {
             recomputeEval(board);
-        } else {
-            assert true;
         }
         return eval;
     }

@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Pawn extends Piece {
     private static final Piece white = new Pawn(Color.w);
@@ -187,8 +190,20 @@ public class Pawn extends Piece {
         return valueTable;
     }
 
-    @Override
-    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+    private List<Move> getMovesParallel(Board board, int position, Predicate<Move> filter) {
+        return Stream.<Supplier<List<Move>>>of(
+                        () -> getUpOne(board, position, filter),
+                        () -> getUpTwo(board, position, filter),
+                        () -> getAttacks(board, position, filter),
+                        () -> getInPassingMoves(board, position, filter),
+                        () -> getPromotionMoves(board, position, filter)
+                )
+                .parallel()
+                .flatMap(supplier -> supplier.get().stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<Move> getMovesSerial(Board board, int position, Predicate<Move> filter) {
         List<Move> moves = new ArrayList<>();
         moves.addAll(getUpOne(board, position, filter));
         moves.addAll(getUpTwo(board, position, filter));
@@ -196,5 +211,10 @@ public class Pawn extends Piece {
         moves.addAll(getInPassingMoves(board, position, filter));
         moves.addAll(getPromotionMoves(board, position, filter));
         return moves;
+    }
+
+    @Override
+    public List<Move> getMoves(Board board, int position, Predicate<Move> filter) {
+        return getMovesSerial(board, position, filter);
     }
 }
