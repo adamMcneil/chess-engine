@@ -35,7 +35,8 @@ public class MainTest {
 
     @Test
     public void testIterativeDeepening() {
-        Board board = new Board("2r3k1/p4p2/3Rp2p/1p2P1pK/8/1P4P1/P3Q2P/1q6 b - - 0 1");
+        Board board = new Board();
+        // Board board = new Board("2r3k1/p4p2/3Rp2p/1p2P1pK/8/1P4P1/P3Q2P/1q6 b - - 0 1");
         // board.importBoard("2r3k1/p4p2/3Rp1qp/1p2P1p1/6K1/1P4P1/P3Q2P/8 b - - 2 2");
         // board.importBoard("2r3k1/p4p2/3Rp2p/1p2PqpK/8/1P4P1/P3Q2P/8 b - - 4 3");
         board.printBoard();

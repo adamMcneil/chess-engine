@@ -14,6 +14,8 @@ public class Board {
     private boolean whiteCanCastleQueenSide = true;
     private boolean blackCanCastleKingSide = true;
     private boolean blackCanCastleQueenSide = true;
+    private int whiteKingPosition = -1;
+    private int blackKingPosition = -1;
 
     public boolean isWhiteCanCastleKingSide() {
         return whiteCanCastleKingSide;
@@ -43,12 +45,14 @@ public class Board {
 
     public Board(Board other) {
         this.copyBoard(other);
-        this.setInPassingSquare(other.getInPassingSquare());
-        this.setCanInPassingAttack(other.getCanInPassingAttack());
+        this.inPassingSquare = other.inPassingSquare;
+        this.canInPassingAttack = other.canInPassingAttack;
         this.whiteCanCastleKingSide = other.whiteCanCastleKingSide;
         this.whiteCanCastleQueenSide = other.whiteCanCastleQueenSide;
         this.blackCanCastleKingSide = other.blackCanCastleKingSide;
         this.blackCanCastleQueenSide = other.blackCanCastleQueenSide;
+        this.whiteKingPosition = other.whiteKingPosition;
+        this.blackKingPosition = other.blackKingPosition;
         this.eval = other.eval;
     }
 
@@ -258,7 +262,7 @@ public class Board {
     }
 
     public Piece getPieceAt(int position) {
-        assert Position.isOnBoard(position);
+        // assert Position.isOnBoard(position);
         return board[position];
     }
 
@@ -271,11 +275,10 @@ public class Board {
 
     public boolean isColorInCheck(Color color) {
         int home = -1;
-        for (int i = 0; i < 64; i++) {
-            Piece piece = board[i];
-            if (piece.isKing() && piece.getColor() == color) {
-                home = i;
-            }
+        if (color == Color.w) {
+            home = whiteKingPosition;
+        } else if (color == Color.b) {
+            home = blackKingPosition;
         }
         if (home == -1) {
             return false;
@@ -389,7 +392,15 @@ public class Board {
         setInPassingSquare(decodeInPassingSquare(splitFen[3]));
         for (int i = 0; i < fenBoard.length(); i++) {
             if (fenBoard.charAt(i) != '/' && !Character.isDigit(fenBoard.charAt(i))) {
-                board[z] = Piece.getPiece(fenBoard.charAt(i));
+                Piece piece = Piece.getPiece(fenBoard.charAt(i));
+                board[z] = piece;
+                if (piece.isKing()) {
+                    if (piece.getColor() == Color.w) {
+                        whiteKingPosition = z;
+                    } else {
+                        blackKingPosition = z;
+                    }
+                }
                 z++;
             } else if (Character.isDigit(fenBoard.charAt(i))) {
                 for (int j = 0; j < Character.getNumericValue(fenBoard.charAt(i)); j++) {
@@ -482,6 +493,13 @@ public class Board {
 
     public void doNormalMove(Move move) {
         Piece movedPiece = getPieceAt(move.getBeginning());
+        if (movedPiece.isKing()) {
+            if (movedPiece.getColor() == Color.w) {
+                whiteKingPosition = move.getEnd();
+            } else {
+                blackKingPosition = move.getEnd();
+            }
+        }
         board[move.getEnd()] = movedPiece;
         board[move.getBeginning()] = Empty.getInstance();
         setCanInPassingAttack(false);
