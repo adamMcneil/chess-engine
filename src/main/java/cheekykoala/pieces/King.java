@@ -136,7 +136,8 @@ public class King extends Piece {
         int checkPosition;
         for (int change : Directions.orthogonal) {
             checkPosition = position + change;
-            if (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition))) {
+            if (Position.isOnBoard(checkPosition) && (Position.isSameRow(position, checkPosition) || Position.isSameColumn(position, checkPosition))
+                && board.getPieceAt(checkPosition).getColor() != color) {
                 move = new Move(position, checkPosition, MoveType.normal);
                 if (filter.test(move)) {
                     moves.add(move);
@@ -145,7 +146,8 @@ public class King extends Piece {
         }
         for (int change : Directions.diagonal) {
             checkPosition = position + change;
-            if (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)) {
+            if (Position.isOnBoard(checkPosition) && Position.isDiagonal(position, checkPosition)
+                    && board.getPieceAt(checkPosition).getColor() != color) {
                 move = new Move(position, checkPosition, MoveType.normal);
                 if (filter.test(move)) {
                     moves.add(move);

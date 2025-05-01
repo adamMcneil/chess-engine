@@ -256,9 +256,8 @@ class PieceMovementTest {
 
     @Test
     void testFen() {
-        int position = 40;
-        Board board = new Board();
-        board.importBoard("1nbqkbnr/rppppppp/p7/8/P7/R7/1PPPPPPP/1NBQKBNR w KAka - 0 1");
+        int position = 41;
+        Board board = new Board("1r3rk1/p1p1b1p1/8/4Ppp1/8/1KPb1B1P/PP3nP1/RNB3R1 w - - 6 28");
         board.printBoard(position);
         board.printBoard();
         MoveCounter counter = board.countNodes(1, Color.b);

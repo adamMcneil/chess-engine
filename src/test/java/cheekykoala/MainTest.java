@@ -8,9 +8,11 @@ public class MainTest {
     @Test
     public void test() {
         Board board = new Board();
-        String input = "position startpos moves e2e4 g7g6 d2d4 g8f6 d4d5 d7d6 d1d4 c7c5 d4c3 f8g7 a2a3 f6h5 c3f3 b8d7 f1b5 d8a5 b1c3 e8g8 f3e2 g7c3 e1d1 c3g7 g2g4 h5f6 c1d2 a5c7 g4g5 f6h5 a1a2 d7e5 d2c3 h5f4 e2e3 f4g2 e3g3 c7b6 b5a4 b6a6 a4b5 g2e3 g3e3 a6b5 a3a4 b5d7 e3e2 d7c7 b2b4 c5b4 c3b4 f8e8 a4a5 b7b6";
+        String input = "'position startpos moves e2e4 e7e5 g1f3 g8f6 f3e5 b8c6 e5c6 d7c6 d1f3 c8g4 f3f4 f8d6 f4g5 h7h6 g5e3 f6d7 h2h3 g4e6 e3d4 d6e5 d4b4 d7b6 c2c3 e5d6 b4d4 e8g8 f1e2 c6c5 d4e3 d8g5 e3g5 h6g5 d2d4 f7f5 e4e5 d6e7 d4c5 b6d7 e2f3 a8b8 f3b7 d7c5 b7f3 c5d3 e1e2 e6c4 e2d2 d3f2 h1g1 b8d8 d2c2 c4d3 c2b3 d8b8";
         onPosition(board, input);
-        board.printBoard();
+        board.printBoard(41);
+        Move bestMove = iterativeDeepeningPath(board, Color.w, THINK_TIME).move;
+        System.out.println(bestMove);
         onGo(board, Color.w);
     }
 
@@ -41,6 +43,14 @@ public class MainTest {
         // board.importBoard("2r3k1/p4p2/3Rp2p/1p2PqpK/8/1P4P1/P3Q2P/8 b - - 4 3");
         board.printBoard();
         System.out.println(iterativeDeepening(board, Color.b, 10000));
+    }
+
+    @Test
+    public void testPath() {
+        Board board = new Board();
+        Path p = iterativeDeepeningPath(board, Color.w, 10000);
+        System.out.println(p);
+        p.board.printBoard();
     }
 
 }

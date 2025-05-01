@@ -7,7 +7,7 @@ public class Move {
     private int beginning;
     private int end;
     private MoveType type;
-    private Double eval;
+    private Double eval = null;
 
     private Move(int beginning, int end) {
         this.beginning = beginning;
@@ -166,6 +166,8 @@ public class Move {
     public double getEval(Board board) {
         if (eval == null) {
             recomputeEval(board);
+        } else {
+            assert true;
         }
         return eval;
     }

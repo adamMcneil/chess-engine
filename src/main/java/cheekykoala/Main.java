@@ -122,6 +122,8 @@ public class Main {
             bestMove = depthSearch(board, DEPTH, color);
         } else if (ALGORITHM.equals("iterative")) {
             bestMove = iterativeDeepening(board, color, THINK_TIME);
+        } else if (ALGORITHM.equals("path")) {
+            bestMove = iterativeDeepeningPath(board, color, THINK_TIME).move;
         } else {
             throw new IllegalArgumentException("Invalid algorithm, using default.");
         }
@@ -303,6 +305,90 @@ public class Main {
         return bestMoveValue;
     }
 
+    public static class Path {
+        Move move;
+        Board board;
+
+        Path(){};
+
+        Path(Board board) {
+            this.board = board;
+        }
+    }
+
+    public static Path iterativeDeepeningPath(Board board, Color color, long timeLimitMillis) {
+        Path bestPath = null;
+        long startTime = System.currentTimeMillis();
+        long softLimit = timeLimitMillis * 9 / 10; // Use 90% of time
+        boolean isWhite = color == Color.w;
+        for (int depth = 1; ; depth++) {
+            if (System.currentTimeMillis() - startTime >= softLimit) {
+                break;
+            }
+            long depthTime = System.currentTimeMillis();
+            long remainingTime = softLimit - (System.currentTimeMillis() - startTime);
+            try {
+                bestPath = minimaxBoard(board, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, isWhite, remainingTime);
+                if (System.currentTimeMillis() - startTime < softLimit) {
+                    System.out.println("Completed depth " + depth + " with move " + bestPath.move + ": " + ((System.currentTimeMillis() - depthTime) / 1000.) + " sec");
+                }
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return bestPath;
+    }
+
+    public static Path minimaxBoard(Board board, int depth, double alpha, double beta, boolean isWhite, long timeLeft) throws TimeoutException {
+        long startTime = System.currentTimeMillis();
+        if (timeLeft <= 0) {
+            throw new TimeoutException();
+        }
+        if (depth == 0) {
+            return new Path(board);
+        }
+        Color color = isWhite ? Color.w : Color.b;
+        List<Move> moves = board.getMoves(color, move -> true);
+        if (moves.isEmpty()) {
+            return new Path(board);
+        }
+        double bestMoveValue;
+        Path bestPath = new Path();
+        if (isWhite) {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)).reversed());
+            bestMoveValue = Double.NEGATIVE_INFINITY;
+            for (Move move : moves) {
+                Board child = board.getChild(move);
+                Path p = minimaxBoard(child, depth - 1, alpha, beta, false, timeLeft - (System.currentTimeMillis() - startTime));
+                if (p.board.getEval() > bestMoveValue) {
+                    bestMoveValue = p.board.getEval();
+                    bestPath.move = move;
+                    bestPath.board = p.board;
+                }
+                if (bestMoveValue >= beta) {
+                    break;
+                }
+                alpha = Math.max(alpha, bestMoveValue);
+            }
+        } else {
+            moves.sort(Comparator.comparingDouble((Move move) -> move.getEval(board)));
+            bestMoveValue = Double.POSITIVE_INFINITY;
+            for (Move move : moves) {
+                Board child = board.getChild(move);
+                Path p = minimaxBoard(child, depth - 1, alpha, beta, true, timeLeft - (System.currentTimeMillis() - startTime));
+                if (p.board.getEval() < bestMoveValue) {
+                    bestMoveValue = p.board.getEval();
+                    bestPath.move = move;
+                    bestPath.board = p.board;
+                }
+                if (bestMoveValue <= alpha) {
+                    break;
+                }
+                beta = Math.min(beta, bestMoveValue);
+            }
+        }
+        return bestPath;
+    }
     public static double checkmateEval(Color color) {
         if (color == Color.w)
             return Double.NEGATIVE_INFINITY;
